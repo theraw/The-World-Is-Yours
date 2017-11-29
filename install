@@ -1,0 +1,63 @@
+#!/bin/bash
+
+ireqs() {
+           mkdir -p /tmp/nginx-plus/; cd /tmp/nginx-plus
+           wget
+           apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y
+           apt-get autoremove -y
+           apt-get install apt-utils build-essential -y
+           apt-get install git -y
+           apt-get install checkinstall libpcre3 libpcre3-dev zlib1g zlib1g-dbg libxml2 zlib1g-dev -y
+           apt-get install -y unzip
+           apt-get install -y libicu-dev libcurl4-gnutls-dev libtool
+           apt-get install -y libmozjs-24-dev
+           apt-get install -y libmozjs-24-bin; sudo ln -sf /usr/bin/js24 /usr/bin/js
+           apt-get install openssl libssl-dev libperl-dev libexpat-dev -y
+           apt-get install mercurial meld -y
+           apt-get install libxslt-dev -y
+           apt-get install libgd2-xpm -y
+           apt-get install libgd2-xpm-dev -y
+           apt-get install libgeoip-dev -y
+           apt-get install libssl libssl-dev -y
+           apt-get install dh-autoreconf -y
+           apt-get install -y software-properties-common
+           apt-get install -y python-software-properties
+           apt-get install -y libcairo2 libcairo2-dev
+           apt-get install -y python-dev
+           sudo add-apt-repository ppa:maxmind/ppa -y
+           apt-get install aptitude -y
+           aptitude update -y
+           aptitude upgrade -y
+           aptitude install libmaxminddb0 libmaxminddb-dev mmdb-bin -y
+           apt-get install libmysqlclient-dev -y
+           apt-get install libmariadbclient-dev -y
+           apt-get install g++ flex bison curl doxygen libyajl-dev libgeoip-dev libtool dh-autoreconf libcurl4-gnutls-dev libxml2 libpcre++-dev libxml2-dev -y
+}
+
+# Nginx Env's Extra Stuff.
+#ngx-envs() {
+#           
+#}
+
+download() {
+           cd /
+           wget https://github.com/systemroot/my-nginx/raw/master/nginx-plus/nginx-plus.zip
+           unzip -P ****** nginx-plus.zip; rm -Rf nginx-plus.zip
+           clear
+}
+
+rebuild-conf() {
+
+}
+
+download-mods() {
+
+}
+
+compile-mods() {
+
+}
+
+move-mods() {
+
+}
