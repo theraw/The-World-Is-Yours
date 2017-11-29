@@ -1,0 +1,17 @@
+#!/bin/bash
+
+export OWNER=root
+export PHP_OWNER=root
+export PORT=80
+export BIND_IP=145.239.109.73
+export HOSTDATA=/hostdata/
+export HOSTDATA_DEF=/hostdata/default/public_html/
+export WANT_EXTRA=yes # or no?
+
+
+export NGINX_RAILS_UNICORN_CONF_FILE=/etc/nginx/conf.d/rails-unicorn.conf
+export NGINX_RAILS_THIN_CONF_FILE=/etc/nginx/conf.d/rails-thin.conf
+export NGINX_PYRAMID_CONF_FILE=/etc/nginx/conf.d/pyramid.conf
+export NGINX_DEFAULT_CONF_FILE=/etc/nginx/conf.d/default.conf
+export NGINX_DJANGO_CONF_FILE=/etc/nginx/conf.d/django.conf
+export NGINX_PHP_CONF_FILE=/etc/nginx/conf.d/php-fpm.conf
