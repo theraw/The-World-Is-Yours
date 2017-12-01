@@ -1,17 +1,37 @@
 #!/bin/bash
+# ===============================================================================
+# YOU SHOULD CHANGE THOSE.
+# ===============================================================================
+export NS_PORT='80'             # $BIND_IP:80.
+export ADMIN_PORT='8282'        # $BIND_IP:8282.
+export BIND_IP='145.239.109.73' # $BIND_IP:$NS_PORT Will be used for your nginx vhosts configs.
+export MY_OS='UBUNTU14'         # (UBUNTU14 = Ubuntu 14.04, CENTOS7 = Centos 7.x, Debian7 = Debian 7.9).
+export SYM_IT='/nginx'          # (Easy way to find nginx 'cd /nginx').
+# ===============================================================================
+# ===============================================================================
 
-export OWNER=root
-export PHP_OWNER=root
-export PORT=80
-export BIND_IP=145.239.109.73
-export HOSTDATA=/hostdata/
-export HOSTDATA_DEF=/hostdata/default/public_html/
-export WANT_EXTRA=yes # or no?
 
 
-export NGINX_RAILS_UNICORN_CONF_FILE=/etc/nginx/conf.d/rails-unicorn.conf
-export NGINX_RAILS_THIN_CONF_FILE=/etc/nginx/conf.d/rails-thin.conf
-export NGINX_PYRAMID_CONF_FILE=/etc/nginx/conf.d/pyramid.conf
-export NGINX_DEFAULT_CONF_FILE=/etc/nginx/conf.d/default.conf
-export NGINX_DJANGO_CONF_FILE=/etc/nginx/conf.d/django.conf
-export NGINX_PHP_CONF_FILE=/etc/nginx/conf.d/php-fpm.conf
+# ===============================================================================
+# I DON'T GAVE SUPPORT IF YOU CHANGE THOSE.
+# ===============================================================================
+export OWNER='root'                                  # Under which user will nginx run!
+export PHP_OWNER='root'                              # Under which group will nginx run!
+export HOSTDATA='/hostdata/'                         # In which folder will website files stored!
+export HOSTDATA_DEF='/hostdata/default/public_html/' # Where is the default_server folder.
+
+# CONFIGS.
+# ===============================================================================
+export NGINX_CONF='/nginx/nginx.conf'                # nginx.conf
+export VHOST_LIVE_DIR='/nginx/live/'                 # Live sites.conf folder.
+export DEFAULT_SERVER='/nginx/live/default.conf'     # Where is the default_server conf.
+
+# EXAMPLE OF EXTRA CONFIGS.
+# ===============================================================================
+export NGINX_RAILS_UNICORN_CONF_FILE='/etc/nginx/conf.d/rails-unicorn.conf'
+export NGINX_RAILS_THIN_CONF_FILE='/etc/nginx/conf.d/rails-thin.conf'
+export NGINX_PYRAMID_CONF_FILE='/etc/nginx/conf.d/pyramid.conf'
+export NGINX_DJANGO_CONF_FILE='/etc/nginx/conf.d/django.conf'
+export NGINX_PHP_CONF_FILE='/etc/nginx/conf.d/php-fpm.conf'
+# ===============================================================================
+# ===============================================================================
