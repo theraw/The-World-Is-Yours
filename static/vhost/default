@@ -4,13 +4,25 @@ server {
         index index.html;
         server_name localhost;
 
-
         location / {
-         access_log /hostdata/default/logs/access.log main;
-         error_log  /hostdata/default/logs/error.log;
+          SecRulesEnabled;
+          LearningMode;
+          DeniedUrl "/denied/";
+          CheckRule "$SQL >= 8" BLOCK;
+          CheckRule "$RFI >= 8" BLOCK;
+          CheckRule "$TRAVERSAL >= 4" BLOCK;
+          CheckRule "$EVADE >= 4" BLOCK;
+          CheckRule "$XSS >= 8" BLOCK;
          
-         try_files $uri $uri/ =404;
+          access_log /hostdata/default/logs/access.log main;
+          error_log  /hostdata/default/logs/error.log;
+         
+          try_files $uri $uri/ =404;
         }
+        location /denied/ {
+          return 444;
+        }
+        
         
         location ~ \.php {
           try_files $uri /index.php =404;
