@@ -69,6 +69,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              apt-get install libmysqlclient-dev -y
              apt-get install libmariadbclient-dev -y
              apt-get install g++ flex bison curl doxygen libyajl-dev libgeoip-dev libtool dh-autoreconf libcurl4-gnutls-dev libxml2 libpcre++-dev libxml2-dev -y
+             apt-get install libuuid1 uuid-dev -y
 
              
              mkdir -p /hostdata/
@@ -86,19 +87,23 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              make -j`nproc`
              make install
            
+             #cd /opt/nginx/modules/
+             #git clone https://github.com/ildus/nginx_redis.git
+             #cd nginx_redis/
+             #mv ngx_devel_kit-0.2.19/ /opt/nginx/modules/
+             
              cd /opt/nginx/modules/
-             git clone https://github.com/ildus/nginx_redis.git
-             cd nginx_redis/
-             mv ngx_devel_kit-0.2.19/ /opt/nginx/modules/
+             wget wget https://github.com/simpl/ngx_devel_kit/archive/v0.3.0.zip
+             unzip v0.3.0.zip; rm -Rf v0.3.0.zip
+             mv /opt/nginx/modules/ngx_devel_kit-0.3.0/ /opt/nginx/modules/ngx_devel_kit/ 
            
+             #Pagespeed Library
              cd /opt/nginx/modules/
              wget https://github.com/pagespeed/ngx_pagespeed/archive/v1.13.35.1-beta.zip
              unzip v1.13.35.1-beta.zip
              rm -Rf v1.13.35.1-beta.zip
 
-             #Pagespeed Library
-             mv /opt/nginx/modules/ngx_pagespeed-1.13.35.1-beta /opt/nginx/modules/ngx_pagespeed
-             cd /opt/nginx/modules/ngx_pagespeed
+             cd /opt/nginx/modules/ngx_pagespeed-1.13.35.1-beta
              wget https://dl.google.com/dl/page-speed/psol/1.13.35.1-x64.tar.gz
              tar -xzvf 1.13.35.1-x64.tar.gz; rm -Rf 1.13.35.1-x64.tar.gz
 
@@ -114,7 +119,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /opt/nginx/modules/
              wget https://github.com/nbs-system/naxsi/archive/master.zip
              unzip master.zip; rm -Rf master.zip
-             mv naxsi-master; naxsi
+             mv /opt/nginx/modules/naxsi-master /opt/nginx/modules/naxsi
              
              cd /opt/nginx/modules/
              rm -Rf nginx_redis/
@@ -137,6 +142,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /opt/nginx/sources/
              wget 'http://nginx.org/download/nginx-1.13.8.tar.gz'
              tar -xzvf nginx-1.13.8.tar.gz; rm -Rf nginx-1.13.8.tar.gz
+             cd /opt/nginx/sources/nginx-1.13.8/
              wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nbuild.sh
              chmod +x nbuild.sh
              ./nbuild.sh
@@ -148,32 +154,6 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              
              
       ;;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       centos)
              yum -y update; yum -y upgrade
