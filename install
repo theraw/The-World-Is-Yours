@@ -9,8 +9,8 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
                  exit 1
              fi
 
-             if [ -d "/nginx/sites" ]; then
-                 echo "We've detect a folder '/nginx/sites' which means"
+             if [ -d "/nginx/" ]; then
+                 echo "We've detect a folder '/nginx/' which means"
                  echo "Maybe you have use this script before!"
                  echo "You can fix this by executing!"
                  echo "./setup clean"
