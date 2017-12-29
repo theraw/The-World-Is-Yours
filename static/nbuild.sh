@@ -23,8 +23,8 @@
 --with-threads                         \
 --with-http_dav_module                 \
 --with-ld-opt="-Wl,-rpath,/usr/local/lib/"                     \
---add-module=/opt/nginx/modules/ngx_devel_kit-0.2.19           \
---add-module=/opt/nginx/modules/ngx_pagespeed                  \
+--add-module=/opt/nginx/modules/ngx_devel_kit                  \
+--add-module=/opt/nginx/modules/ngx_pagespeed-1.13.35.1-beta   \
 --add-module=/opt/nginx/modules/testcookie-nginx-module        \
 --add-module=/opt/nginx/modules/set-misc-nginx-module          \
 --add-module=/opt/nginx/modules/headers-more-nginx-module      \
@@ -36,5 +36,4 @@
 --add-module=/opt/nginx/modules/nginx-mysql-module             \
 --add-module=/opt/nginx/modules/ModSecurity-nginx              \
 --add-module=/opt/nginx/modules/encrypted-session-nginx-module \
---add-module=/opt/nginx/modules/ngx_http_subrange_module       \
 --add-module=/opt/nginx/modules/naxsi/naxsi_src/
