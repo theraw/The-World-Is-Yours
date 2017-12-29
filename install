@@ -1,6 +1,12 @@
 #!/bin/bash
-
-ubuntu14() {
+case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
+      trusty)
+              if [ "$(whoami)" != "root" ]
+                 then
+                  echo "You need to login as root to use this script! Sorry!";
+                 exit 1
+              fi 
+              
              apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y;
              apt-get install build-essential libssl-dev curl nano wget zip unzip git -y
              apt-get purge --remove nginx -y
@@ -13,12 +19,41 @@ ubuntu14() {
              ./setup install
              clear
              ./setup fix
-}
+             ./setup iphp
+             
+      ;;
 
-CentOS7() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      centos)
              yum -y update; yum -y upgrade
              yum install epel-release wget curl git zip unzip -y
              yum remove httpd -y
              yum remove apache2 -y
              yum remove nginx -y
-}
+      ;;
+esac
