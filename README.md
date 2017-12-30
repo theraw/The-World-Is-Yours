@@ -12,6 +12,15 @@ Ubuntu 14.04 in you VM/VPS/DEDICATED so
 4. **`wget https://raw.githubusercontent.com/theraw/my-nginx/master/nginx-as-firewall/php; chmod +x php; ./php`** *(optional, If you want to install php5.6-fpm, runs on 127.0.0.1:9000)*
 
 
+# Informations.
+
+=> **`/nginx/`** - Nginx Path,
+
+=> **`/ngnx/live/`** - Vhosts Config Files Dir,
+
+=> **`/nginx/modsecurity/`** - ModSecurity Rules Dir.
+
+
 # Check.
 
 1. L7 (Cookie Based Protection) => https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L19-L301
