@@ -3,7 +3,6 @@ server {
         root /hostdata/raws.com/public_html;
         index index.html index.php;
         server_name raws.com www.raws.com;
-        vhost_traffic_status off;
 
         location / {
           SecRulesEnabled;
