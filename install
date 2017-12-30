@@ -170,6 +170,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              mkdir -p /hostdata/default/public_html
              mkdir -p /hostdata/default/logs
              mkdir -p /hostdata/default/cache
+             mkdir -p /nginx/modsecurity/
              cd /hostdata/default/public_html/
              wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/html/index.html
              sudo update-rc.d nginx defaults
@@ -178,8 +179,13 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /nginx/; mkdir db/; cd db/; wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/GeoLite2-Country.mmdb
              cd /nginx/; rm -Rf *.default
              cp /opt/nginx/modules/naxsi/naxsi_config/naxsi_core.rules /nginx/naxsi_core.rules
+             cp /opt/ModSecurity/modsecurity.conf-recommended /nginx/modsecurity/modsecurity.conf
              
-             
+             cd /opt/; git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git
+             cp -a /opt/owasp-modsecurity-crs/rules/ /nginx/modsecurity/
+             cp -a /opt/owasp-modsecurity-crs/crs-setup.conf.example /nginx/modsecurity/crs-setup.conf
+             clear
+             nginx -t
       ;;
 
       centos)
