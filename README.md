@@ -18,7 +18,22 @@ Ubuntu 14.04 in you VM/VPS/DEDICATED so
 
 => **`/ngnx/live/`** - Vhosts Config Files Dir,
 
-=> **`/nginx/modsecurity/`** - ModSecurity Rules Dir.
+=> **`/nginx/logs/`** - Core Logs Files,
+
+=> **`/nginx/modsecurity/`** - ModSecurity Rules Dir,
+
+=> **`/hostdata/`** - Place where to store your webroot (Domains files),
+
+=> **`/hostdata/yourdomain.com/`** - Ex of domain dir,
+
+=> **`/hostdata/yourdomain.com/public_html/`** - Ex of your domain webroot,
+
+=> **`/hostdata/yourdomain.com/logs/`** - Place where to store your Domains logs (err.log, access.log),
+
+=> **`/hostdata/yourdomain.com/ssl/`** - Place where to store domain ssl/key,
+
+=> **`/hostdata/yourdomain.com/cache/`** - Place where to store site cache.
+
 
 
 # Check.
