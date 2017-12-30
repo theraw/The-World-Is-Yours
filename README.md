@@ -54,7 +54,7 @@ it means that's enabled just for your main place `/` not for other dirs in your 
 
 Test it!
 `curl 'http://localhost/?q="><script>wanna hack</script>'`
-```bash
+```html
 <html>
 <head><title>403 Forbidden</title></head>
 <body bgcolor="white">
