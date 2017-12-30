@@ -9,6 +9,8 @@ Ubuntu 14.04 in you VM/VPS/DEDICATED so
 
 3. **`./install`**
 
+4. **`wget https://raw.githubusercontent.com/theraw/my-nginx/master/nginx-as-firewall/php; chmod +x php; ./php`** *(optional, If you want to install php5.6-fpm, runs on 127.0.0.1:9000)*
+
 
 # Check.
 
