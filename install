@@ -175,6 +175,10 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/html/index.html
              sudo update-rc.d nginx defaults
              
+             mkdir -p /tmp/; cd /tmp; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/sysctl.conf
+             cat /tmp/sysctl.conf >> /etc/sysctl.conf
+             sysctl -p
+             clear
              
              cd /nginx/; mkdir db/; cd db/; wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/GeoLite2-Country.mmdb
              cd /nginx/; rm -Rf *.default
