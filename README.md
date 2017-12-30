@@ -65,6 +65,9 @@ Test it!
 # To-Do
 
 [x] Create install script for Ubuntu.
+
 [-] Create install script for Debian.
+
 [-] Create install script for Centos.
+
 [-] Integrate Fail2Ban > IpTables.
