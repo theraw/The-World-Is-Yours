@@ -46,7 +46,7 @@ Ubuntu 14.04 in you VM/VPS/DEDICATED so
 example of Naxsi => https://github.com/theraw/The-World-Is-Yours/blob/master/static/vhost/default#L8-L15
 
 4. ModSecurity is not loaded. However you need to set it up by yourself. you have a folder `/nginx/modsecurity/`
-where its stored open `/nginx/modsecurity/modsecurity.conf` add those
+which ModSecurity rules are stored, open `/nginx/modsecurity/modsecurity.conf` add those
 
 ```bash
 Include crs-setup.conf
