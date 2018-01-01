@@ -135,6 +135,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              git clone https://github.com/arut/nginx-mysql-module.git
              git clone https://github.com/SpiderLabs/ModSecurity-nginx.git
              git clone https://github.com/openresty/encrypted-session-nginx-module.git
+             git clone https://github.com/flant/nginx-http-rdns.git
              
              # OpenSSL 1.0.2h
              mkdir -p /opt/nginx/
