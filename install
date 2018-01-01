@@ -121,6 +121,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              unzip master.zip; rm -Rf master.zip
              mv /opt/nginx/modules/naxsi-master /opt/nginx/modules/naxsi
              
+             mkdir -p /opt/nginx/modules/
              cd /opt/nginx/modules/
              rm -Rf nginx_redis/
              git clone https://github.com/openresty/set-misc-nginx-module.git
@@ -135,7 +136,10 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              git clone https://github.com/SpiderLabs/ModSecurity-nginx.git
              git clone https://github.com/openresty/encrypted-session-nginx-module.git
              
-
+             # OpenSSL 1.0.2h
+             mkdir -p /opt/nginx/
+             cd /opt/nginx/; wget wget https://github.com/openssl/openssl/archive/OpenSSL_1_0_2h.zip
+             unzip OpenSSL_1_0_2h.zip; rm -Rf OpenSSL_1_0_2h.zip
 
              # Download Nginx
              mkdir -p /opt/nginx/sources/
