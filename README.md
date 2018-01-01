@@ -1,4 +1,6 @@
 # Nginx L7 DDoS Protection! :boom: :zap:
+(Please Read Whole Page, All Things Are Important Then If You Want You Can Use IT.)
+
 
 As of now available for use is just Ubuntu version. (Ubuntu 14.04) to try it you need to have a fresh installation of 
 Ubuntu 14.04 in you VM/VPS/DEDICATED so 
