@@ -13,7 +13,7 @@ server {
           CheckRule "$TRAVERSAL >= 4" BLOCK;
           CheckRule "$EVADE >= 4" BLOCK;
           CheckRule "$XSS >= 8" BLOCK;
-          access_log /hostdata/raws.com/logs/access.log upstream_time;
+          access_log /hostdata/raws.com/logs/access.log main;
           error_log  /hostdata/raws.com/logs/error.log;
           try_files $uri $uri/ =404;
         }
