@@ -101,3 +101,6 @@ Test it!
 [-] Integrate Fail2Ban > IpTables.
 
 [-] ....
+
+# Warn!
+1. If you want to use mariadb 10.+, You need to use Ubuntu amd64 only or don't compile nginx with mysql module! or you will have problems which i wasn't able to solve..
