@@ -7,6 +7,7 @@
 --lock-path=/var/run/nginx.lock        \
 --error-log-path=/nginx/logs/error.log \
 --http-log-path=/nginx/logs/access.log \
+--with-http_v2_module                  \
 --with-pcre                            \
 --with-http_geoip_module               \
 --with-http_gunzip_module              \
