@@ -93,7 +93,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              #mv ngx_devel_kit-0.2.19/ /opt/nginx/modules/
              
              cd /opt/nginx/modules/
-             wget wget https://github.com/simpl/ngx_devel_kit/archive/v0.3.0.zip
+             wget https://github.com/simpl/ngx_devel_kit/archive/v0.3.0.zip
              unzip v0.3.0.zip; rm -Rf v0.3.0.zip
              mv /opt/nginx/modules/ngx_devel_kit-0.3.0/ /opt/nginx/modules/ngx_devel_kit/ 
            
