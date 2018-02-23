@@ -45,9 +45,10 @@ Ubuntu 14.04 in you VM/VPS/DEDICATED so
 2. [Kernel Settings](https://github.com/theraw/The-World-Is-Yours/blob/master/static/sysctl.conf#L1-L34)
 
 3. [Naxsi Rules Included](https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L392)
-example of Naxsi => https://github.com/theraw/The-World-Is-Yours/blob/master/static/vhost/default#L8-L15
 
-4. ModSecurity is not loaded. However you need to set it up by yourself. you have a folder `/nginx/modsecurity/`
+4. [Example of Naxsi](https://github.com/theraw/The-World-Is-Yours/blob/master/static/vhost/default#L8-L15)
+
+5. ModSecurity is not loaded. However you need to set it up by yourself. you have a folder `/nginx/modsecurity/`
 which ModSecurity rules are stored, open `/nginx/modsecurity/modsecurity.conf` add those
 
 ```bash
@@ -108,3 +109,8 @@ Test it!
 
 # Warn!
 1. If you want to use mariadb 10.+, You need to use Ubuntu amd64 only or don't compile nginx with mysql module! or you will have problems which i wasn't able to solve..
+
+# Want a pro version?
+
+`Contact :` `raw@dope.al` *`(Only business talk. Including Support, Installation, Nginx Plus, Custom Settings, Monitoring etc)`*
+
