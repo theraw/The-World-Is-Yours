@@ -2,3 +2,9 @@
 
 apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y
 clear
+
+mkdir -p /firewall/iptables/
+echo '#!/bin/bash' > /firewall/iptables/res.sh
+echo '#!/bin/bash' > /firewall/iptables/save.sh
+echo 'iptables-restore < /etc/iptables/rules.v4' >> /firewall/iptables/res.sh
+echo 'iptables-save > /etc/iptables/rules.v4' >> /firewall/iptables/save.sh
