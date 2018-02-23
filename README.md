@@ -40,11 +40,11 @@ Ubuntu 14.04 in you VM/VPS/DEDICATED so
 
 # Check.
 
-1. L7 (Cookie Based Protection) => https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L19-L301
+1. [L7 (Cookie Based Protection)](https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L19-L301)
 
-2. Kernel Settings              => https://github.com/theraw/The-World-Is-Yours/blob/master/static/sysctl.conf#L1-L34
+2. [Kernel Settings](https://github.com/theraw/The-World-Is-Yours/blob/master/static/sysctl.conf#L1-L34)
 
-3. Naxsi Rules Included         => https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L392
+3. [Naxsi Rules Included](https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L392)
 example of Naxsi => https://github.com/theraw/The-World-Is-Yours/blob/master/static/vhost/default#L8-L15
 
 4. ModSecurity is not loaded. However you need to set it up by yourself. you have a folder `/nginx/modsecurity/`
