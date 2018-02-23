@@ -112,5 +112,5 @@ Test it!
 
 # Want a pro version?
 
-`Contact : raw@dope.al` *`(Only business talk. Including Support, Installation, Nginx Plus, Custom Settings, Monitoring etc)`*
+`Contact : raw@dope.al` *`(Only business talk. Including Support, Installation, Custom Settings, Monitoring etc)`*
 
