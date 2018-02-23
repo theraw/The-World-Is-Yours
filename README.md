@@ -16,25 +16,25 @@ Ubuntu 14.04 in you VM/VPS/DEDICATED so
 
 # Informations.
 
-=> **`/nginx/`** - Nginx Path,
+`=>` **`/nginx/`** - Nginx Path,
 
-=> **`/ngnx/live/`** - Vhosts Config Files Dir,
+`=>` **`/ngnx/live/`** - Vhosts Config Files Dir,
 
-=> **`/nginx/logs/`** - Core Logs Files,
+`=>` **`/nginx/logs/`** - Core Logs Files,
 
-=> **`/nginx/modsecurity/`** - ModSecurity Rules Dir,
+`=>` **`/nginx/modsecurity/`** - ModSecurity Rules Dir,
 
-=> **`/hostdata/`** - Place where to store your webroot (Domains files),
+`=>` **`/hostdata/`** - Place where to store your webroot (Domains files),
 
-=> **`/hostdata/yourdomain.com/`** - Ex of domain dir,
+`=>` **`/hostdata/yourdomain.com/`** - Ex of domain dir,
 
-=> **`/hostdata/yourdomain.com/public_html/`** - Ex of your domain webroot,
+`=>` **`/hostdata/yourdomain.com/public_html/`** - Ex of your domain webroot,
 
-=> **`/hostdata/yourdomain.com/logs/`** - Place where to store your Domains logs (err.log, access.log),
+`=>` **`/hostdata/yourdomain.com/logs/`** - Place where to store your Domains logs (err.log, access.log),
 
-=> **`/hostdata/yourdomain.com/ssl/`** - Place where to store domain ssl/key,
+`=>` **`/hostdata/yourdomain.com/ssl/`** - Place where to store domain ssl/key,
 
-=> **`/hostdata/yourdomain.com/cache/`** - Place where to store site cache.
+`=>` **`/hostdata/yourdomain.com/cache/`** - Place where to store site cache.
 
 
 
@@ -42,7 +42,7 @@ Ubuntu 14.04 in you VM/VPS/DEDICATED so
 
 1. L7 (Cookie Based Protection) => https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L19-L301
 
-~~2. Kernel Settings              => https://github.com/theraw/The-World-Is-Yours/blob/master/static/sysctl.conf#L1-L34~~
+2. Kernel Settings              => https://github.com/theraw/The-World-Is-Yours/blob/master/static/sysctl.conf#L1-L34
 
 3. Naxsi Rules Included         => https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L392
 example of Naxsi => https://github.com/theraw/The-World-Is-Yours/blob/master/static/vhost/default#L8-L15
