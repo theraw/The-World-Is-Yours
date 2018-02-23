@@ -93,6 +93,9 @@ Test it!
 </html>
 ```
 
+# Warn!
+1. If you want to use mariadb 10.+, You need to use Ubuntu amd64 only or don't compile nginx with mysql module! or you will have problems which i wasn't able to solve..
+
 # To-Do
 
 [x] Support Ubuntu Trusty.
@@ -106,11 +109,3 @@ Test it!
 [-] Integrate Fail2Ban > IpTables.
 
 [-] ....
-
-# Warn!
-1. If you want to use mariadb 10.+, You need to use Ubuntu amd64 only or don't compile nginx with mysql module! or you will have problems which i wasn't able to solve..
-
-# Want a pro version?
-
-`Contact : raw@dope.al` *`(Only business talk. Including Support, Installation, Custom Settings, Monitoring etc)`*
-
