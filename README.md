@@ -94,11 +94,13 @@ Test it!
 
 # To-Do
 
-[x] Create install script for Ubuntu.
+[x] Support Ubuntu Trusty.
 
-[-] Create install script for Debian.
+[-] Support Ubuntu Xenial+.
 
-[-] Create install script for Centos.
+[-] Support Debian.
+
+[-] Support Centos.
 
 [-] Integrate Fail2Ban > IpTables.
 
