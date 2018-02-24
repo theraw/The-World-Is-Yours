@@ -5,6 +5,7 @@ clear
 
 mkdir -p /firewall/iptables/bin
 echo '#!/bin/bash' > /firewall/iptables/bin/fire.sh
+echo 'nano /etc/iptables/rules.v4' /firewall/iptables/bin/fire.sh
 echo 'iptables-restore < /etc/iptables/rules.v4' >> /firewall/iptables/bin/fire.sh
 echo 'iptables-save > /etc/iptables/rules.v4' >> /firewall/iptables/bin/fire.sh
 
