@@ -195,6 +195,9 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cp -a /opt/owasp-modsecurity-crs/rules/ /nginx/modsecurity/
              cp -a /opt/owasp-modsecurity-crs/crs-setup.conf.example /nginx/modsecurity/crs-setup.conf
              clear
+             mkdir -p /tmp/; cd /tmp; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/iptables/install
+             chmod +x install; ./install
+             clear
              nginx -t
       ;;
 
