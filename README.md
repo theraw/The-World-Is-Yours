@@ -12,6 +12,7 @@
 - [x] L7 Protection.
 - [x] AutoBan System.
 - [x] Integrate Fail2Ban > IpTables.
+- [ ] UI ?
 - [ ] .....
 
 # Installation
