@@ -22,4 +22,6 @@ chmod +x /bin/fire
 sudo apt-get install fail2ban -y
 sudo service fail2ban stop
 curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/iptables/jail.local > /etc/fail2ban/jail.local
+touch /nginx/logs/error.log
 sudo service fail2ban start
+clear
