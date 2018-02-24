@@ -7,6 +7,10 @@
 - [ ] Support Ubuntu Xenial+.
 - [ ] Support Debian.
 - [ ] Support Centos.
+- [x] ModSecurity Support.
+- [x] Naxsi Support.
+- [x] L7 Protection.
+- [x] AutoBan System.
 - [x] Integrate Fail2Ban > IpTables.
 - [ ] .....
 
