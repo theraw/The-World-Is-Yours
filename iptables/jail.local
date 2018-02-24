@@ -102,6 +102,14 @@ filter   = sshd
 logpath  = /var/log/auth.log
 maxretry = 6
 
+[nginx-limits]
+
+enabled  = true
+port     = http,https
+filter   = nginx-limits
+logpath  = /nginx/logs/error.log
+maxretry = 6
+
 [dropbear]
 
 enabled  = false
