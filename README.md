@@ -1,7 +1,7 @@
 # Nginx L7 DDoS Protection! :boom: :zap:
 *(Please Read Whole Page, All Things Are Important Then If You Want You Can Use IT.)*
 
-# TO-DO
+# To-Do
 
 - [x] Support Ubuntu Trusty.
 - [ ] Support Ubuntu Xenial+.
