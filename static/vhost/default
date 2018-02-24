@@ -3,6 +3,10 @@ server {
         root /hostdata/default/public_html;
         index index.html;
         server_name localhost;
+        
+        # LIMIT CONNECTION FOR IP / IPs WILL BE AUTO BANNED IF YOU HAVE INSTALL IPTABLES/FAIL2BAN
+        limit_conn max 800;
+        limit_req zone=one burst=300 nodelay;
 
         location / {
           SecRulesEnabled;
@@ -14,11 +18,13 @@ server {
           CheckRule "$EVADE >= 4" BLOCK;
           CheckRule "$XSS >= 8" BLOCK;
          
-          access_log /hostdata/default/logs/access.log main;
-          error_log  /hostdata/default/logs/error.log;
-         
           try_files $uri $uri/ =404;
         }
+        
+        access_log /hostdata/default/logs/access.log main;
+        # ERROR.log path shouldn't be changed! or change this https://github.com/theraw/The-World-Is-Yours/blob/master/iptables/jail.local#L110
+        error_log  /nginx/logs/error.log;
+        
         location /denied/ {
           return 444;
         }
