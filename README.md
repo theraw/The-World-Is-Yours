@@ -108,6 +108,6 @@ Test it!
 
 [-] Support Centos.
 
-[-] Integrate Fail2Ban > IpTables.
+[x] Integrate Fail2Ban > IpTables.
 
 [-] ....
