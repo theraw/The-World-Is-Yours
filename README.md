@@ -100,7 +100,7 @@ Test it!
 
 # To-Do
 
-[x] Support Ubuntu Trusty.
+[X] Support Ubuntu Trusty.
 
 [-] Support Ubuntu Xenial+.
 
@@ -108,6 +108,6 @@ Test it!
 
 [-] Support Centos.
 
-[x] Integrate Fail2Ban > IpTables.
+[X] Integrate Fail2Ban > IpTables.
 
 [-] ....
