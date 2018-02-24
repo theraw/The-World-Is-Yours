@@ -29,27 +29,21 @@ Ubuntu 14.04 in you VM/VPS/DEDICATED so
 
 
 # Informations.
+```
+=> /nginx/                                = Nginx Path,
+=> /nginx/live/                           = Vhosts Config Files Dir,
+=> /nginx/logs/                           = Core Logs Files,
+=> /nginx/modsecurity/                    = ModSecurity Rules Dir,
+=> /hostdata/                             = Place to store your domain folders.
+=> /hostdata/yourdomain.com/              = Ex of domain dir (private folder),
+=> /hostdata/yourdomain.com/public_html/  = Ex of your domain webroot (public files only),
+=> /hostdata/yourdomain.com/logs/         = Place where to store your Domains logs (access.log) (private folder),
+=> /hostdata/yourdomain.com/ssl/          = Place where to store domain ssl/key (private folder),
+=> /hostdata/yourdomain.com/cache/        = Place where to store site cache (private folder).
 
-`=>` **`/nginx/`** - Nginx Path,
-
-`=>` **`/ngnx/live/`** - Vhosts Config Files Dir,
-
-`=>` **`/nginx/logs/`** - Core Logs Files,
-
-`=>` **`/nginx/modsecurity/`** - ModSecurity Rules Dir,
-
-`=>` **`/hostdata/`** - Place where to store your webroot (Domains files),
-
-`=>` **`/hostdata/yourdomain.com/`** - Ex of domain dir,
-
-`=>` **`/hostdata/yourdomain.com/public_html/`** - Ex of your domain webroot,
-
-`=>` **`/hostdata/yourdomain.com/logs/`** - Place where to store your Domains logs (err.log, access.log),
-
-`=>` **`/hostdata/yourdomain.com/ssl/`** - Place where to store domain ssl/key,
-
-`=>` **`/hostdata/yourdomain.com/cache/`** - Place where to store site cache.
-
+// Private Folder - Means this cannot be accessed by public.
+// Public Folder  - Means files into this folder can be accessed by public.
+```
 
 
 # Check.
