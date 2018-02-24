@@ -1,6 +1,16 @@
 # Nginx L7 DDoS Protection! :boom: :zap:
 *(Please Read Whole Page, All Things Are Important Then If You Want You Can Use IT.)*
 
+# TO-DO
+
+- [x] Support Ubuntu Trusty.
+- [ ] Support Ubuntu Xenial+.
+- [ ] Support Debian.
+- [ ] Support Centos.
+- [x] Integrate Fail2Ban > IpTables.
+- [ ] .....
+
+# Installation
 
 As of now available for use is just Ubuntu version. (Ubuntu 14.04) to try it you need to have a fresh installation of 
 Ubuntu 14.04 in you VM/VPS/DEDICATED so 
@@ -97,17 +107,3 @@ Test it!
 
 # Warn!
 1. If you want to use mariadb 10.+, You need to use Ubuntu amd64 only or don't compile nginx with mysql module! or you will have problems which i wasn't able to solve..
-
-# To-Do
-
-[X] Support Ubuntu Trusty.
-
-[-] Support Ubuntu Xenial+.
-
-[-] Support Debian.
-
-[-] Support Centos.
-
-[X] Integrate Fail2Ban > IpTables.
-
-[-] ....
