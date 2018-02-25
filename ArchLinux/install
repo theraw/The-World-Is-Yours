@@ -43,7 +43,7 @@ case "`grep ID_LIKE /etc/*-release | awk -F '=' '{print $2}'`" in
              yes|pacman -S yajl lmdb glibc libxml2 icu ncurses readline xz python3 python-pip
              yes|pacman -S net-tools lua htop iftop
              
-             sudo -u $user command
+             sudo -u $user git clone https://aur.archlinux.org/ssdeep.git /home/raw/ssdeep
 
              cd /opt/
              git clone https://github.com/SpiderLabs/ModSecurity
