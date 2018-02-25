@@ -44,7 +44,6 @@ case "`grep ID_LIKE /etc/*-release | awk -F '=' '{print $2}'`" in
              yes|pacman -S net-tools lua htop iftop gd
              yes|pacman -S libmaxminddb geoip2-database mmdblookup libxml2 libxslt
              
-
 su $user <<'EOF'
 git clone https://aur.archlinux.org/ssdeep.git /home/$user/ssdeep
 cd /home/$user/ssdeep/ && makepkg --syncdeps
@@ -170,6 +169,7 @@ EOF
              chmod +x install; ./install
              clear
              curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/ArchLinux/static/nginx.service > /usr/lib/systemd/system/nginx.service
+             clear
              systemctl enable nginx
              nginx -t
       ;;
