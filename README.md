@@ -7,7 +7,7 @@
 - [ ] Support Ubuntu Xenial+.
 - [ ] Support Debian.
 - [ ] Support Centos.
-- [ ] Support Arch Linux.
+- [x] Support Arch Linux.
 - [x] ModSecurity Support.
 - [x] Naxsi Support.
 - [x] L7 Protection.
