@@ -1,0 +1,59 @@
+#!/bin/bash
+case "`grep ID_LIKE /etc/*-release | awk -F '=' '{print $2}'`" in
+      archlinux)
+             if [ "$(whoami)" != "root" ]
+             then
+                 echo "You should Login as root to use this script!";
+                 echo "May you already have access for sudo, but commands aren't designed with sudo! so..";
+                 echo "sudo -i";
+                 exit 1
+             fi
+
+             if [ -d "/nginx/" ]; then
+                 echo "We've detect a folder '/nginx/' which means"
+                 echo "Maybe you have use this script before!"
+                 echo "You can fix this by executing!"
+                 echo "./setup clean"
+                 exit 1
+             fi
+
+             if [ -d "/etc/nginx" ]; then
+                 echo "We've detect a folder '/etc/nginx' which means"
+                 echo "Maybe you have use this script before!"
+                 echo "./setup clean"
+                 exit 1
+             fi
+
+             if [ -d "/opt/nginx/" ]; then
+                 echo "We've detect a folder '/opt/nginx/' which means"
+                 echo "Maybe you have use this script before!"
+                 echo "./setup clean"
+                 exit 1
+             fi
+             
+             mkdir -p /hostdata/
+             mkdir -p /var/log/nginx/
+             mkdir -p /opt/nginx/modules/
+             useradd -m -g users -s /bin/bash $user
+             
+             yes|pacman -Syy
+             yes|pacman -Syyu
+             yes|pacman -S curl wget zip unzip git gcc make cmake automake sudo
+             yes|pacman -S geoip geoip-database zlib geoip-database-extra autoconf libtool
+             yes|pacman -S yajl lmdb glibc libxml2 icu ncurses readline xz python3 python-pip
+             yes|pacman -S net-tools lua htop iftop
+             
+             sudo -u $user command
+
+             cd /opt/
+             git clone https://github.com/SpiderLabs/ModSecurity
+             cd /opt/ModSecurity/
+             git checkout -b v3/master origin/v3/master
+             sh build.sh
+             git submodule init
+             git submodule update
+             ./configure
+             make -j`nproc`
+             make install
+      ;;
+esac
