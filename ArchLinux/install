@@ -44,8 +44,7 @@ case "`grep ID_LIKE /etc/*-release | awk -F '=' '{print $2}'`" in
              yes|pacman -S net-tools lua htop iftop gd
              yes|pacman -S libmaxminddb geoip2-database mmdblookup libxml2 libxslt
              
-             sudo -u $user git clone https://aur.archlinux.org/ssdeep.git /home/$user/ssdeep
-             sudo -u raw "cd /home/raw/ssdeep/; makepkg --syncdeps"
+
 su $user <<'EOF'
 git clone https://aur.archlinux.org/ssdeep.git /home/$user/ssdeep
 cd /home/$user/ssdeep/ && makepkg --syncdeps
