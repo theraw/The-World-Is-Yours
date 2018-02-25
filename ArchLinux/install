@@ -139,7 +139,7 @@ EOF
              rm -Rf /etc/init.d/nginx
              cd /etc/init.d/; wget https://raw.githubusercontent.com/systemroot/my-nginx/master/nginx-as-firewall/static/nginx
              chmod +x /etc/init.d/nginx
-             cd /nginx/; mkdir conf.d; rm -Rf nginx.conf*; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.conf
+             cd /nginx/; mkdir conf.d; rm -Rf nginx.conf*; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/ArchLinux/static/nginx.conf
              mkdir -p /nginx/live/
              cd /nginx/live/
              wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/vhost/default
