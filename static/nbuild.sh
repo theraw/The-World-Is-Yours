@@ -46,7 +46,6 @@
 --add-module=/opt/nginx/modules/ngx_http_geoip2_module         \
 --add-module=/opt/nginx/modules/lua-nginx-module               \
 --add-module=/opt/nginx/modules/nginx-mtask-module             \
---add-module=/opt/nginx/modules/nginx-mysql-module             \
 --add-module=/opt/nginx/modules/ModSecurity-nginx              \
 --add-module=/opt/nginx/modules/encrypted-session-nginx-module \
 --add-module=/opt/nginx/modules/naxsi/naxsi_src/               \
