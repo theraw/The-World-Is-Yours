@@ -104,6 +104,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              unzip v1.13.35.1-beta.zip
              rm -Rf v1.13.35.1-beta.zip
 
+             mv /opt/nginx/modules/incubator-pagespeed-ngx-1.13.35.1-beta /opt/nginx/modules/ngx_pagespeed-1.13.35.1-beta
              cd /opt/nginx/modules/ngx_pagespeed-1.13.35.1-beta
              wget https://dl.google.com/dl/page-speed/psol/1.13.35.1-x64.tar.gz
              tar -xzvf 1.13.35.1-x64.tar.gz; rm -Rf 1.13.35.1-x64.tar.gz
