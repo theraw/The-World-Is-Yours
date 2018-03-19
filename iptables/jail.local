@@ -110,6 +110,13 @@ filter   = nginx-limits
 logpath  = /nginx/logs/error.log
 maxretry = 6
 
+[nginx-ban]
+enabled  = true
+port     = http,https
+filter   = nginx-ban
+logpath  = /hostdata/*/logs/access.log
+maxretry = 1
+
 [dropbear]
 
 enabled  = false
