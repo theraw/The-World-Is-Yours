@@ -58,7 +58,9 @@ Ubuntu 14.04 in you VM/VPS/DEDICATED so
 
 5 . [Example of Naxsi](https://github.com/theraw/The-World-Is-Yours/blob/master/static/vhost/default#L12-L19)
 
-6 . ModSecurity is not loaded. However you need to set it up by yourself. you have a folder `/nginx/modsecurity/`
+6 . [Check Iptables rules](https://github.com/theraw/The-World-Is-Yours/blob/master/iptables/rules) It will not be automatically enabled, because this changes based on providers in ovh it work in azure it doesn't work. so you need to manually activate iptables!
+
+7 . ModSecurity is not loaded. However you need to set it up by yourself. you have a folder `/nginx/modsecurity/`
 which ModSecurity rules are stored, open `/nginx/modsecurity/modsecurity.conf` add those
 
 ```bash
