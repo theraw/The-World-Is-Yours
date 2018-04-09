@@ -48,7 +48,7 @@ Ubuntu 14.04 in you VM/VPS/DEDICATED so
 
 # Check.
 
-1 . [L7 (Cookie Based Protection)](https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L15-L42) [Replace "proxy2.dope.. links with yours click here to find aes](https://github.com/theraw/The-World-Is-Yours/tree/master/static/vhost) which should be stored on a internal link or in a place where L7 is disabled because it will not work if you put it in main site dir!.
+1 . [L7 (Cookie Based Protection)](https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L15-L42) AND [Replace "proxy2.dope.. links with yours click here to find aes](https://github.com/theraw/The-World-Is-Yours/tree/master/static/vhost) which should be stored on a internal link or in a place where L7 is disabled because it will not work if you put it in main site dir!.
 
 2 . [Auto Ban System](https://github.com/theraw/The-World-Is-Yours/blob/master/iptables/jail.local#L105-L111) based on [Connection for ip](https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L72-L73)
 
