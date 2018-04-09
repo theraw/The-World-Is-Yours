@@ -199,6 +199,17 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              #mkdir -p /tmp/; cd /tmp; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/iptables/install
              #chmod +x install; ./install
              clear
+             sudo apt-get install fail2ban -y
+             sudo service fail2ban stop
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/iptables/jail.local > /etc/fail2ban/jail.local
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/iptables/filter.d/nginx-limits.conf > /etc/fail2ban/filter.d/nginx-limits.conf
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/iptables/filter.d/nginx-ban.conf > /etc/fail2ban/filter.d/nginx-ban.conf
+             touch /nginx/logs/error.log
+             clear
+             sudo service fail2ban start
+             clear
+             
+             service fail2ban status
              nginx -t
       ;;
 
