@@ -14,6 +14,7 @@
 - [x] AutoBan System.
 - [x] Integrate Fail2Ban > IpTables.
 - [ ] GUI ?
+- [ ] Tail requests in live time from browser.
 - [ ] .....
 
 # Installation
