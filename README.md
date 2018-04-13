@@ -57,7 +57,7 @@ Ubuntu 14.04 in you VM/VPS/DEDICATED so
 
 2 . [Auto Ban System](https://github.com/theraw/The-World-Is-Yours/blob/master/iptables/jail.local#L105-L111) based on [Connection for ip](https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L72-L73)
 
-3 . [Auto Ban 444 Reqs](https://github.com/theraw/The-World-Is-Yours/blob/master/iptables/jail.local#L113-L118) A day i've been under attack of multiple proxies, and even after i they got banned they still was keep trying the same thing so when you ban someone when that ip tries to access your website that request will not go on `error.log` but in `access.log` so i created this rule to ban with iptables every request who have stauts `444` so nginx will not have to handle those.
+3 . [Auto Ban 444 Reqs](https://github.com/theraw/The-World-Is-Yours/blob/master/iptables/jail.local#L113-L118) A day i've been under attack of multiple proxies, and even after they got banned they still was keep trying the same thing so when you ban someone when that ip tries to access your website that request will not go on `error.log` but in `access.log` so i created this rule to ban with iptables every request who have stauts `444` so nginx will not have to handle those.
 
 4 . [Kernel Settings](https://github.com/theraw/The-World-Is-Yours/blob/master/static/sysctl.conf#L1-L34)
 
