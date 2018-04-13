@@ -63,7 +63,7 @@ Ubuntu 14.04 in you VM/VPS/DEDICATED so
 
 5 . [Naxsi Rules Included](https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L118)
 
-6 . [Example of Naxsi](https://github.com/theraw/The-World-Is-Yours/blob/master/static/vhost/default#L12-L19)
+6 . [Example of Naxsi](https://github.com/theraw/The-World-Is-Yours/blob/master/static/vhost/default#L22-L29)
 
 7 . [Check Iptables rules](https://github.com/theraw/The-World-Is-Yours/blob/master/iptables/rules) It will not be automatically enabled, because this changes based on providers in ovh it work in azure it doesn't work. so you need to manually activate iptables!
 
