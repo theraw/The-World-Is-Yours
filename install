@@ -180,6 +180,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              mkdir -p /nginx/modsecurity/
              cd /hostdata/default/public_html/
              wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/html/index.html
+             useradd nginx
              sudo update-rc.d nginx defaults
              
              mkdir -p /tmp/; cd /tmp; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/sysctl.conf
@@ -211,6 +212,8 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              
              service fail2ban status
              nginx -t
+             service nginx stop
+             service nginx start
       ;;
 
       centos)
