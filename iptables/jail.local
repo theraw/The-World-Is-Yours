@@ -107,7 +107,7 @@ maxretry = 6
 enabled  = true
 port     = http,https
 filter   = nginx-limits
-logpath  = /nginx/logs/error.log
+logpath  = /hostdata/*/logs/error.log
 maxretry = 6
 
 [nginx-ban]
