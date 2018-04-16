@@ -237,7 +237,7 @@ maxretry = 2
 
 [php-url-fopen]
 
-enabled = true
+enabled = false
 port    = http,https
 filter  = php-url-fopen
 logpath = /var/www/*/logs/access_log
