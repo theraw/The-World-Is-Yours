@@ -94,9 +94,9 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              #mv ngx_devel_kit-0.2.19/ /opt/nginx/modules/
              
              cd /opt/nginx/modules/
-             wget https://github.com/simpl/ngx_devel_kit/archive/v0.3.0.zip
-             unzip v0.3.0.zip; rm -Rf v0.3.0.zip
-             mv /opt/nginx/modules/ngx_devel_kit-0.3.0/ /opt/nginx/modules/ngx_devel_kit/ 
+             wget https://github.com/simplresty/ngx_devel_kit/archive/v0.3.1rc1.zip
+             unzip v0.3.1rc1.zip; rm -Rf v0.3.1rc1.zip
+             mv /opt/nginx/modules/ngx_devel_kit-0.3.1rc1/ /opt/nginx/modules/ngx_devel_kit/ 
            
              #Pagespeed Library
              cd /opt/nginx/modules/
@@ -147,9 +147,9 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              # Download Nginx
              mkdir -p /opt/nginx/sources/
              cd /opt/nginx/sources/
-             wget 'http://nginx.org/download/nginx-1.13.8.tar.gz'
-             tar -xzvf nginx-1.13.8.tar.gz; rm -Rf nginx-1.13.8.tar.gz
-             cd /opt/nginx/sources/nginx-1.13.8/
+             wget 'http://nginx.org/download/nginx-1.14.0.tar.gz'
+             tar -xzvf nginx-1.14.0.tar.gz; rm -Rf nginx-1.14.0.tar.gz
+             cd /opt/nginx/sources/nginx-1.14.0/
              wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nbuild.sh
              chmod +x nbuild.sh
              ./nbuild.sh
