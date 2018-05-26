@@ -1,7 +1,6 @@
 ./configure                                       \
 --user=nginx                                      \
 --group=nginx                                     \
---with-openssl=/opt/nginx/openssl-OpenSSL_1_0_2h/ \
 --sbin-path=/usr/sbin/nginx                       \
 --conf-path=/nginx/nginx.conf                     \
 --pid-path=/var/run/nginx.pid                     \
