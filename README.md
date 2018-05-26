@@ -8,7 +8,7 @@ Another reason can be missing packages from your repository. if so please for Ub
 # To-Do
 
 - [x] Support Ubuntu Trusty.
-- [ ] Support Ubuntu Xenial+.
+- [x] Support Ubuntu Xenial.
 - [ ] Support Debian.
 - [ ] Support Centos.
 - [x] Support Arch Linux.
