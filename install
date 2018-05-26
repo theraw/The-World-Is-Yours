@@ -133,8 +133,6 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              git clone https://github.com/openresty/echo-nginx-module.git
              git clone https://github.com/leev/ngx_http_geoip2_module.git
              git clone https://github.com/openresty/lua-nginx-module.git
-             git clone https://github.com/arut/nginx-mtask-module.git
-             git clone https://github.com/arut/nginx-mysql-module.git
              git clone https://github.com/SpiderLabs/ModSecurity-nginx.git
              git clone https://github.com/openresty/encrypted-session-nginx-module.git
              git clone https://github.com/flant/nginx-http-rdns.git
@@ -182,11 +180,6 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/html/index.html
              useradd nginx
              sudo update-rc.d nginx defaults
-             
-             mkdir -p /tmp/; cd /tmp; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/sysctl.conf
-             cat /tmp/sysctl.conf >> /etc/sysctl.conf
-             sysctl -p
-             clear
              
              cd /nginx/; mkdir db/; cd db/; wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/GeoLite2-Country.mmdb
              cd /nginx/; rm -Rf *.default
