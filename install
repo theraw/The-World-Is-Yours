@@ -204,6 +204,13 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              service nginx start
       ;;
 
+      xenial)
+             apt update
+             apt upgrade -y
+             apt dist-upgrade -y
+             apt install build-essential libssl-dev curl nano wget zip unzip git htop iftop  whois screen -y
+      ;;
+
       centos)
              yum -y update; yum -y upgrade
              yum install epel-release wget curl git zip unzip -y
