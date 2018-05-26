@@ -136,11 +136,6 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              git clone https://github.com/SpiderLabs/ModSecurity-nginx.git
              git clone https://github.com/openresty/encrypted-session-nginx-module.git
              git clone https://github.com/flant/nginx-http-rdns.git
-             
-             # OpenSSL 1.0.2h
-             # mkdir -p /opt/nginx/
-             # cd /opt/nginx/; wget https://github.com/openssl/openssl/archive/OpenSSL_1_0_2h.zip
-             # unzip OpenSSL_1_0_2h.zip; rm -Rf OpenSSL_1_0_2h.zip
 
              # Download Nginx
              mkdir -p /opt/nginx/sources/
