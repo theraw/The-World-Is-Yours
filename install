@@ -87,11 +87,6 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              ./configure
              make -j`nproc`
              make install
-           
-             #cd /opt/nginx/modules/
-             #git clone https://github.com/ildus/nginx_redis.git
-             #cd nginx_redis/
-             #mv ngx_devel_kit-0.2.19/ /opt/nginx/modules/
              
              cd /opt/nginx/modules/
              wget https://github.com/simplresty/ngx_devel_kit/archive/v0.3.1rc1.zip
@@ -100,14 +95,13 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
            
              #Pagespeed Library
              cd /opt/nginx/modules/
-             wget https://github.com/pagespeed/ngx_pagespeed/archive/v1.13.35.1-beta.zip
-             unzip v1.13.35.1-beta.zip
-             rm -Rf v1.13.35.1-beta.zip
-
-             mv /opt/nginx/modules/incubator-pagespeed-ngx-1.13.35.1-beta /opt/nginx/modules/ngx_pagespeed-1.13.35.1-beta
-             cd /opt/nginx/modules/ngx_pagespeed-1.13.35.1-beta
-             wget https://dl.google.com/dl/page-speed/psol/1.13.35.1-x64.tar.gz
-             tar -xzvf 1.13.35.1-x64.tar.gz; rm -Rf 1.13.35.1-x64.tar.gz
+             wget https://github.com/apache/incubator-pagespeed-ngx/archive/v1.13.35.2-stable.zip
+             unzip v1.13.35.2-stable.zip
+             rm -Rf v1.13.35.2-stable.zip
+             mv /opt/nginx/modules/incubator-pagespeed-ngx-1.13.35.2-stable /opt/nginx/modules/ngx_pagespeed-1.13.35.2-stable
+             cd /opt/nginx/modules/ngx_pagespeed-1.13.35.2-stable
+             wget https://dl.google.com/dl/page-speed/psol/1.13.35.2-x64.tar.gz
+             tar -xzvf 1.13.35.2-x64.tar.gz; rm -Rf 1.13.35.2-x64.tar.gz
 
              #LuaJIT Library
              cd /opt/nginx/modules/
