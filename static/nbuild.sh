@@ -36,7 +36,7 @@
 --with-stream_geoip_module                        \
 --with-ld-opt="-Wl,-rpath,/usr/local/lib/"                     \
 --add-module=/opt/nginx/modules/ngx_devel_kit                  \
---add-module=/opt/nginx/modules/ngx_pagespeed-1.13.35.1-beta   \
+--add-module=/opt/nginx/modules/ngx_pagespeed-1.13.35.2-stable   \
 --add-module=/opt/nginx/modules/testcookie-nginx-module        \
 --add-module=/opt/nginx/modules/set-misc-nginx-module          \
 --add-module=/opt/nginx/modules/headers-more-nginx-module      \
