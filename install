@@ -144,10 +144,8 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              make install
              ldconfig
 
-             mkdir -p /nginx
              mkdir -p /nginx/live
              mkdir -p /nginx/logs
-             mkdir -p /nginx/cache
              mkdir -p /nginx/conf.d
              touch /nginx/logs/access.log
              touch /nginx/logs/error.log
@@ -167,7 +165,6 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              mkdir -p /nginx/modsecurity/
              cd /hostdata/default/public_html/
              wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/html/index.html
-             useradd nginx
              sudo update-rc.d nginx defaults
              
              cd /nginx/; mkdir db/; cd db/; wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/GeoLite2-Country.mmdb
