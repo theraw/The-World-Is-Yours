@@ -205,10 +205,184 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
       ;;
 
       xenial)
+      
+             if [ "$(whoami)" != "root" ]
+             then
+                 echo "You should Login as root to use this script!";
+                 echo "May you already have access for sudo, but commands aren't designed with sudo! so..";
+                 echo "sudo -i";
+                 exit 1
+             fi
+
+             if [ -d "/nginx/" ]; then
+                 echo "We've detect a folder '/nginx/' which means"
+                 echo "Maybe you have use this script before!"
+                 echo "You can fix this by executing!"
+                 echo "./setup clean"
+                 exit 1
+             fi
+
+             if [ -d "/etc/nginx" ]; then
+                 echo "We've detect a folder '/etc/nginx' which means"
+                 echo "Maybe you have use this script before!"
+                 echo "./setup clean"
+                 exit 1
+             fi
+
+             if [ -d "/opt/nginx/" ]; then
+                 echo "We've detect a folder '/opt/nginx/' which means"
+                 echo "Maybe you have use this script before!"
+                 echo "./setup clean"
+                 exit 1
+             fi
+
              apt update
              apt upgrade -y
              apt dist-upgrade -y
-             apt install build-essential libssl-dev curl nano wget zip unzip git htop iftop  whois screen -y
+             apt install build-essential apt-utils libssl-dev curl nano wget zip unzip git htop iftop whois screen -y
+             apt purge --remove nginx -y
+             apt purge --remove apache2 -y
+             apt autoremove -y
+
+             cd ~/;
+             wget https://raw.githubusercontent.com/systemroot/my-nginx/master/nginx-as-firewall/setup
+             chmod +x setup
+             ./setup clean
+             rm -Rf ~/setup
+             
+             apt install -y checkinstall libpcre3 libpcre3-dev zlib1g zlib1g-dbg libxml2 zlib1g-dev
+             apt install -y libicu-dev libcurl4-gnutls-dev libtool
+             apt install -y libmozjs-24-dev
+             apt install -y libmozjs-24-bin; sudo ln -sf /usr/bin/js24 /usr/bin/js
+             apt install openssl libssl-dev libperl-dev libexpat-dev -y
+             apt install mercurial meld -y
+             apt install libxslt-dev -y
+             apt install libgd2-xpm -y
+             apt install libgd2-xpm-dev -y
+             apt install libgeoip-dev -y
+             apt install dh-autoreconf -y
+             apt install -y software-properties-common
+             apt install -y python-software-properties
+             apt install -y libcairo2 libcairo2-dev
+             apt install -y python-dev
+             sudo add-apt-repository ppa:maxmind/ppa -y
+             apt update; apt upgrade -y; apt dist-upgrade -y
+             apt install aptitude -y
+             aptitude update -y
+             aptitude upgrade -y
+             aptitude install libmaxminddb0 libmaxminddb-dev mmdb-bin -y
+             apt install libmysqlclient-dev -y
+             apt install libmariadbclient-dev -y
+             apt install g++ flex bison curl doxygen libyajl-dev libgeoip-dev libtool dh-autoreconf libcurl4-gnutls-dev libxml2 libpcre++-dev libxml2-dev -y
+             apt install libuuid1 uuid-dev -y
+             
+             mkdir -p /hostdata/
+             mkdir -p /var/log/nginx/
+             mkdir -p /opt/nginx/modules/
+
+             cd /opt/
+             git clone https://github.com/SpiderLabs/ModSecurity
+             cd /opt/ModSecurity/
+             git checkout -b v3/master origin/v3/master
+             sh build.sh
+             git submodule init
+             git submodule update
+             ./configure
+             make -j`nproc`
+             make install
+
+             cd /opt/nginx/modules/
+             wget https://github.com/simplresty/ngx_devel_kit/archive/v0.3.1rc1.zip
+             unzip v0.3.1rc1.zip; rm -Rf v0.3.1rc1.zip
+             mv /opt/nginx/modules/ngx_devel_kit-0.3.1rc1/ /opt/nginx/modules/ngx_devel_kit/
+
+             cd /opt/nginx/modules/
+             wget https://github.com/apache/incubator-pagespeed-ngx/archive/v1.13.35.2-stable.zip
+             unzip v1.13.35.2-stable.zip
+             rm -Rf v1.13.35.2-stable.zip
+             mv /opt/nginx/modules/incubator-pagespeed-ngx-1.13.35.2-stable /opt/nginx/modules/ngx_pagespeed-1.13.35.2-stable
+             cd /opt/nginx/modules/ngx_pagespeed-1.13.35.2-stable
+             wget https://dl.google.com/dl/page-speed/psol/1.13.35.2-x64.tar.gz
+             tar -xzvf 1.13.35.2-x64.tar.gz; rm -Rf 1.13.35.2-x64.tar.gz
+             
+             #LuaJIT Library
+             cd /opt/nginx/modules/
+             git clone http://luajit.org/git/luajit-2.0.git
+             cd luajit-2.0/
+             make -j`nproc`
+             sudo make install
+             ldconfig
+
+             cd /opt/nginx/modules/
+             wget https://github.com/nbs-system/naxsi/archive/master.zip
+             unzip master.zip; rm -Rf master.zip
+             mv /opt/nginx/modules/naxsi-master /opt/nginx/modules/naxsi
+
+             mkdir -p /opt/nginx/modules/
+             cd /opt/nginx/modules/
+             rm -Rf nginx_redis/
+             git clone https://github.com/openresty/set-misc-nginx-module.git
+             git clone https://github.com/FRiCKLE/ngx_cache_purge.git
+             git clone https://github.com/kyprizel/testcookie-nginx-module.git
+             git clone https://github.com/openresty/headers-more-nginx-module.git
+             git clone https://github.com/openresty/echo-nginx-module.git
+             git clone https://github.com/leev/ngx_http_geoip2_module.git
+             git clone https://github.com/openresty/lua-nginx-module.git
+             git clone https://github.com/SpiderLabs/ModSecurity-nginx.git
+             git clone https://github.com/openresty/encrypted-session-nginx-module.git
+             git clone https://github.com/flant/nginx-http-rdns.git
+
+             # Download Nginx
+             mkdir -p /opt/nginx/sources/
+             cd /opt/nginx/sources/
+             wget 'http://nginx.org/download/nginx-1.14.0.tar.gz'
+             tar -xzvf nginx-1.14.0.tar.gz; rm -Rf nginx-1.14.0.tar.gz
+             cd /opt/nginx/sources/nginx-1.14.0/
+             wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nbuild.sh
+             chmod +x nbuild.sh
+             ./nbuild.sh
+             make -j`nproc`
+             make install
+             ldconfig
+             
+             mkdir -p /nginx/live
+             mkdir -p /nginx/logs
+             mkdir -p /nginx/conf.d
+             touch /nginx/logs/access.log
+             touch /nginx/logs/error.log
+             useradd -r nginx
+             rm -Rf /etc/init.d/nginx
+             cd /etc/init.d/; wget https://raw.githubusercontent.com/systemroot/my-nginx/master/nginx-as-firewall/static/nginx
+             chmod +x /etc/init.d/nginx
+             cd /nginx/; mkdir conf.d; rm -Rf nginx.conf*; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.conf
+             cd /nginx/live/
+             wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/vhost/default
+
+             mkdir -p /hostdata/default
+             mkdir -p /hostdata/default/public_html
+             mkdir -p /hostdata/default/logs
+             mkdir -p /hostdata/default/cache
+             mkdir -p /nginx/modsecurity/
+             cd /hostdata/default/public_html/
+             wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/html/index.html
+             sudo update-rc.d nginx defaults
+
+             cd /nginx/; mkdir db/; cd db/; wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/GeoLite2-Country.mmdb
+             cd /nginx/; rm -Rf *.default
+             cp /opt/nginx/modules/naxsi/naxsi_config/naxsi_core.rules /nginx/naxsi_core.rules
+             cp /opt/ModSecurity/modsecurity.conf-recommended /nginx/modsecurity/modsecurity.conf
+
+             cd /opt/; git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git
+             cp -a /opt/owasp-modsecurity-crs/rules/ /nginx/modsecurity/
+             cp -a /opt/owasp-modsecurity-crs/crs-setup.conf.example /nginx/modsecurity/crs-setup.conf
+             clear
+             cd /etc/systemd/system/; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/theraw-patch-1/UBUNTU16/nginx.service
+             sudo systemctl start nginx.service && sudo systemctl enable nginx.service
+             killall nginx
+             systemctl daemon-reload
+             service nginx stop
+             service nginx start
+
       ;;
 
       centos)
