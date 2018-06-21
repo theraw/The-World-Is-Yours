@@ -7,6 +7,7 @@ Another reason can be missing packages from your repository. if so please for Ub
 
 # To-Do
 
+- [x] Nginx Version, Always Latest.
 - [x] Support Ubuntu Trusty. (14.04)
 - [x] Support Ubuntu Xenial. (16.04)
 - [ ] Support Debian.
