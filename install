@@ -230,7 +230,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              apt update
              apt upgrade -y
              apt dist-upgrade -y
-             apt install build-essential apt-utils libssl-dev curl nano wget zip unzip git htop iftop whois screen -y
+             apt install build-essential apt-utils libssl-dev curl nano wget zip unzip git htop iftop whois screen sudo -y
              apt purge --remove nginx -y
              apt purge --remove apache2 -y
              apt autoremove -y
