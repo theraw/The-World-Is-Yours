@@ -24,7 +24,7 @@ Another reason can be missing packages from your repository. if so please for Ub
 
 # Installation
 
-1. **`apt-get install build-essential libssl-dev curl nano wget zip unzip sudo -y`**
+1. **`apt-get install build-essential libssl-dev curl nano wget zip unzip sudo git -y`**
 
 2. **`git clone https://github.com/theraw/The-World-Is-Yours.git`**
 
