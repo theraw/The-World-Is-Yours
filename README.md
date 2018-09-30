@@ -24,11 +24,13 @@ Another reason can be missing packages from your repository. if so please for Ub
 
 # Installation
 
-1. **`git clone https://github.com/theraw/The-World-Is-Yours.git`**
+1. **`apt-get install build-essential libssl-dev curl nano wget zip unzip sudo -y`**
 
-2. **`cd The-World-Is-Yours/; chmod +x *`**
+2. **`git clone https://github.com/theraw/The-World-Is-Yours.git`**
 
-3. **`./install`**
+3. **`cd The-World-Is-Yours/; chmod +x *`**
+
+4. **`./install`**
 
 
 # Informations.
