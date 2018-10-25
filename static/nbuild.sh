@@ -8,7 +8,6 @@
 --error-log-path=/nginx/logs/error.log            \
 --http-log-path=/nginx/logs/access.log            \
 --with-pcre                                       \
---with-debug                                      \
 --with-threads                                    \
 --with-file-aio                                   \
 --with-http_ssl_module                            \
