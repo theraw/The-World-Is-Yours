@@ -10,6 +10,7 @@ Another reason can be missing packages from your repository. if so please for Ub
 - [x] Nginx Version, Always Latest.
 - [x] Support Ubuntu Trusty. (14.04)
 - [x] Support Ubuntu Xenial. (16.04)
+- [x] Support Ubuntu Cosmic. (18.10)
 - [ ] Support Debian.
 - [ ] Support Centos.
 - [x] Support Arch Linux.
