@@ -553,6 +553,12 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /opt/; git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git
              cp -a /opt/owasp-modsecurity-crs/rules/ /nginx/modsecurity/
              cp -a /opt/owasp-modsecurity-crs/crs-setup.conf.example /nginx/modsecurity/crs-setup.conf
+             
+             clear
+             cd /etc/systemd/system/; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/UBUNTU16/nginx.service
+             sudo systemctl start nginx.service && sudo systemctl enable nginx.service
+             systemctl daemon-reload
+             clear
              service nginx stop
              service nginx start
              clear
