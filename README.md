@@ -1,9 +1,7 @@
 # Nginx L7 DDoS Protection! :boom: :zap:
 *(Please Read Whole Page, All Things Are Important Then If You Want You Can Use IT.)*
 
-During the installation maybe it can fail, please create one issue if it happen. The reason can be maybe if your system is 32bit only, because i have test this script only with 64bit. 
-
-Another reason can be missing packages from your repository. if so please for Ubuntu 14.04 change your repo to [THIS](https://raw.githubusercontent.com/theraw/raws/master/usr/local/raws/ubuntu/eu-repo) .
+**There will be a change in 2.0 Version, Furthermore, this repo will be transferred to https://github.com/DopeProjects, after the 2.0 launch, The 2.0 Release will include all features listed in T0-DO.**
 
 # To-Do
 
