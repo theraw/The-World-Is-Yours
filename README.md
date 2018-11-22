@@ -23,7 +23,7 @@
 
 # Installation
 
-1. **`apt-get install build-essential libssl-dev curl nano wget zip unzip sudo git -y`**
+1. **`apt-get install build-essential libssl-dev curl nano wget zip unzip sudo git psmisc -y`**
 
 2. **`git clone https://github.com/theraw/The-World-Is-Yours.git`**
 
