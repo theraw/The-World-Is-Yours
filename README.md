@@ -19,6 +19,7 @@
 - [x] Integrate Fail2Ban > IpTables.
 - [ ] GUI ?
 - [ ] Monitor requests in live time from browser.
+- [ ] L7 Protection (TestCookie Module) Add Recaptcha!
 - [ ] .....
 
 # Installation
