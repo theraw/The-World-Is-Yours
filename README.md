@@ -1,8 +1,6 @@
 # Nginx L7 DDoS Protection! :boom: :zap:
 *(Please Read Whole Page, All Things Are Important Then If You Want You Can Use IT.)*
 
-**There will be a change in 2.0 Version, Furthermore, this repo will be transferred to https://github.com/DopeProjects, after the 2.0 launch, The 2.0 Release will include all features listed in T0-DO.**
-
 # To-Do
 
 - [x] Nginx Version, Always Latest.
@@ -119,3 +117,7 @@ Test it!
 The **L7 Protection** is the same way which **cloudflare** have that banner "Under Attack" A.K.A Cookie based authorization. Most of bots from where attacks will come doesn't support cookies so it will fail to access your site. (Test it by yourself to "curl http://yoursite.com" before you activate L7 and after you start L7 so you will understand better.)
 
 The L7 protection is a good thing for your protection. But a very bad thing for your website seo!, As facebook/google/bing and all search engines will not be able to access your website anymore. There is a way to allow them but if you have 1 year free time to find all their ips go and try it. I've been thinking for a "reverse dns" whitelist but haven't done it so as of now it is like this.
+
+# Contributors
+
+Feel free to pull request or do a suggestion..
