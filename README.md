@@ -33,8 +33,6 @@
 
 # Informations.
 
-**What if installation script fails?** - Check what was the problem source fix it (mostly should be for missing packages) then remove everything under /opt/ folder and just execute again ./install
-
 ```
 => /nginx/                                = Nginx Path,
 => /nginx/live/                           = Vhosts Config Files Dir,
