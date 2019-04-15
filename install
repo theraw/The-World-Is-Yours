@@ -30,7 +30,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
                  echo "./setup clean"
                  exit 1
              fi
-             nginxVersion=$(curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/v2/data/nginxVersion)
+             nginxVersion=$(curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/data/nginxVersion)
              
              apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y;
              apt-get install sudo -y
@@ -229,7 +229,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
                  exit 1
              fi
 
-             nginxVersion=$(curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/v2/data/nginxVersion)
+             nginxVersion=$(curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/data/nginxVersion)
              apt update
              apt upgrade -y
              apt dist-upgrade -y
