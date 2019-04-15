@@ -7,18 +7,18 @@
 - [x] Support Ubuntu Trusty. (14.04)
 - [x] Support Ubuntu Xenial. (16.04)
 - [x] Support Ubuntu Cosmic. (18.10)
-- [ ] Support Debian.
-- [ ] Support Centos.
+- [x] Support Debian.
+- [x] Support Centos.
 - [x] Support Arch Linux.
 - [x] ModSecurity Support.
 - [x] Naxsi Support.
 - [x] L7 Protection.
 - [x] AutoBan System.
 - [x] Integrate Fail2Ban > IpTables.
-- [ ] GUI ?
-- [ ] Monitor requests in live time from browser.
-- [ ] L7 Protection (TestCookie Module) Add Recaptcha!
-- [ ] .....
+- [-] GUI ?
+- [-] Monitor requests in live time from browser.
+- [-] L7 Protection (TestCookie Module) Add Recaptcha!
+- [-/x] .....
 
 # Installation
 
@@ -60,15 +60,13 @@
 
 3 . [Auto Ban 444 Reqs](https://github.com/theraw/The-World-Is-Yours/blob/master/iptables/jail.local#L113-L118) A day i've been under attack of multiple proxies, and even after they got banned they still was keep trying the same thing so when you ban someone when that ip tries to access your website that request will not go on `error.log` but in `access.log` so i created this rule to ban with iptables every request who have stauts `444` so nginx will not have to handle those.
 
-4 . [Kernel Settings](https://github.com/theraw/The-World-Is-Yours/blob/master/static/sysctl.conf#L1-L34)
+4 . [Kernel Hardening](https://github.com/theraw/The-World-Is-Yours/blob/master/static/sysctl.conf), Use this if you have a Gbps uplink 4+GB RAM, A good CPU and SSD.
 
 5 . [Naxsi Rules Included](https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L118)
 
-6 . [Example of Naxsi](https://github.com/theraw/The-World-Is-Yours/blob/master/static/vhost/default#L22-L29)
+6 . [Iptables rules](https://github.com/theraw/The-World-Is-Yours/blob/master/iptables/rules) You have to manually enable.
 
-7 . [Check Iptables rules](https://github.com/theraw/The-World-Is-Yours/blob/master/iptables/rules) It will not be automatically enabled, because this changes based on providers in ovh it work in azure it doesn't work. so you need to manually activate iptables!
-
-8 . ModSecurity is not loaded. However you need to set it up by yourself. you have a folder `/nginx/modsecurity/`
+7 . ModSecurity is not loaded. However you need to set it up by yourself. you have a folder `/nginx/modsecurity/`
 which ModSecurity rules are stored, open `/nginx/modsecurity/modsecurity.conf` add those
 
 ```bash
