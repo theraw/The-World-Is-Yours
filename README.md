@@ -54,7 +54,7 @@
 
 # Check.
 
-1 . [L7 (Cookie Based Protection)](https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L15-L42) AND [Replace "proxy2.dope.. links with yours click here to find aes](https://github.com/theraw/The-World-Is-Yours/tree/master/static/vhost) which should be stored on a external link or in a place where L7 is disabled because it will not work if you put it in main site dir!.
+1 . [L7 (Cookie Based Protection)](https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L15-L42)
 
 2 . [Auto Ban System](https://github.com/theraw/The-World-Is-Yours/blob/master/iptables/jail.local#L105-L111) based on [Connection for ip](https://github.com/theraw/The-World-Is-Yours/blob/master/static/nginx.conf#L72-L73)
 
@@ -66,8 +66,8 @@
 
 6 . [Iptables rules](https://github.com/theraw/The-World-Is-Yours/blob/master/iptables/rules) You have to manually enable.
 
-7 . ModSecurity is not loaded. However you need to set it up by yourself. you have a folder `/nginx/modsecurity/`
-which ModSecurity rules are stored, open `/nginx/modsecurity/modsecurity.conf` add those
+7 . ModSecurity is not loaded. You have to manually enable. In your server there is a folder `/nginx/modsecurity/`
+where ModSecurity rules are stored, open `/nginx/modsecurity/modsecurity.conf` add those
 
 ```bash
 Include crs-setup.conf
@@ -90,14 +90,9 @@ server {
         } 
 }
 ```
-**Careful** Using modsec rules like
-```
-   location / { 
-       modsecurity_rules_file /nginx/modsecurity/modsecurity.conf; 
-   } 
-```
-it means that's enabled just for your main place `/` not for other dirs in your site ex `/admin/` (:
 
+# Why manual activation?
+Actually i'm just creating a open source build script for nginx with some features, so this is not just a full build in pack with everything enabled, you should actually have some knowledge about how those things work so i don't think it should be hard to do by yourself?!
 
 Test it!
 `curl 'http://localhost/?q="><script>wanna hack</script>'`
@@ -110,6 +105,8 @@ Test it!
 </body>
 </html>
 ```
+# Issues.
+Please remember that i have just created a bash script that compiles nginx with some modules from source i'm not the developer of nginx nor used modules so you may not get much help but i'll help as much as i can.
 
 # Keep In Mind.
 The **L7 Protection** is the same way which **cloudflare** have that banner "Under Attack" A.K.A Cookie based authorization. Most of bots from where attacks will come doesn't support cookies so it will fail to access your site. (Test it by yourself to "curl http://yoursite.com" before you activate L7 and after you start L7 so you will understand better.)
