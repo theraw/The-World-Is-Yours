@@ -104,9 +104,6 @@ Test it!
 # Why manual activation?
 Actually i'm just creating a open source build script for nginx with some features, so this is not just a full build in pack with everything enabled, you should actually have some knowledge about how those things work so i don't think it should be hard to do by yourself?!
 
-# Issues.
-Please remember that i have just created a bash script that compiles nginx with some modules from source i'm not the developer of nginx nor used modules so you may not get much help but i'll help as much as i can.
-
 # Keep In Mind.
 The **L7 Protection** is the same way which **cloudflare** have that banner "Under Attack" A.K.A Cookie based authorization. Most of bots from where attacks will come doesn't support cookies so it will fail to access your site. (Test it by yourself to "curl http://yoursite.com" before you activate L7 and after you start L7 so you will understand better.)
 
