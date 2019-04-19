@@ -1,9 +1,12 @@
 #!/bin/bash
+clean() {
              mkdir -p ~/tmp; cd ~/tmp
              wget https://raw.githubusercontent.com/systemroot/my-nginx/master/nginx-as-firewall/setup
              chmod +x setup
              ./setup clean
              rm -Rf ~/tmp
+}
+checks() {
              if [ "$(whoami)" != "root" ]
              then
                  echo "You should Login as root to use this script!";
@@ -29,7 +32,7 @@
                  echo "Maybe you have use this script before!"
                  exit 1
              fi
-             
+}
              apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y;
              apt-get install sudo -y
              apt-get install build-essential libssl-dev curl nano wget zip unzip git -y
