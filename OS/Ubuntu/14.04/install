@@ -10,22 +10,18 @@
              if [ -d "/nginx/" ]; then
                  echo "We've detect a folder '/nginx/' which means"
                  echo "Maybe you have use this script before!"
-                 echo "You can fix this by executing!"
-                 echo "./setup clean"
                  exit 1
              fi
 
              if [ -d "/etc/nginx" ]; then
                  echo "We've detect a folder '/etc/nginx' which means"
                  echo "Maybe you have use this script before!"
-                 echo "./setup clean"
                  exit 1
              fi
 
              if [ -d "/opt/nginx/" ]; then
                  echo "We've detect a folder '/opt/nginx/' which means"
                  echo "Maybe you have use this script before!"
-                 echo "./setup clean"
                  exit 1
              fi
              nginxVersion=$(curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/data/nginxVersion)
