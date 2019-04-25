@@ -29,5 +29,3 @@
 3. **`curl -s > nginx-reverse.yml`**
 
 4. **`docker-composer -f nginx-reverse.yml up -d`**
-
-/play greatjob
