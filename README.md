@@ -1,7 +1,7 @@
 # Nginx L7 DDoS Protection! :boom: :zap:
 *(Please Read Whole Page, All Things Are Important Then If You Want You Can Use IT.)*
 
-:pushpin:# To-Do
+# To-Do
 
 - [x] Nginx Version, Always Latest.
 - [x] Support Ubuntu Trusty. (14.04)
@@ -30,4 +30,4 @@
 
 4. **`docker-composer -f nginx-reverse.yml up -d`**
 
-
+/play greatjob
