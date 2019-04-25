@@ -1,16 +1,20 @@
-version: '3'
+version: '3.7'
 services:
   reverse:
     container_name: reverse
     ports:
      - "0.0.0.0:80:80"
      - "0.0.0.0:443:443"
-    image: ""
+    image: "alpine"
+    shm_size: '512MB'
     privileged: true
     restart: unless-stopped
     networks:
       reverse_net:
         ipv4_address: 172.69.0.70
+    cap_add:
+     - "CAP_SYS_RESOURCE"
+     - "CAP_SYS_TIME"
 
 networks:
   reverse_net:
@@ -18,6 +22,6 @@ networks:
     driver_opts:
       com.docker.network.enable_ipv6: "false"
     ipam:
-      driver: bridge
+      driver: default
       config:
       - subnet: 172.69.0.0/16
