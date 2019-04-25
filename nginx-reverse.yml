@@ -15,6 +15,8 @@ services:
     dns:
      - "1.1.1.1"
      - "1.1.0.0"
+    ulimits:
+     nproc: 65535
     cap_add:
      - "CAP_SYS_RESOURCE"
      - "CAP_SYS_TIME"
