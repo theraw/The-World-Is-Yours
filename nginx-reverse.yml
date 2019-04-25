@@ -1,0 +1,23 @@
+version: '3'
+services:
+  reverse:
+    container_name: reverse
+    ports:
+     - "0.0.0.0:80:80"
+     - "0.0.0.0:443:443"
+    image: ""
+    privileged: true
+    restart: unless-stopped
+    networks:
+      reverse_net:
+        ipv4_address: 172.69.0.70
+
+networks:
+  reverse_net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.69.0.0/16
