@@ -15,7 +15,10 @@ services:
     cap_add:
      - "CAP_SYS_RESOURCE"
      - "CAP_SYS_TIME"
-
+    dns:
+     - 1.1.1.1
+     - 1.1.0.0
+     
 networks:
   reverse_net:
     driver: bridge
