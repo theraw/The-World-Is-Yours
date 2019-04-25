@@ -14,10 +14,10 @@ services:
 
 networks:
   reverse_net:
-    driver: bridge
+    driver: overlay
     driver_opts:
       com.docker.network.enable_ipv6: "false"
     ipam:
-      driver: default
+      driver: overlay
       config:
       - subnet: 172.69.0.0/16
