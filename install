@@ -1,0 +1,38 @@
+#!/bin/bash
+case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
+      bionic)
+             if [ "$(whoami)" != "root" ]
+             then
+                 echo "You should Login as root to use this script!";
+                 echo "May you already have access for sudo, but this script has no sudo before his commands so please switch";
+                 echo "sudo -i";
+                 exit 1
+             fi
+
+             if [ -d "/nginx/" ]; then
+                 echo "We've detect a folder '/nginx/' which means"
+                 echo "Maybe you have use this script before!"
+                 echo "You can fix this by executing!"
+                 echo "./clean"
+                 exit 1
+             fi
+
+             if [ -d "/etc/nginx" ]; then
+                 echo "We've detect a folder '/etc/nginx' which means"
+                 echo "May you've already installed nginx what's important is that for this installation we need port :80 free"
+                 echo "So please remove nginx or disable it with"
+                 echo "service nginx stop"
+                 echo "systemctl disable nginx"
+                 exit 1
+             fi
+
+             if [ -d "/etc/apache2" ]; then
+                 echo "We've detect a folder '/etc/apache2/' which means"
+                 echo "May you've already installed apache2 what's important is that for this installation we need port :80 free"
+                 echo "So please remove apache2 or disable it with"
+                 echo "service apache2 stop"
+                 echo "systemctl disable apache2"
+                 exit 1
+             fi
+      ;;
+esac
