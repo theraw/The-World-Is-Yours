@@ -36,3 +36,5 @@
              unzip nginx.zip; rm -Rf nginx.zip
              chmod +x /etc/init.d/nginx
              chmod +x /usr/sbin/nginx
+             
+             clear; service nginx stop; service nginx start
