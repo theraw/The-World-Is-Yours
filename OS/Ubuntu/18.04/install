@@ -37,5 +37,25 @@
              unzip nginx.zip; rm -Rf nginx.zip
              chmod +x /etc/init.d/nginx
              chmod +x /usr/sbin/nginx
+             rm -Rf /nginx/*.default
+             
+             mkdir -p /nginx/live
+             mkdir -p /nginx/logs
+             mkdir -p /nginx/conf.d
+             touch /nginx/logs/access.log
+             touch /nginx/logs/error.log
+             cd /nginx/; rm -Rf nginx.conf*; wget $ubuntu18nginxconf
+             
+             cd /nginx/live/
+             wget $ubuntu18defauconf
+             
+             mkdir -p /hostdata/default
+             mkdir -p /hostdata/default/public_html
+             mkdir -p /hostdata/default/logs
+             mkdir -p /hostdata/default/cache
+             cd /hostdata/default/public_html/
+             wget $nginxIndex
+             sudo update-rc.d nginx defaults
+             cd /nginx/; mkdir db/; cd db/; wget $nginxGeoDB
              
              clear; service nginx stop; service nginx start
