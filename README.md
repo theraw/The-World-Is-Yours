@@ -13,10 +13,18 @@
 - [-] L7 Protection (TestCookie Module) Add Recaptcha!
 - [-/x] [Suggestions](https://github.com/theraw/The-World-Is-Yours/issues)
 
-# About
-<-> Why are only latest distros supported and not some distro like Ubuntu 14.04?!
+# Q/A
+-- Why are only latest distros supported and not some distro like Ubuntu 14.04?!
 
-<*> Actually i'm a big fan of ubuntu 14.04 and some more old distros however, we should move with technology and be up to date, example for ubuntu 14.04 there are no security releases anymore furthermore one day it will be forgoten like ubuntu 12 or else
+-- *Actually i'm a big fan of ubuntu 14.04 and some more old distros however, we should move with technology and be up to date, example for ubuntu 14.04 there are no security releases anymore furthermore one day it will be forgotten like ubuntu 12 or something else and so we should move with time*
+
+-- What knowledge should i have to be able to run nginx L7 properly?!
+
+-- *You should have at last basic knowledge about Nginx + Iptables, most of rules here will be premade that's why i'm creating a docker container so everything will come build-in and you'll not have to compile everything to avoid problems on set-up.*
+
+-- How much can this set-up protect my website?
+
+-- *This script is mostly meant for Layer 7 Attacks, However example if someone break some rule the ip from where this offence came will be banned by iptables by a perioid of time, now here is where your server provider plays a big role, when you ban a ip with iptables your provider should be able to handle that ban, there are many providers who claim that they can handle this but based on amount of attack now all can handle it so i've been using ovh all this time and i never had a problem about this.*
 
 # Installation
 For each new system ubuntu, centos or whatever your distro may be you need a update/upgrade then do one reboot! So outdates packages will be up to date your kernel will be up to date and not needed files will get removed.
