@@ -1,5 +1,5 @@
 #!/bin/bash
-export CDN="cdn.dope.al/nginx/php"
+export CDN=""
 
 apt install software-properties-common -y
 apt install python-software-properties -y
@@ -47,3 +47,8 @@ perl -pi -e 's/error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT/error_reporti
 perl -pi -e 's/;error_log = syslog/error_log = php_error.log/g' /etc/php/7.0/fpm/php.ini
 perl -pi -e 's/;date.timezone =/date.timezone = UTC/g' /etc/php/7.0/fpm/php.ini
 service php7.0-fpm start
+
+
+#Clean up.
+apt-get remove php7.3-common php7.3-xml -y; apt-get autoremove -y
+rm -Rf /etc/php/7.3
