@@ -1,4 +1,5 @@
 #!/bin/bash
+export CDN="cdn.dope.al/nginx/php"
 
 apt install software-properties-common -y
 apt install python-software-properties -y
@@ -6,3 +7,43 @@ sudo add-apt-repository ppa:ondrej/php -y
 apt update; apt upgrade -y
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C
 apt update; apt upgrade -y
+
+# 5.6
+apt install -y php5.6-fpm
+apt install -y php5.6 php5.6-common php5.6-cgi php5.6-cli php5.6-dev php5.6-curl
+apt install -y php5.6-gd php5.6-imap php5.6-intl php5.6-ldap php5.6-mysql
+apt install -y php5.6-pgsql php5.6-recode php5.6-tidy php5.6-json php5.6-bz2
+apt install -y php5.6-mcrypt php5.6-readline php5.6-interbase php5.6-xmlrpc
+apt install -y php5.6-gmp php5.6-xsl php5.6-mbstring php5.6-soap php5.6-xml php5.6-zip
+
+service php5.6-fpm stop
+
+curl -s $CDN/5.6/www.conf > /etc/php/5.6/fpm/pool.d/www.conf
+ex -sc '%s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g|x' /etc/php/5.6/fpm/php.ini
+ex -sc '%s/output_buffering = 4096/output_buffering = Off/g|x' /etc/php/5.6/fpm/php.ini
+ex -sc '%s/serialize_precision = 17/serialize_precision = 100/g|x' /etc/php/5.6/fpm/php.ini
+perl -pi -e 's/error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT/error_reporting = E_ALL/g' /etc/php/5.6/fpm/php.ini
+perl -pi -e 's/;error_log = syslog/error_log = php_error.log/g' /etc/php/5.6/fpm/php.ini
+perl -pi -e 's/;date.timezone =/date.timezone = UTC/g' /etc/php/5.6/fpm/php.ini
+service php5.6-fpm start
+
+
+# 7.0
+apt install -y php7.0 php7.0-fpm
+apt install -y php7.0-common php7.0-cgi php7.0-cli php7.0-phpdbg php7.0-dev php7.0-curl 
+apt install -y php7.0-enchant php7.0-gd php7.0-gmp php7.0-imap php7.0-interbase 
+apt install -y php7.0-intl php7.0-ldap php7.0-mcrypt php7.0-readline php7.0-odbc 
+apt install -y php7.0-pgsql php7.0-pspell php7.0-recode php7.0-snmp php7.0-tidy 
+apt install -y php7.0-xmlrpc php7.0-xsl php7.0-json php7.0-sybase php7.0-sqlite3 
+apt install -y php7.0-mysql php7.0-bz2 php7.0-bcmath php7.0-mbstring php7.0-soap 
+apt install -y php7.0-xml php7.0-zip php7.0-dba 
+
+service php7.0-fpm stop
+
+curl -s $CDN/7.0/www.conf > /etc/php/7.0/fpm/pool.d/www.conf
+ex -sc '%s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g|x' /etc/php/7.0/fpm/php.ini
+ex -sc '%s/output_buffering = 4096/output_buffering = Off/g|x' /etc/php/7.0/fpm/php.ini
+perl -pi -e 's/error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT/error_reporting = E_ALL/g' /etc/php/7.0/fpm/php.ini
+perl -pi -e 's/;error_log = syslog/error_log = php_error.log/g' /etc/php/7.0/fpm/php.ini
+perl -pi -e 's/;date.timezone =/date.timezone = UTC/g' /etc/php/7.0/fpm/php.ini
+service php7.0-fpm start
