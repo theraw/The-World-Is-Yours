@@ -5,10 +5,15 @@ server {
         server_name localhost;
         
         # ================================================
-        # LIMIT CONNECTION FOR IP / IPs WILL BE AUTO BANNED IF YOU HAVE INSTALL IPTABLES/FAIL2BAN
-        limit_conn max 800;
-        limit_req zone=one burst=300 nodelay;
-        limit_req_status 444;
+        add_header GEO_COUNTRY_CODE        $geoip2_data_country_code;
+        add_header GEO_COUNTRY_NAME        $geoip2_data_country_name;
+        add_header GEO_STATE               $geoip2_data_state;
+        add_header GEO_CITY_NAME           $geoip2_data_city_name;
+        add_header GEO_ZIP_CODE            $geoip2_data_zip;
+
+        add_header X-Content-Type-Options  'nosniff' always;
+        add_header X-Xss-Protection        '1; mode=block';
+        add_header Referrer-Policy         'no-referrer-when-downgrade';
         # ================================================
 
         # ================================================
