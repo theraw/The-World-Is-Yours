@@ -1,5 +1,6 @@
 #!/bin/bash
 
+if [ "$1" == "install" ]; then
 case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
       bionic)
              if [ "$(whoami)" != "root" ]
@@ -29,14 +30,48 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              fi
 
              apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y
-             apt-get install build-essential libssl-dev curl nano wget zip unzip git -y
+             apt-get install build-essential libssl-dev curl nano wget zip unzip git sudo iftop htop -y
 
+             sudo add-apt-repository ppa:maxmind/ppa -y
+             apt-get update; apt-get upgrade -y; apt-get autoremove -y
+             apt-get install libmaxminddb0 libmaxminddb-dev mmdb-bin -y
+             apt-get install libgd-dev -y
+
+             useradd nginx
+             mkdir -p /usr/local/nginx/
              cd /; wget https://github.com/theraw/The-World-Is-Yours/raw/v2/OS/Ubuntu/18.04/source/nginx16.zip; unzip nginx16.zip; rm -Rf nginx16.zip
              curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/v2/OS/Ubuntu/18.04/nginx.service > /etc/systemd/system/nginx.service
              killall nginx
              systemctl daemon-reload
              sudo systemctl start nginx.service && sudo systemctl enable nginx.service
              service nginx stop
-             service nginx start
+             
+             # create dirs
+             mkdir /hostdata
+             mkdir /nginx/live
+             mkdir /nginx/conf.d
+             mkdir /nginx/modules
+             mkdir -p /hostdata/default/logs
+             mkdir -p /hostdata/default/public_html
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/v2/static/html/index.html > /hostdata/default/public_html/index.html
+             mkdir -p /hostdata/default/public_html/L7
+             cd /hostdata/default/public_html/L7; wget https://github.com/theraw/The-World-Is-Yours/raw/v2/static/html/loading.gif
+             cd /hostdata/default/public_html/L7; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/v2/static/html/aes.min.js
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/v2/static/vhost/default > /nginx/live/default
       ;;
 esac
+fi
+if [ "$1" == 'clean' ]; then
+    service nginx stop
+    systemctl disable nginx.service
+    rm -Rf /nginx
+    rm -Rf /usr/local/nginx
+    rm -Rf /usr/sbin/nginx
+    rm -Rf /etc/init.d/nginx
+    rm -Rf /hostdata/
+    rm -Rf /opt/nginx
+    rm -Rf /etc/systemd/system/nginx.service
+    systemctl daemon-reload
+    clear
+    echo "We've just removed /nginx and /hostdata and /opt/nginx"
+fi
