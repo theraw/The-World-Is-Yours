@@ -20,7 +20,7 @@ server {
         location / {
           try_files $uri $uri/ =404;
         }
-        location /L7 {
+        location ^~ /L7 {
           testcookie off;
         }
         # ================================================
