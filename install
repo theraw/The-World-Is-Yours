@@ -48,16 +48,24 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              
              # create dirs
              mkdir /hostdata
-             mkdir /nginx/live
-             mkdir /nginx/conf.d
-             mkdir /nginx/modules
+             mkdir -p /nginx/live
+             mkdir -p /nginx/conf.d
+             mkdir -p /nginx/db/
+             mkdir -p /nginx/modules
              mkdir -p /hostdata/default/logs
              mkdir -p /hostdata/default/public_html
              curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/v2/static/html/index.html > /hostdata/default/public_html/index.html
              mkdir -p /hostdata/default/public_html/L7
              cd /hostdata/default/public_html/L7; wget https://github.com/theraw/The-World-Is-Yours/raw/v2/static/html/loading.gif
              cd /hostdata/default/public_html/L7; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/v2/static/html/aes.min.js
-             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/v2/static/vhost/default > /nginx/live/default
+             
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/v2/static/live/default > /nginx/live/default
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/v2/static/nginx.conf > /nginx/nginx.conf
+
+             cd /nginx/db/; wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz; tar xf GeoLite2-City.tar.gz; rm -Rf GeoLite2-City.tar.gz
+             mv /nginx/db/GeoLite2-City_*/GeoLite2-City.mmdb /nginx/db/; rm -Rf /nginx/db/GeoLite2-City_*
+             cd /nginx/db/; wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz; tar xf GeoLite2-Country.tar.gz; rm -Rf GeoLite2-Country.tar.gz
+             mv /nginx/db/GeoLite2-Country_*/GeoLite2-Country.mmdb /nginx/db/; rm -Rf /nginx/db/GeoLite2-Country_*
       ;;
 esac
 fi
