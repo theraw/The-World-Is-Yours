@@ -1,24 +1,27 @@
 # Nginx L7 DDoS Protection! :boom: :zap:
 *(Please Read Whole Page, All Things Are Important Then If You Want You Can Use IT.)*
 
+# Count down..
+The 2.0 Version will be released soon, What's new?! First of all since repo name is "The World Is Yours"
+i'm gonna add more features making this a full ready to go web server + php (5.6/7.0) and a nice small dashboard to create/host your domains as of now most of things are ready next days i'll be working only on dashboard and i will release it..
+
+How will it work? you will not waste time to compile or do anything actually nginx will be pre-build in a docker container,
+but /nginx (where are all nginx configs) and /hostdata (Where will be hosted your websites) will be shared with your vps/server and container, so you don't have to login in container to upload some file or change a nginx config!
+
+if you want the source code make sure you create a fork of this before i release 2.0!
+
 # To-Do
 
 - [x] Nginx Version, Always Latest.
 - [x] Support Ubuntu Trusty. (14.04)
 - [x] Support Ubuntu Xenial. (16.04)
 - [x] Support Ubuntu Cosmic. (18.10)
-- [ ] Support Debian.
-- [ ] Support Centos.
 - [x] Support Arch Linux.
 - [x] ModSecurity Support.
 - [x] Naxsi Support.
 - [x] L7 Protection.
 - [x] AutoBan System.
 - [x] Integrate Fail2Ban > IpTables.
-- [ ] GUI ?
-- [ ] Monitor requests in live time from browser.
-- [ ] L7 Protection (TestCookie Module) Add Recaptcha!
-- [ ] .....
 
 # Installation
 
