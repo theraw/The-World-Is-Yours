@@ -5,7 +5,7 @@ services:
     ports:
      - "0.0.0.0:80:80"
      - "0.0.0.0:443:443"
-    image: ""
+    image: "theraw/the-world-is-yours:nginx"
     shm_size: '512MB'
     privileged: true
     restart: unless-stopped
