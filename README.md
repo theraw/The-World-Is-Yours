@@ -1,14 +1,10 @@
 # Nginx L7 DDoS Protection! :boom: :zap:
 *(Please Read Whole Page, All Things Are Important Then If You Want You Can Use IT.)*
 
-# Count down..
-The 2.0 Version will be released soon, What's new?! First of all since repo name is "The World Is Yours"
-i'm gonna add more features making this a full ready to go web server + php (5.6/7.0) and a nice small dashboard to create/host your domains as of now most of things are ready next days i'll be working only on dashboard and i will release it..
+# This is it!
+There will be no other version of this PR, This is the only and one and the best that you can find for free where you can see/do/change anything on your will and not some encrypted piece of code! This is pure open source code as you can open any file and read anything, This script automatically compiles nginx from source with lots of modules helpful but mostly who play a big role in L7 Anti-DDoS, including the L7 nginx module which you can configure as simple as https://github.com/theraw/The-World-Is-Yours/issues/10#issuecomment-442579528 more then that consider a [Donate](https://github.com/theraw/The-World-Is-Yours/blob/master/.github/FUNDING.yml) and you can contact me for further support!
 
-How will it work? you will not waste time to compile or do anything actually nginx will be pre-build in a docker container,
-but /nginx (where are all nginx configs) and /hostdata (Where will be hosted your websites) will be shared with your vps/server and container, so you don't have to login in container to upload some file or change a nginx config!
-
-if you want the source code make sure you create a fork of this before i release 2.0!
+Summer is here, after that i may be working and i don't see having much of free time to play with nginx!
 
 # To-Do
 
