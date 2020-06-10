@@ -1,0 +1,61 @@
+version: '3.7'
+services:
+  nginx:
+    container_name: nginx
+    ports:
+     - "0.0.0.0:80-9000:80-9000"
+    image: ""
+    shm_size: '512MB'
+    privileged: true
+    restart: unless-stopped
+    networks:
+      nginx_net:
+        ipv4_address: 172.22.0.22
+    dns:
+     - "8.8.8.8"
+     - "8.8.4.4"
+    ulimits:
+     nproc: 65535
+    cap_add:
+     - "ALL"
+    volumes:
+      - /dopesrv/nginx:/nginx
+      - /dopesrv/etc:/etc
+      - /dopesrv/opt:/opt
+      - /dopesrv/home:/home
+      - /dopesrv/root:/root
+      - /dopesrv/var:/var
+  db:
+    container_name: db
+    image: 'mariadb:latest'
+    shm_size: '512MB'
+    privileged: true
+    restart: unless-stopped
+    ports:
+      - '3306:3306'
+    networks:
+      nginx_net:
+        ipv4_address: 172.22.0.33
+    dns:
+     - "8.8.8.8"
+     - "8.8.4.4"
+    ulimits:
+     nproc: 65535
+    cap_add:
+     - "ALL"
+    environment:
+      MYSQL_ROOT_PASSWORD: '67WxFgoz1M'
+      MYSQL_DATABASE: 'nginx'
+      MYSQL_USER: 'dopeuser'
+      MYSQL_PASSWORD: '67WxFgoz1M'
+    volumes:
+      - /dopesrv/var/lib/mysql:/var/lib/mysql
+networks:
+  nginx_net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.22.0.0/16
