@@ -147,7 +147,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              touch /nginx/logs/error.log
              useradd -r nginx
              rm -Rf /etc/init.d/nginx
-             cd /etc/init.d/; wget https://raw.githubusercontent.com/theraw/my-nginx/master/etc/init.d/nginx
+             cd /etc/init.d/; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/etc/init.d/nginx
              chmod +x /etc/init.d/nginx
              cd /nginx/; mkdir conf.d; rm -Rf nginx.conf*; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.conf
              mkdir -p /nginx/live/
@@ -333,7 +333,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              touch /nginx/logs/error.log
              useradd -r nginx
              rm -Rf /etc/init.d/nginx
-             cd /etc/init.d/; wget https://raw.githubusercontent.com/theraw/my-nginx/master/etc/init.d/nginx
+             cd /etc/init.d/; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/etc/init.d/nginx
              chmod +x /etc/init.d/nginx
              cd /nginx/; mkdir conf.d; rm -Rf nginx.conf*; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.conf
              cd /nginx/live/
@@ -363,7 +363,6 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              systemctl daemon-reload
              service nginx stop
              service nginx start
-
       ;;
       
       cosmic)
@@ -513,7 +512,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              touch /nginx/logs/error.log
              useradd -r nginx
              rm -Rf /etc/init.d/nginx
-             cd /etc/init.d/; wget https://raw.githubusercontent.com/theraw/my-nginx/master/etc/init.d/nginx
+             cd /etc/init.d/; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/etc/init.d/nginx
              chmod +x /etc/init.d/nginx
              cd /nginx/; mkdir conf.d; rm -Rf nginx.conf*; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.conf
              mkdir -p /nginx/live/
@@ -539,11 +538,12 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cp -a /opt/owasp-modsecurity-crs/crs-setup.conf.example /nginx/modsecurity/crs-setup.conf
              
              clear
-             cd /etc/systemd/system/; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/UBUNTU16/nginx.service
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/UBUNTU16/nginx.service > /etc/systemd/system/nginx.service
              sudo systemctl start nginx.service && sudo systemctl enable nginx.service
              systemctl daemon-reload
              clear
              service nginx stop
+             killall nginx
              service nginx start
              clear
              nginx -t
