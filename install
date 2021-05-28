@@ -130,9 +130,9 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              # Download Nginx
              mkdir -p /opt/nginx/sources/
              cd /opt/nginx/sources/
-             wget 'http://nginx.org/download/nginx-1.15.5.tar.gz'
-             tar -xzvf nginx-1.15.5.tar.gz; rm -Rf nginx-1.15.5.tar.gz
-             cd /opt/nginx/sources/nginx-1.15.5/
+             wget 'http://nginx.org/download/nginx-1.19.9.tar.gz'
+             tar -xzvf nginx-1.19.9.tar.gz; rm -Rf nginx-1.19.9.tar.gz
+             cd /opt/nginx/sources/nginx-1.19.9/
              wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nbuild.sh
              chmod +x nbuild.sh
              ./nbuild.sh
@@ -316,9 +316,9 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              # Download Nginx
              mkdir -p /opt/nginx/sources/
              cd /opt/nginx/sources/
-             wget 'http://nginx.org/download/nginx-1.15.5.tar.gz'
-             tar -xzvf nginx-1.15.5.tar.gz; rm -Rf nginx-1.15.5.tar.gz
-             cd /opt/nginx/sources/nginx-1.15.5/
+             wget 'http://nginx.org/download/nginx-1.19.9.tar.gz'
+             tar -xzvf nginx-1.19.9.tar.gz; rm -Rf nginx-1.19.9.tar.gz
+             cd /opt/nginx/sources/nginx-1.19.9/
              wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nbuild.sh
              chmod +x nbuild.sh
              ./nbuild.sh
