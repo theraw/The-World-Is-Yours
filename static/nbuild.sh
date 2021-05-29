@@ -1,4 +1,4 @@
-./configure                                       \
+export LUAJIT_LIB=/usr/local/LuaJIT/lib; export LUAJIT_INC=/usr/local/LuaJIT/include/luajit-2.0; ./configure                                       \
 --user=nginx                                      \
 --group=nginx                                     \
 --sbin-path=/usr/sbin/nginx                       \
@@ -34,7 +34,7 @@
 --with-stream_ssl_module                          \
 --with-stream_realip_module                       \
 --with-stream_geoip_module                        \
---with-ld-opt="-Wl,-rpath,/usr/local/lib/"                     \
+--with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib"                     \
 --add-module=/opt/nginx/modules/ngx_devel_kit                  \
 --add-module=/opt/nginx/modules/ngx_pagespeed-1.13.35.2-stable   \
 --add-module=/opt/nginx/modules/testcookie-nginx-module        \
