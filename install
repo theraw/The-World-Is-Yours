@@ -100,11 +100,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              tar -xzvf 1.13.35.2-x64.tar.gz; rm -Rf 1.13.35.2-x64.tar.gz
 
              #LuaJIT Library
-             cd /opt/nginx/modules/
-             git clone http://luajit.org/git/luajit-2.0.git
-             cd luajit-2.0/
-             make -j`nproc`
-             sudo make install
+             cd /opt/nginx/modules/; wget http://luajit.org/download/LuaJIT-2.0.5.tar.gz; tar -zxvf LuaJIT-2.0.5.tar.gz; cd LuaJIT-2.0.5; make install PREFIX=/usr/local/LuaJIT
              ldconfig
              
              #Naxsi Mod
