@@ -1,10 +1,5 @@
 # Nginx L7 DDoS Protection! :boom: :zap:
-*(Please Read Whole Page, All Things Are Important Then If You Want You Can Use IT.)*
-
-# This is it!
-There will be no other version of this PR, This is the only and one and the best that you can find for free where you can see/do/change anything on your will and not some encrypted piece of code! This is pure open source code as you can open any file and read anything, This script automatically compiles nginx from source with lots of modules helpful but mostly who play a big role in L7 Anti-DDoS, including the L7 nginx module which you can configure as simple as https://github.com/theraw/The-World-Is-Yours/issues/10#issuecomment-442579528 more then that consider a [Donate](https://github.com/theraw/The-World-Is-Yours/blob/master/.github/FUNDING.yml) and you can contact me for further support!
-
-Summer is here, after that i may be working and i don't see having much of free time to play with nginx!
+This project is a bit out of date, setup L7 > https://github.com/theraw/The-World-Is-Yours/issues/10#issuecomment-442579528
 
 # To-Do
 
@@ -23,13 +18,8 @@ Summer is here, after that i may be working and i don't see having much of free 
 
 1. **`apt-get install build-essential libssl-dev curl nano wget zip unzip sudo git psmisc -y`**
 
-2. **`git clone https://github.com/theraw/The-World-Is-Yours.git`**
-
-3. **`cd The-World-Is-Yours/; chmod +x *`**
-
-4. **`./install`**
-
-
+2. **`curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/install > install; bash install`**
+3. 
 # Informations.
 
 **What if installation script fails?** - Check what was the problem source fix it (mostly should be for missing packages) then remove everything under /opt/ folder and just execute again ./install
