@@ -19,7 +19,7 @@ This project is a bit out of date, setup L7 > https://github.com/theraw/The-Worl
 1. **`apt-get install build-essential libssl-dev curl nano wget zip unzip sudo git psmisc -y`**
 
 2. **`curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/install > install; bash install`**
-3. 
+
 # Informations.
 
 **What if installation script fails?** - Check what was the problem source fix it (mostly should be for missing packages) then remove everything under /opt/ folder and just execute again ./install
