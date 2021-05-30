@@ -118,7 +118,6 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              git clone https://github.com/openresty/headers-more-nginx-module.git
              git clone https://github.com/openresty/echo-nginx-module.git
              git clone https://github.com/leev/ngx_http_geoip2_module.git
-             git clone https://github.com/openresty/lua-nginx-module.git
              cd /opt/nginx/modules/ && wget https://github.com/openresty/lua-nginx-module/archive/refs/tags/v0.10.12rc2.tar.gz; tar xf v0.10.12rc2.tar.gz; rm -Rf v0.10.12rc2.tar.gz; mv /opt/nginx/modules/lua-nginx-module-0.10.12rc2 /opt/nginx/modules/lua-nginx-module
              git clone https://github.com/SpiderLabs/ModSecurity-nginx.git
              git clone https://github.com/openresty/encrypted-session-nginx-module.git
