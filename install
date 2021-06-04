@@ -34,6 +34,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y;
              apt-get install sudo -y
              apt-get install build-essential libssl-dev curl nano wget zip unzip git -y
+             apt-get install make automake cmake -y
              apt-get purge --remove nginx -y
              apt-get purge --remove apache2 -y
              apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y
@@ -230,6 +231,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              apt install -y checkinstall libpcre3 libpcre3-dev zlib1g zlib1g-dbg libxml2 zlib1g-dev
              apt install -y libicu-dev libcurl4-gnutls-dev libtool
              apt install -y libmozjs-24-dev
+             apt install -y make automake cmake
              apt install -y libmozjs-24-bin; sudo ln -sf /usr/bin/js24 /usr/bin/js
              apt install openssl libssl-dev libperl-dev libexpat-dev -y
              apt install mercurial meld -y
@@ -395,6 +397,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              apt-get purge --remove apache2 -y
              apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y
              apt-get autoremove -y
+             apt-get install make automake cmake -y
              apt-get install apt-utils build-essential -y
              apt-get install git -y
              apt-get install checkinstall libpcre3 libpcre3-dev zlib1g zlib1g-dbg libxml2 zlib1g-dev -y
