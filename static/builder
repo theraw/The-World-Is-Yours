@@ -1,4 +1,4 @@
-LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-2.1/" ./configure                                       \
+LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-2.1/" ./configure --with-compat \
 --user=nginx                                      \
 --group=nginx                                     \
 --sbin-path=/usr/sbin/nginx                       \
