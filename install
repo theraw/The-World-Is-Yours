@@ -50,6 +50,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /opt/mod/ModSecurity && ./configure && make -j`nproc` && make install
 
              # Nginx 
-             cd /opt/ && https://nginx.org/download/nginx-1.21.6.tar.gz && tar xf nginx-1.21.6.tar.gz && rm -Rf nginx-1.21.6.tar.gz
+             cd /opt/ && wget https://nginx.org/download/nginx-1.21.6.tar.gz && tar xf nginx-1.21.6.tar.gz && rm -Rf nginx-1.21.6.tar.gz
+             cd /opt/nginx-1.21.6 && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/builder > builder; bash builder
       ;;
 esac
