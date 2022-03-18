@@ -1,6 +1,6 @@
 # Nginx L7 DDoS Protection! :boom: :zap:
 Now easier then before, you will have to compile only Nginx, Rest of modules come pre-compiled.
-
+![Simple](https://c.tenor.com/uYqsM9uIyuYAAAAC/simple-easy.gif)
 
 - [x] Support Ubuntu 20.04.
 
@@ -9,13 +9,13 @@ Now easier then before, you will have to compile only Nginx, Rest of modules com
  - [x] Naxsi Support.
  - [x] Cookie based Authentication.
 
-# INSTALLATION
+## INSTALLATION
 
 1. **`apt-get install build-essential libssl-dev curl nano wget zip unzip sudo git psmisc -y`**
 
 2. **`curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/install > install; bash install`**
 
-# FOLDER PATH.
+## FOLDER PATH.
 
 ```
 => /nginx/                                = Nginx Path, (private)
@@ -33,7 +33,7 @@ Now easier then before, you will have to compile only Nginx, Rest of modules com
 ```
 
 
-# KEEP IN MIND!
+## KEEP IN MIND!
 1. You're trading perfomance for security.
 2. If your server provider does not have anti-ddos your IPTABLES will fail to keep the bans, and your server may be offline in cases of big attacks.
 
