@@ -1,12 +1,12 @@
-export LUAJIT_LIB=/usr/local/LuaJIT/lib; export LUAJIT_INC=/usr/local/LuaJIT/include/luajit-2.0; ./configure                                       \
+LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-2.1/" ./configure                                       \
 --user=nginx                                      \
 --group=nginx                                     \
 --sbin-path=/usr/sbin/nginx                       \
 --conf-path=/nginx/nginx.conf                     \
 --pid-path=/var/run/nginx.pid                     \
 --lock-path=/var/run/nginx.lock                   \
---error-log-path=/nginx/logs/error.log            \
---http-log-path=/nginx/logs/access.log            \
+--error-log-path=/var/log/nginx/error.log         \
+--http-log-path=/var/log/nginx/access.log         \
 --with-pcre                                       \
 --with-threads                                    \
 --with-file-aio                                   \
@@ -34,17 +34,4 @@ export LUAJIT_LIB=/usr/local/LuaJIT/lib; export LUAJIT_INC=/usr/local/LuaJIT/inc
 --with-stream_ssl_module                          \
 --with-stream_realip_module                       \
 --with-stream_geoip_module                        \
---with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib"                     \
---add-module=/opt/nginx/modules/ngx_devel_kit                  \
---add-module=/opt/nginx/modules/ngx_pagespeed-1.13.35.2-stable   \
---add-module=/opt/nginx/modules/testcookie-nginx-module        \
---add-module=/opt/nginx/modules/set-misc-nginx-module          \
---add-module=/opt/nginx/modules/headers-more-nginx-module      \
---add-module=/opt/nginx/modules/echo-nginx-module              \
---add-module=/opt/nginx/modules/ngx_cache_purge                \
---add-module=/opt/nginx/modules/ngx_http_geoip2_module         \
---add-module=/opt/nginx/modules/lua-nginx-module               \
---add-module=/opt/nginx/modules/ModSecurity-nginx              \
---add-module=/opt/nginx/modules/encrypted-session-nginx-module \
---add-module=/opt/nginx/modules/naxsi/naxsi_src/               \
---add-module=/opt/nginx/modules/nginx-http-rdns
+--with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib"
