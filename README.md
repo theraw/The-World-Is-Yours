@@ -4,10 +4,10 @@ Now easier then before, you will have to compile only Nginx, Rest of modules com
 
 - [x] Support Ubuntu 20.04.
 
--- Compiled As Dynamic Modules.
+-- Security Dynamic Modules.
  - [x] ModSecurity Support.
  - [x] Naxsi Support.
- - [x] Cookie based Authentication.
+ - [x] Cookie Based Challenge.
 
 ## INSTALLATION
 
