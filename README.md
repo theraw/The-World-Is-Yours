@@ -1,5 +1,5 @@
 # Nginx L7 DDoS Protection! :boom: :zap:
-This project is a bit out of date, setup L7 > https://github.com/theraw/The-World-Is-Yours/issues/10#issuecomment-442579528
+Now easier then before, you will have to complile only Nginx, Rest of modules come pre-compiled.
 
 
 - [x] Support Ubuntu 20.04.
