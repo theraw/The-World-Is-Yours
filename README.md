@@ -1,5 +1,5 @@
 # Nginx L7 DDoS Protection! :boom: :zap:
-Now easier then before, you will have to complile only Nginx, Rest of modules come pre-compiled.
+Now easier then before, you will have to compile only Nginx, Rest of modules come pre-compiled.
 
 
 - [x] Support Ubuntu 20.04.
