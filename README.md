@@ -37,5 +37,19 @@ Now easier then before, you will have to compile only Nginx, Rest of modules com
 1. You're trading perfomance for security.
 2. If your server provider does not have anti-ddos your IPTABLES will fail to keep the bans, and your server may be offline in cases of big attacks.
 
-# Contributors
-Always welcomed!
+## Contributors
+
+Special thanks to the following contributors:
+
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+	<tr>
+		<td align="center">
+			<a href="https://github.com/theraw">
+				<img src="https://avatars.githubusercontent.com/u/32969774?v=4" width="80" alt=""/>
+				<br /><sub><b>chaptergy</b></sub>
+			</a>
+		</td>
+ </tr>
+</table>
