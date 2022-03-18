@@ -48,7 +48,7 @@ Special thanks to the following contributors:
 		<td align="center">
 			<a href="https://github.com/theraw">
 				<img src="https://avatars.githubusercontent.com/u/32969774?v=4" width="80" alt=""/>
-				<br /><sub><b>chaptergy</b></sub>
+				<br /><sub><b>ƬHE ЯAW ☣</b></sub>
 			</a>
 		</td>
  </tr>
