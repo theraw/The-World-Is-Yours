@@ -33,7 +33,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
               
              apt-get update -y; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y
              apt-get install libtool pkg-config -y
-             apt-get install libyajl-dev ssdeep libgeoip-dev liblmdb-dev libfuzzy-dev libmaxminddb-dev liblua5.2-dev libcurl4-openssl-dev libxml2 libxml2-dev libpcre3-dev -y
+             apt-get install libyajl-dev ssdeep zlib1g-dev libxslt1-dev libgd-dev libgeoip-dev liblmdb-dev libfuzzy-dev libmaxminddb-dev liblua5.2-dev libcurl4-openssl-dev libxml2 libxml2-dev libpcre3-dev -y
 
              mkdir -p /opt/mod/
              #Luajit 2.1
@@ -52,5 +52,16 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              # Nginx 
              cd /opt/ && wget https://nginx.org/download/nginx-1.21.6.tar.gz && tar xf nginx-1.21.6.tar.gz && rm -Rf nginx-1.21.6.tar.gz
              cd /opt/nginx-1.21.6 && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/builder > builder; bash builder
+             cd /opt/nginx-1.21.6 && make -j`nproc`
+             cd /opt/nginx-1.21.6 && make install
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/nginx.service.Focal > /lib/systemd/system/nginx.service
+             killall nginx
+             useradd nginx
+             systemctl daemon-reload
+             systemctl restart nginx
+             systemctl enable nginx
+
+             # Download Dynamic Modules
+             mkdir -p /nginx/modules && wget 
       ;;
 esac
