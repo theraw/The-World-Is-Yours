@@ -1,6 +1,6 @@
 #!/bin/bash
 case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
-      trusty)
+      focal)
              if [ "$(whoami)" != "root" ]
              then
                  echo "You should Login as root to use this script!";
@@ -12,540 +12,82 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              if [ -d "/nginx/" ]; then
                  echo "We've detect a folder '/nginx/' which means"
                  echo "Maybe you have use this script before!"
-                 echo "You can fix this by executing!"
-                 echo "./setup clean"
+                 echo "You wipe old installation by executing!"
+                 echo "./install clean (**THIS WILL DELETE ALL YOUR OLD NGINX CONFIGS MAKE SURE YOU BACKUP BEFORE USING**)"
                  exit 1
              fi
 
              if [ -d "/etc/nginx" ]; then
                  echo "We've detect a folder '/etc/nginx' which means"
                  echo "Maybe you have use this script before!"
-                 echo "./setup clean"
+                 echo "./install clean (**THIS WILL DELETE ALL YOUR OLD NGINX CONFIGS MAKE SURE YOU BACKUP BEFORE USING**)"
                  exit 1
              fi
 
              if [ -d "/opt/nginx/" ]; then
-                 echo "We've detect a folder '/opt/nginx/' which means"
-                 echo "Maybe you have use this script before!"
-                 echo "./setup clean"
+                 echo "DETECTED '/opt/nginx/'"
+                 echo "Maybe script has already been used you need to start clean!"
+                 echo "./install clean (**THIS WILL DELETE ALL YOUR OLD NGINX CONFIGS MAKE SURE YOU BACKUP BEFORE USING**)"
                  exit 1
              fi
               
-             apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y;
-             apt-get install sudo -y
-             apt-get install build-essential libssl-dev curl nano wget zip unzip git -y
-             apt-get install make automake cmake -y
-             apt-get purge --remove nginx -y
-             apt-get purge --remove apache2 -y
-             apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y
-             apt-get autoremove -y
-             apt-get install apt-utils build-essential -y
-             apt-get install git -y
-             apt-get install checkinstall libpcre3 libpcre3-dev zlib1g zlib1g-dbg libxml2 zlib1g-dev -y
-             apt-get install -y unzip
-             apt-get install -y libicu-dev libcurl4-gnutls-dev libtool
-             apt-get install -y libmozjs-24-dev
-             apt-get install -y libmozjs-24-bin; sudo ln -sf /usr/bin/js24 /usr/bin/js
-             apt-get install openssl libssl-dev libperl-dev libexpat-dev -y
-             apt-get install mercurial meld -y
-             apt-get install libxslt-dev -y
-             apt-get install libgd2-xpm -y
-             apt-get install libgd2-xpm-dev -y
-             apt-get install libgeoip-dev -y
-             apt-get install libssl libssl-dev -y
-             apt-get install dh-autoreconf -y
-             apt-get install -y software-properties-common
-             apt-get install -y python-software-properties
-             apt-get install -y libcairo2 libcairo2-dev
-             apt-get install -y python-dev
-             sudo add-apt-repository ppa:maxmind/ppa -y
-             apt-get install aptitude -y
-             aptitude update -y
-             aptitude upgrade -y
-             aptitude install libmaxminddb0 libmaxminddb-dev mmdb-bin -y
-             apt-get install libmysqlclient-dev -y
-             apt-get install libmariadbclient-dev -y
-             apt-get install g++ flex bison curl doxygen libyajl-dev libgeoip-dev libtool dh-autoreconf libcurl4-gnutls-dev libxml2 libpcre++-dev libxml2-dev -y
-             apt-get install libuuid1 uuid-dev -y
-             apt-get install libgd-dev libc6 -y
+             apt-get update -y; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y
+             apt-get install libtool pkg-config -y
+             apt-get install libyajl-dev ssdeep zlib1g-dev libxslt1-dev libgd-dev libgeoip-dev liblmdb-dev libfuzzy-dev libmaxminddb-dev liblua5.2-dev libcurl4-openssl-dev libxml2 libxml2-dev libpcre3-dev -y
 
-             
-             mkdir -p /hostdata/
-             mkdir -p /var/log/nginx/
-             mkdir -p /opt/nginx/modules/
+             mkdir -p /opt/mod/
+             #Luajit 2.1
+             cd /opt/mod && wget https://github.com/openresty/luajit2/archive/refs/tags/v2.1-20220310.tar.gz
+             cd /opt/mod && tar xf v2.1-20220310.tar.gz; rm -Rf v2.1-20220310.tar.gz
+             cd /opt/mod/luajit2-2.1-20220310/ && make install PREFIX=/usr/local/LuaJIT && ldconfig
+             rm -Rf /opt/mod/luajit2-2.1-20220310/
 
-             cd /opt/
-             git clone https://github.com/SpiderLabs/ModSecurity
-             cd /opt/ModSecurity/
-             git checkout -b v3/master origin/v3/master
-             sh build.sh
-             git submodule init
-             git submodule update
-             ./configure
-             make -j`nproc`
-             make install
-             
-             cd /opt/nginx/modules/
-             wget https://github.com/simplresty/ngx_devel_kit/archive/v0.3.1rc1.zip
-             unzip v0.3.1rc1.zip; rm -Rf v0.3.1rc1.zip
-             mv /opt/nginx/modules/ngx_devel_kit-0.3.1rc1/ /opt/nginx/modules/ngx_devel_kit/ 
-           
-             #Pagespeed Library
-             cd /opt/nginx/modules/
-             wget https://github.com/apache/incubator-pagespeed-ngx/archive/v1.13.35.2-stable.zip
-             unzip v1.13.35.2-stable.zip
-             rm -Rf v1.13.35.2-stable.zip
-             mv /opt/nginx/modules/incubator-pagespeed-ngx-1.13.35.2-stable /opt/nginx/modules/ngx_pagespeed-1.13.35.2-stable
-             cd /opt/nginx/modules/ngx_pagespeed-1.13.35.2-stable
-             wget https://dl.google.com/dl/page-speed/psol/1.13.35.2-x64.tar.gz
-             tar -xzvf 1.13.35.2-x64.tar.gz; rm -Rf 1.13.35.2-x64.tar.gz
+             # ModSecurity
+             cd /opt/mod && git clone https://github.com/SpiderLabs/ModSecurity
+             cd /opt/mod/ModSecurity/ && git checkout -b v3/master origin/v3/master
+             cd /opt/mod/ModSecurity && sh build.sh
+             cd /opt/mod/ModSecurity && git submodule init && git submodule update
+             cd /opt/mod/ModSecurity && ./configure && make -j`nproc` && make install
 
-             #LuaJIT Library
-             cd /opt/nginx/modules/; wget http://luajit.org/download/LuaJIT-2.0.5.tar.gz; tar -zxvf LuaJIT-2.0.5.tar.gz; cd LuaJIT-2.0.5; make install PREFIX=/usr/local/LuaJIT
-             ldconfig
-             
-             #Naxsi Mod
-             cd /opt/nginx/modules/
-             wget https://github.com/nbs-system/naxsi/archive/master.zip
-             unzip master.zip; rm -Rf master.zip
-             mv /opt/nginx/modules/naxsi-master /opt/nginx/modules/naxsi
-             
-             mkdir -p /opt/nginx/modules/
-             cd /opt/nginx/modules/
-             rm -Rf nginx_redis/
-             git clone https://github.com/openresty/set-misc-nginx-module.git
-             git clone https://github.com/FRiCKLE/ngx_cache_purge.git
-             git clone https://github.com/kyprizel/testcookie-nginx-module.git
-             git clone https://github.com/openresty/headers-more-nginx-module.git
-             git clone https://github.com/openresty/echo-nginx-module.git
-             git clone https://github.com/leev/ngx_http_geoip2_module.git
-             cd /opt/nginx/modules/ && wget https://github.com/openresty/lua-nginx-module/archive/refs/tags/v0.10.12rc2.tar.gz; tar xf v0.10.12rc2.tar.gz; rm -Rf v0.10.12rc2.tar.gz; mv /opt/nginx/modules/lua-nginx-module-0.10.12rc2 /opt/nginx/modules/lua-nginx-module
-             git clone https://github.com/SpiderLabs/ModSecurity-nginx.git
-             git clone https://github.com/openresty/encrypted-session-nginx-module.git
-             git clone https://github.com/flant/nginx-http-rdns.git
-
-             # Download Nginx
-             mkdir -p /opt/nginx/sources/
-             cd /opt/nginx/sources/
-             wget 'https://nginx.org/download/nginx-1.21.6.tar.gz'
-             tar -xzvf nginx-1.21.6.tar.gz; rm -Rf nginx-1.21.6.tar.gz
-             cd /opt/nginx/sources/nginx-1.21.6/
-             wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nbuild.sh
-             chmod +x nbuild.sh
-             ./nbuild.sh
-             make -j`nproc`
-             make install
-             ldconfig
-
-             mkdir -p /nginx/live
-             mkdir -p /nginx/logs
-             mkdir -p /nginx/conf.d
-             touch /nginx/logs/access.log
-             touch /nginx/logs/error.log
-             useradd -r nginx
-             rm -Rf /etc/init.d/nginx
-             cd /etc/init.d/; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/etc/init.d/nginx
-             chmod +x /etc/init.d/nginx
-             cd /nginx/; mkdir conf.d; rm -Rf nginx.conf*; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.conf
-             mkdir -p /nginx/live/
-             cd /nginx/live/
-             wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/vhost/default
-             
-             mkdir -p /hostdata/default
-             mkdir -p /hostdata/default/public_html
-             mkdir -p /hostdata/default/logs
-             mkdir -p /hostdata/default/cache
-             mkdir -p /nginx/modsecurity/
-             cd /hostdata/default/public_html/
-             wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/html/index.html
-             sudo update-rc.d nginx defaults
-             
-             cd /nginx/; mkdir db/; cd db/; wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/GeoLite2-Country.mmdb
-             cd /nginx/; rm -Rf *.default
-             cp /opt/nginx/modules/naxsi/naxsi_config/naxsi_core.rules /nginx/naxsi_core.rules
-             cp /opt/ModSecurity/modsecurity.conf-recommended /nginx/modsecurity/modsecurity.conf
-             
-             cd /opt/; git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git
-             cp -a /opt/owasp-modsecurity-crs/rules/ /nginx/modsecurity/
-             cp -a /opt/owasp-modsecurity-crs/crs-setup.conf.example /nginx/modsecurity/crs-setup.conf
-             clear
-             #mkdir -p /tmp/; cd /tmp; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/iptables/install
-             #chmod +x install; ./install
-             clear
-             sudo apt-get install fail2ban -y
-             sudo service fail2ban stop
-             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/iptables/jail.local > /etc/fail2ban/jail.local
-             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/iptables/filter.d/nginx-limits.conf > /etc/fail2ban/filter.d/nginx-limits.conf
-             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/iptables/filter.d/nginx-ban.conf > /etc/fail2ban/filter.d/nginx-ban.conf
-             touch /nginx/logs/error.log
-             clear
-             sudo service fail2ban start
-             clear
-             
-             service fail2ban status
-             nginx -t
-             service nginx stop
-             service nginx start
-      ;;
-
-      xenial)
-      
-             if [ "$(whoami)" != "root" ]
-             then
-                 echo "You should Login as root to use this script!";
-                 echo "May you already have access for sudo, but commands aren't designed with sudo! so..";
-                 echo "sudo -i";
-                 exit 1
-             fi
-
-             if [ -d "/nginx/" ]; then
-                 echo "We've detect a folder '/nginx/' which means"
-                 echo "Maybe you have use this script before!"
-                 echo "You can fix this by executing!"
-                 echo "./setup clean"
-                 exit 1
-             fi
-
-             if [ -d "/etc/nginx" ]; then
-                 echo "We've detect a folder '/etc/nginx' which means"
-                 echo "Maybe you have use this script before!"
-                 echo "./setup clean"
-                 exit 1
-             fi
-
-             if [ -d "/opt/nginx/" ]; then
-                 echo "We've detect a folder '/opt/nginx/' which means"
-                 echo "Maybe you have use this script before!"
-                 echo "./setup clean"
-                 exit 1
-             fi
-
-             apt update
-             apt upgrade -y
-             apt dist-upgrade -y
-             apt install build-essential apt-utils libssl-dev curl nano wget zip unzip git htop iftop whois screen sudo -y
-             apt purge --remove nginx -y
-             apt purge --remove apache2 -y
-             apt autoremove -y
-             
-             apt install -y checkinstall libpcre3 libpcre3-dev zlib1g zlib1g-dbg libxml2 zlib1g-dev
-             apt install -y libicu-dev libcurl4-gnutls-dev libtool
-             apt install -y libmozjs-24-dev
-             apt install -y make automake cmake
-             apt install -y libmozjs-24-bin; sudo ln -sf /usr/bin/js24 /usr/bin/js
-             apt install openssl libssl-dev libperl-dev libexpat-dev -y
-             apt install mercurial meld -y
-             apt install libxslt-dev -y
-             apt install libgd2-xpm -y
-             apt install libgd2-xpm-dev -y
-             apt install libgeoip-dev -y
-             apt install dh-autoreconf -y
-             apt install -y software-properties-common
-             apt install -y python-software-properties
-             apt install -y libcairo2 libcairo2-dev
-             apt install -y python-dev
-             sudo add-apt-repository ppa:maxmind/ppa -y
-             apt update; apt upgrade -y; apt dist-upgrade -y
-             apt install aptitude -y
-             aptitude update -y
-             aptitude upgrade -y
-             aptitude install libmaxminddb0 libmaxminddb-dev mmdb-bin -y
-             apt install libmysqlclient-dev -y
-             apt install libmariadbclient-dev -y
-             apt install g++ flex bison curl doxygen libyajl-dev libgeoip-dev libtool dh-autoreconf libcurl4-gnutls-dev libxml2 libpcre++-dev libxml2-dev -y
-             apt install libuuid1 uuid-dev -y
-             
-             mkdir -p /hostdata/
-             mkdir -p /var/log/nginx/
-             mkdir -p /opt/nginx/modules/
-
-             cd /opt/
-             git clone https://github.com/SpiderLabs/ModSecurity
-             cd /opt/ModSecurity/
-             git checkout -b v3/master origin/v3/master
-             sh build.sh
-             git submodule init
-             git submodule update
-             ./configure
-             make -j`nproc`
-             make install
-
-             cd /opt/nginx/modules/
-             wget https://github.com/simplresty/ngx_devel_kit/archive/v0.3.1rc1.zip
-             unzip v0.3.1rc1.zip; rm -Rf v0.3.1rc1.zip
-             mv /opt/nginx/modules/ngx_devel_kit-0.3.1rc1/ /opt/nginx/modules/ngx_devel_kit/
-
-             cd /opt/nginx/modules/
-             wget https://github.com/apache/incubator-pagespeed-ngx/archive/v1.13.35.2-stable.zip
-             unzip v1.13.35.2-stable.zip
-             rm -Rf v1.13.35.2-stable.zip
-             mv /opt/nginx/modules/incubator-pagespeed-ngx-1.13.35.2-stable /opt/nginx/modules/ngx_pagespeed-1.13.35.2-stable
-             cd /opt/nginx/modules/ngx_pagespeed-1.13.35.2-stable
-             wget https://dl.google.com/dl/page-speed/psol/1.13.35.2-x64.tar.gz
-             tar -xzvf 1.13.35.2-x64.tar.gz; rm -Rf 1.13.35.2-x64.tar.gz
-             
-             #LuaJIT Library
-             cd /opt/nginx/modules/; wget http://luajit.org/download/LuaJIT-2.0.5.tar.gz; tar -zxvf LuaJIT-2.0.5.tar.gz; cd LuaJIT-2.0.5; make install PREFIX=/usr/local/LuaJIT
-             ldconfig
-             
-             cd /opt/nginx/modules/
-             wget https://github.com/nbs-system/naxsi/archive/master.zip
-             unzip master.zip; rm -Rf master.zip
-             mv /opt/nginx/modules/naxsi-master /opt/nginx/modules/naxsi
-
-             mkdir -p /opt/nginx/modules/
-             cd /opt/nginx/modules/
-             rm -Rf nginx_redis/
-             git clone https://github.com/openresty/set-misc-nginx-module.git
-             git clone https://github.com/FRiCKLE/ngx_cache_purge.git
-             git clone https://github.com/kyprizel/testcookie-nginx-module.git
-             git clone https://github.com/openresty/headers-more-nginx-module.git
-             git clone https://github.com/openresty/echo-nginx-module.git
-             git clone https://github.com/leev/ngx_http_geoip2_module.git
-             cd /opt/nginx/modules/ && wget https://github.com/openresty/lua-nginx-module/archive/refs/tags/v0.10.12rc2.tar.gz; tar xf v0.10.12rc2.tar.gz; rm -Rf v0.10.12rc2.tar.gz; mv /opt/nginx/modules/lua-nginx-module-0.10.12rc2 /opt/nginx/modules/lua-nginx-module
-             git clone https://github.com/SpiderLabs/ModSecurity-nginx.git
-             git clone https://github.com/openresty/encrypted-session-nginx-module.git
-             git clone https://github.com/flant/nginx-http-rdns.git
-
-             # Download Nginx
-             mkdir -p /opt/nginx/sources/
-             cd /opt/nginx/sources/
-             wget 'https://nginx.org/download/nginx-1.21.6.tar.gz'
-             tar -xzvf nginx-1.21.6.tar.gz; rm -Rf nginx-1.21.6.tar.gz
-             cd /opt/nginx/sources/nginx-1.21.6/
-             wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nbuild.sh
-             chmod +x nbuild.sh
-             ./nbuild.sh
-             make -j`nproc`
-             make install
-             ldconfig
-             
-             mkdir -p /nginx/live
-             mkdir -p /nginx/logs
-             mkdir -p /nginx/conf.d
-             touch /nginx/logs/access.log
-             touch /nginx/logs/error.log
-             useradd -r nginx
-             rm -Rf /etc/init.d/nginx
-             cd /etc/init.d/; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/etc/init.d/nginx
-             chmod +x /etc/init.d/nginx
-             cd /nginx/; mkdir conf.d; rm -Rf nginx.conf*; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.conf
-             cd /nginx/live/
-             wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/vhost/default
-
-             mkdir -p /hostdata/default
-             mkdir -p /hostdata/default/public_html
-             mkdir -p /hostdata/default/logs
-             mkdir -p /hostdata/default/cache
-             mkdir -p /nginx/modsecurity/
-             cd /hostdata/default/public_html/
-             wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/html/index.html
-             sudo update-rc.d nginx defaults
-
-             cd /nginx/; mkdir db/; cd db/; wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/GeoLite2-Country.mmdb
-             cd /nginx/; rm -Rf *.default
-             cp /opt/nginx/modules/naxsi/naxsi_config/naxsi_core.rules /nginx/naxsi_core.rules
-             cp /opt/ModSecurity/modsecurity.conf-recommended /nginx/modsecurity/modsecurity.conf
-
-             cd /opt/; git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git
-             cp -a /opt/owasp-modsecurity-crs/rules/ /nginx/modsecurity/
-             cp -a /opt/owasp-modsecurity-crs/crs-setup.conf.example /nginx/modsecurity/crs-setup.conf
-             clear
-             cd /etc/systemd/system/; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/UBUNTU16/nginx.service
-             sudo systemctl start nginx.service && sudo systemctl enable nginx.service
+             # Nginx 
+             cd /opt/ && wget https://nginx.org/download/nginx-1.21.6.tar.gz && tar xf nginx-1.21.6.tar.gz && rm -Rf nginx-1.21.6.tar.gz
+             cd /opt/nginx-1.21.6 && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/builder > builder; bash builder
+             cd /opt/nginx-1.21.6 && make -j`nproc`
+             cd /opt/nginx-1.21.6 && make install
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/nginx.service.Focal > /lib/systemd/system/nginx.service
              killall nginx
+             useradd nginx
              systemctl daemon-reload
-             service nginx stop
-             service nginx start
-      ;;
-      
-      cosmic)
-             if [ "$(whoami)" != "root" ]
-             then
-                 echo "You should Login as root to use this script!";
-                 echo "May you already have access for sudo, but commands aren't designed with sudo! so..";
-                 echo "sudo -i";
-                 exit 1
-             fi
+             systemctl restart nginx
+             systemctl enable nginx
 
-             if [ -d "/nginx/" ]; then
-                 echo "We've detect a folder '/nginx/' which means"
-                 echo "Maybe you have use this script before!"
-                 echo "You can fix this by executing!"
-                 echo "./setup clean"
-                 exit 1
-             fi
-
-             if [ -d "/etc/nginx" ]; then
-                 echo "We've detect a folder '/etc/nginx' which means"
-                 echo "Maybe you have use this script before!"
-                 echo "./setup clean"
-                 exit 1
-             fi
-
-             if [ -d "/opt/nginx/" ]; then
-                 echo "We've detect a folder '/opt/nginx/' which means"
-                 echo "Maybe you have use this script before!"
-                 echo "./setup clean"
-                 exit 1
-             fi
-              
-             apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y;
-             apt-get install sudo -y
-             apt-get install build-essential libssl-dev curl nano wget zip unzip git -y
-             apt-get purge --remove nginx -y
-             apt-get purge --remove apache2 -y
-             apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y
-             apt-get autoremove -y
-             apt-get install make automake cmake -y
-             apt-get install apt-utils build-essential -y
-             apt-get install git -y
-             apt-get install checkinstall libpcre3 libpcre3-dev zlib1g zlib1g-dbg libxml2 zlib1g-dev -y
-             apt-get install -y unzip
-             apt-get install -y libicu-dev libcurl4-gnutls-dev libtool
-             apt-get install -y libmozjs-24-dev
-             apt-get install -y libmozjs-24-bin; sudo ln -sf /usr/bin/js24 /usr/bin/js
-             apt-get install openssl libssl-dev libperl-dev libexpat-dev -y
-             apt-get install mercurial meld -y
-             apt-get install libxslt-dev -y
-             apt-get install libgd2-xpm -y
-             apt-get install libgd2-xpm-dev -y
-             apt-get install libgeoip-dev -y
-             apt-get install libssl libssl-dev -y
-             apt-get install dh-autoreconf -y
-             apt-get install -y software-properties-common
-             apt-get install -y python-software-properties
-             apt-get install -y libcairo2 libcairo2-dev
-             apt-get install -y python-dev
-             sudo add-apt-repository ppa:maxmind/ppa -y
-             apt-get install aptitude -y
-             aptitude update -y
-             aptitude upgrade -y
-             aptitude install libmaxminddb0 libmaxminddb-dev mmdb-bin -y
-             apt-get install libmysqlclient-dev -y
-             apt-get install libmariadbclient-dev -y
-             apt-get install g++ flex bison curl doxygen libyajl-dev libgeoip-dev libtool dh-autoreconf libcurl4-gnutls-dev libxml2 libpcre++-dev libxml2-dev -y
-             apt-get install libuuid1 uuid-dev -y
-             apt-get install libgd-dev libc6 -y
-
+             # Download Dynamic Modules
+             mkdir -p /nginx/modules 
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ndk_http_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_brotli_filter_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_brotli_static_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_flv_live_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_geoip2_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_headers_more_filter_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_js_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_lua_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_modsecurity_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_naxsi_module.so 
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_set_misc_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_testcookie_access_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_pagespeed.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_stream_geoip2_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_stream_js_module.so
              
-             mkdir -p /hostdata/
-             mkdir -p /var/log/nginx/
-             mkdir -p /opt/nginx/modules/
-
-             cd /opt/
-             git clone https://github.com/SpiderLabs/ModSecurity
-             cd /opt/ModSecurity/
-             git checkout -b v3/master origin/v3/master
-             sh build.sh
-             git submodule init
-             git submodule update
-             ./configure
-             make -j`nproc`
-             make install
-             
-             cd /opt/nginx/modules/
-             wget https://github.com/simplresty/ngx_devel_kit/archive/v0.3.1rc1.zip
-             unzip v0.3.1rc1.zip; rm -Rf v0.3.1rc1.zip
-             mv /opt/nginx/modules/ngx_devel_kit-0.3.1rc1/ /opt/nginx/modules/ngx_devel_kit/ 
-           
-             #Pagespeed Library
-             cd /opt/nginx/modules/
-             wget https://github.com/apache/incubator-pagespeed-ngx/archive/v1.13.35.2-stable.zip
-             unzip v1.13.35.2-stable.zip
-             rm -Rf v1.13.35.2-stable.zip
-             mv /opt/nginx/modules/incubator-pagespeed-ngx-1.13.35.2-stable /opt/nginx/modules/ngx_pagespeed-1.13.35.2-stable
-             cd /opt/nginx/modules/ngx_pagespeed-1.13.35.2-stable
-             wget https://dl.google.com/dl/page-speed/psol/1.13.35.2-x64.tar.gz
-             tar -xzvf 1.13.35.2-x64.tar.gz; rm -Rf 1.13.35.2-x64.tar.gz
-
-             #LuaJIT Library
-             cd /opt/nginx/modules/; wget http://luajit.org/download/LuaJIT-2.0.5.tar.gz; tar -zxvf LuaJIT-2.0.5.tar.gz; cd LuaJIT-2.0.5; make install PREFIX=/usr/local/LuaJIT
-             ldconfig
-             
-             #Naxsi Mod
-             cd /opt/nginx/modules/
-             wget https://github.com/nbs-system/naxsi/archive/master.zip
-             unzip master.zip; rm -Rf master.zip
-             mv /opt/nginx/modules/naxsi-master /opt/nginx/modules/naxsi
-             
-             mkdir -p /opt/nginx/modules/
-             cd /opt/nginx/modules/
-             rm -Rf nginx_redis/
-             git clone https://github.com/openresty/set-misc-nginx-module.git
-             git clone https://github.com/FRiCKLE/ngx_cache_purge.git
-             git clone https://github.com/kyprizel/testcookie-nginx-module.git
-             git clone https://github.com/openresty/headers-more-nginx-module.git
-             git clone https://github.com/openresty/echo-nginx-module.git
-             git clone https://github.com/leev/ngx_http_geoip2_module.git
-             cd /opt/nginx/modules/ && wget https://github.com/openresty/lua-nginx-module/archive/refs/tags/v0.10.12rc2.tar.gz; tar xf v0.10.12rc2.tar.gz; rm -Rf v0.10.12rc2.tar.gz; mv /opt/nginx/modules/lua-nginx-module-0.10.12rc2 /opt/nginx/modules/lua-nginx-module
-             git clone https://github.com/SpiderLabs/ModSecurity-nginx.git
-             git clone https://github.com/openresty/encrypted-session-nginx-module.git
-             git clone https://github.com/flant/nginx-http-rdns.git
-
-             # Download Nginx
-             mkdir -p /opt/nginx/sources/
-             cd /opt/nginx/sources/
-             wget 'https://nginx.org/download/nginx-1.21.6.tar.gz'
-             tar -xzvf nginx-1.21.6.tar.gz; rm -Rf nginx-1.21.6.tar.gz
-             cd /opt/nginx/sources/nginx-1.21.6/
-             wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nbuild.sh
-             chmod +x nbuild.sh
-             ./nbuild.sh
-             make -j`nproc`
-             make install
-             ldconfig
-
-             mkdir -p /nginx/live
-             mkdir -p /nginx/logs
-             mkdir -p /nginx/conf.d
-             touch /nginx/logs/access.log
-             touch /nginx/logs/error.log
-             useradd -r nginx
-             rm -Rf /etc/init.d/nginx
-             cd /etc/init.d/; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/etc/init.d/nginx
-             chmod +x /etc/init.d/nginx
-             cd /nginx/; mkdir conf.d; rm -Rf nginx.conf*; wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.conf
-             mkdir -p /nginx/live/
-             cd /nginx/live/
-             wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/vhost/default
-             
-             mkdir -p /hostdata/default
-             mkdir -p /hostdata/default/public_html
-             mkdir -p /hostdata/default/logs
-             mkdir -p /hostdata/default/cache
-             mkdir -p /nginx/modsecurity/
-             cd /hostdata/default/public_html/
-             wget https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/html/index.html
-             sudo update-rc.d nginx defaults
-             
-             cd /nginx/; mkdir db/; cd db/; wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/GeoLite2-Country.mmdb
-             cd /nginx/; rm -Rf *.default
-             cp /opt/nginx/modules/naxsi/naxsi_config/naxsi_core.rules /nginx/naxsi_core.rules
-             cp /opt/ModSecurity/modsecurity.conf-recommended /nginx/modsecurity/modsecurity.conf
-             
-             cd /opt/; git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git
-             cp -a /opt/owasp-modsecurity-crs/rules/ /nginx/modsecurity/
-             cp -a /opt/owasp-modsecurity-crs/crs-setup.conf.example /nginx/modsecurity/crs-setup.conf
-             
-             clear
-             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/UBUNTU16/nginx.service > /etc/systemd/system/nginx.service
-             sudo systemctl start nginx.service && sudo systemctl enable nginx.service
-             systemctl daemon-reload
-             clear
-             service nginx stop
-             killall nginx
-             service nginx start
-             clear
-             nginx -t
-             echo "Installation script on ubuntu 18 maybe can fail is not well tested if so please report any problem on github!"
-      ;;
-      
-      centos)
-             yum -y update; yum -y upgrade
-             yum install epel-release wget curl git zip unzip -y
-             yum remove httpd -y
-             yum remove apache2 -y
-             yum remove nginx -y
+             # Fixes
+             mkdir -p /nginx/modsec
+             curl -s https://raw.githubusercontent.com/nbs-system/naxsi/master/naxsi_config/naxsi_core.rules > /nginx/modsec/naxsi_core.rules
+             curl -s https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended > /nginx/modsec/modsecurity.conf
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/modsec/tester.conf > /nginx/modsec/tester.conf
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/modsec/unicode.mapping > /nginx/modsec/unicode.mapping
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/nginx.conf > /nginx/nginx.conf
+             mkdir -p /nginx/live/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/default > /nginx/live/default
+             mkdir -p /hostdata/default/public_html/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/index.html > /hostdata/default/public_html/
+             mkdir -p /hostdata/default/public_html/cdn && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/modsec/aes.min.js > /hostdata/default/public_html/cdn/modsec/aes.min.js
       ;;
 esac
