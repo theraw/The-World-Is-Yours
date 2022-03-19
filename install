@@ -63,6 +63,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.service.Focal > /lib/systemd/system/nginx.service
 
              # Download Dynamic Modules
+             mkdir -p /nginx/modules
              cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ndk_http_module.so
              cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_brotli_filter_module.so
              cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_brotli_static_module.so
