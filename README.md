@@ -8,6 +8,9 @@ Now easier then before, you will have to compile only Nginx, Rest of modules com
  - [x] ModSecurity Support.
  - [x] Naxsi Support.
  - [x] Cookie Based Challenge.
+ 
+How do these 3 modules work together? Well L7 will block all or most of bots, however modSecurity and Naxsi take priority over cookie challenge!
+So if its a offensive request that modsecurity or naxsi detect it as such then these 2 will deal with that request otherwise cookie challenge will appear.
 
 ## INSTALLATION
 
