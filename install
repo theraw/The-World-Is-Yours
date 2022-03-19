@@ -13,21 +13,27 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
                  echo "We've detect a folder '/nginx/' which means"
                  echo "Maybe you have use this script before!"
                  echo "You wipe old installation by executing!"
-                 echo "./install clean (**THIS WILL DELETE ALL YOUR OLD NGINX CONFIGS MAKE SURE YOU BACKUP BEFORE USING**)"
+                 echo "(**THIS WILL DELETE ALL YOUR OLD NGINX CONFIGS MAKE SURE YOU BACKUP BEFORE USING**)"
+                 echo "execute: rm -Rf /nginx; rm -Rf /usr/sbin/nginx; rm -Rf /opt/mod; rm -Rf /opt/nginx*"
+                 echo "then execute again bash install"
                  exit 1
              fi
 
              if [ -d "/etc/nginx" ]; then
                  echo "We've detect a folder '/etc/nginx' which means"
                  echo "Maybe you have use this script before!"
-                 echo "./install clean (**THIS WILL DELETE ALL YOUR OLD NGINX CONFIGS MAKE SURE YOU BACKUP BEFORE USING**)"
+                 echo "(**THIS WILL DELETE ALL YOUR OLD NGINX CONFIGS MAKE SURE YOU BACKUP BEFORE USING**)"
+                 echo "execute: rm -Rf /nginx; rm -Rf /usr/sbin/nginx; rm -Rf /opt/mod; rm -Rf /opt/nginx*"
+                 echo "then execute again bash install"
                  exit 1
              fi
 
              if [ -d "/opt/nginx/" ]; then
                  echo "DETECTED '/opt/nginx/'"
                  echo "Maybe script has already been used you need to start clean!"
-                 echo "./install clean (**THIS WILL DELETE ALL YOUR OLD NGINX CONFIGS MAKE SURE YOU BACKUP BEFORE USING**)"
+                 echo "(**THIS WILL DELETE ALL YOUR OLD NGINX CONFIGS MAKE SURE YOU BACKUP BEFORE USING**)"
+                 echo "execute: rm -Rf /nginx; rm -Rf /usr/sbin/nginx; rm -Rf /opt/mod; rm -Rf /opt/nginx*"
+                 echo "then execute again bash install"
                  exit 1
              fi
               
@@ -51,10 +57,10 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
 
              # Nginx 
              cd /opt/ && wget https://nginx.org/download/nginx-1.21.6.tar.gz && tar xf nginx-1.21.6.tar.gz && rm -Rf nginx-1.21.6.tar.gz
-             cd /opt/nginx-1.21.6 && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/builder > builder; bash builder
+             cd /opt/nginx-1.21.6 && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/builder > builder; bash builder
              cd /opt/nginx-1.21.6 && make -j`nproc`
              cd /opt/nginx-1.21.6 && make install
-             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/nginx.service.Focal > /lib/systemd/system/nginx.service
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.service.Focal > /lib/systemd/system/nginx.service
              killall nginx
              useradd nginx
              systemctl daemon-reload
@@ -62,32 +68,31 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              systemctl enable nginx
 
              # Download Dynamic Modules
-             mkdir -p /nginx/modules 
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ndk_http_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_brotli_filter_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_brotli_static_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_flv_live_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_geoip2_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_headers_more_filter_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_js_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_lua_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_modsecurity_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_naxsi_module.so 
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_set_misc_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_http_testcookie_access_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_pagespeed.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_stream_geoip2_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_stream_js_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ndk_http_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_brotli_filter_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_brotli_static_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_flv_live_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_geoip2_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_headers_more_filter_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_js_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_lua_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_modsecurity_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_naxsi_module.so 
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_set_misc_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_testcookie_access_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_pagespeed.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_stream_geoip2_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_stream_js_module.so
              
              # Fixes
              mkdir -p /nginx/modsec
              curl -s https://raw.githubusercontent.com/nbs-system/naxsi/master/naxsi_config/naxsi_core.rules > /nginx/modsec/naxsi_core.rules
              curl -s https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended > /nginx/modsec/modsecurity.conf
-             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/modsec/tester.conf > /nginx/modsec/tester.conf
-             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/modsec/unicode.mapping > /nginx/modsec/unicode.mapping
-             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/nginx.conf > /nginx/nginx.conf
-             mkdir -p /nginx/live/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/default > /nginx/live/default
-             mkdir -p /hostdata/default/public_html/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/index.html > /hostdata/default/public_html/
-             mkdir -p /hostdata/default/public_html/cdn && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/modsec/aes.min.js > /hostdata/default/public_html/cdn/modsec/aes.min.js
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/tester.conf > /nginx/modsec/tester.conf
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/unicode.mapping > /nginx/modsec/unicode.mapping
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.conf > /nginx/nginx.conf
+             mkdir -p /nginx/live/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/default > /nginx/live/default
+             mkdir -p /hostdata/default/public_html/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/index.html > /hostdata/default/public_html/
+             mkdir -p /hostdata/default/public_html/cdn && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/aes.min.js > /hostdata/default/public_html/cdn/modsec/aes.min.js
       ;;
 esac
