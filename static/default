@@ -5,7 +5,7 @@
         root /hostdata/default/public_html/;
 
         modsecurity on;
-        modsecurity_rules_file /nginx/modsec/main.conf;
+        modsecurity_rules_file /nginx/modsec/tester.conf;
 
         location ^~ /cdn {
             testcookie off;
