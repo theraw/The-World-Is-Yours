@@ -79,5 +79,15 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_stream_geoip2_module.so
              cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/focal-patch/static/mod/ngx_stream_js_module.so
              
+             # Fixes
+             mkdir -p /nginx/modsec
+             curl -s https://raw.githubusercontent.com/nbs-system/naxsi/master/naxsi_config/naxsi_core.rules > /nginx/modsec/naxsi_core.rules
+             curl -s https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended > /nginx/modsec/modsecurity.conf
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/modsec/tester.conf > /nginx/modsec/tester.conf
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/modsec/unicode.mapping > /nginx/modsec/unicode.mapping
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/nginx.conf > /nginx/nginx.conf
+             mkdir -p /nginx/live/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/default > /nginx/live/default
+             mkdir -p /hostdata/default/public_html/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/index.html > /hostdata/default/public_html/
+             mkdir -p /hostdata/default/public_html/cdn && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/focal-patch/static/modsec/aes.min.js > /hostdata/default/public_html/cdn/modsec/aes.min.js
       ;;
 esac
