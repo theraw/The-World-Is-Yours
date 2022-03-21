@@ -54,8 +54,7 @@ Special thanks to the following contributors:
 				<br /><sub><b>ƬHE ЯAW ☣</b></sub>
 			</a>
 		</td>
-	</tr>
-	<tr>
+
 		<td align="center">
 			<a href="https://github.com/lucthienphong1120">
 				<img src="https://avatars.githubusercontent.com/u/90561566?v=4" width="80" alt=""/>
