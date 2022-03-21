@@ -23,7 +23,7 @@ So if its a offensive request that modsecurity or naxsi detect it as such then t
 ```
 => /nginx/                                = Nginx Path, (private)
 => /nginx/live/                           = Vhosts Configs (private)
-=> /nginx/modsecurity/                    = ModSecurity Rules Dir (private)
+=> /nginx/modsec/                         = Security Rules Dir (private)
 => /hostdata/                             = Place to store your domain folders. (private)
 => /hostdata/yourdomain.com/              = Ex of domain dir (private folder),
 => /hostdata/yourdomain.com/public_html/  = Ex of your domain webroot (public files only),
