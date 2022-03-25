@@ -61,6 +61,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /opt/nginx-1.21.6 && make -j`nproc`
              cd /opt/nginx-1.21.6 && make install
              curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.service.Focal > /lib/systemd/system/nginx.service
+             rm -Rf /nginx/*.default
 
              # Download Dynamic Modules
              mkdir -p /nginx/modules
