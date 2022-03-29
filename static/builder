@@ -33,4 +33,5 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --with-stream_ssl_module                          \
 --with-stream_realip_module                       \
 --with-stream_geoip_module                        \
+--with-http_v2_hpack_enc                          \
 --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib"
