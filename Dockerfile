@@ -1,11 +1,8 @@
 FROM ubuntu:20.04
 ARG NGINX="1.21.6"
+RUN apt-get update; apt-get update -y; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y
 RUN set -eux; \
     export DEBIAN_FRONTEND=noninteractive; \
-    apt-get update \
-    apt-get upgrade -y \
-    apt-get dist-upgrade -y \
-    apt-get autoremove \
     apt-get install -y \
         libtool \
         pkg-config \
