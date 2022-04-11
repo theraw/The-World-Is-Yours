@@ -1,4 +1,4 @@
-# Nginx L7 DDoS Protection! :boom: :zap:
+# Nginx L7 DDoS Protection! :boom: :zap: [![Docker Image CI](https://github.com/theraw/The-World-Is-Yours/actions/workflows/docker-image.yml/badge.svg?branch=master)](https://github.com/theraw/The-World-Is-Yours/actions/workflows/docker-image.yml)
 Now easier then before, you will have to compile only Nginx, Rest of modules come pre-compiled.
 ![Simple](https://c.tenor.com/uYqsM9uIyuYAAAAC/simple-easy.gif)
 
