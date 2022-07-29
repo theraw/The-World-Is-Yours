@@ -1,5 +1,6 @@
 #!/bin/bash
-mkdir -p /opt/mod
+export NGINX="1.21.6"
+sudo apt-get install libpcre2-dev -y
 cd /opt/mod/; git clone https://github.com/vision5/ngx_devel_kit.git ngx_devel_kit
 cd /opt/mod/; git clone https://github.com/apache/incubator-pagespeed-ngx.git pagespeed
 cd /opt/mod/; git clone https://github.com/leev/ngx_http_geoip2_module.git geoip2
@@ -16,8 +17,10 @@ cd /opt/mod/; git clone https://github.com/kyprizel/testcookie-nginx-module.git 
 cd /opt/mod/ngx_brotli && git submodule update --init
 cd /opt/mod/pagespeed; wget https://dl.google.com/dl/page-speed/psol/1.13.35.2-x64.tar.gz; tar -xzvf 1.13.35.2-x64.tar.gz; rm -Rf 1.13.35.2-x64.tar.gz
 
-cd /opt/nginx-1.23.1/
-LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-2.1/" ./configure --with-compat \
+rm -Rf /opt/nginx-${NGINX}.tar.gz; cd /opt/; wget https://nginx.org/download/nginx-${NGINX}.tar.gz; tar xf nginx-${NGINX}.tar.gz; rm -Rf nginx-${NGINX}.tar.gz
+cd /opt/nginx-${NGINX} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch
+cd /opt/nginx-${NGINX}/
+LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-2.1/" ./configure --with-ld-opt='-lpcre' --with-compat \
 --user=nginx                                      \
 --group=nginx                                     \
 --sbin-path=/usr/sbin/nginx                       \
@@ -57,7 +60,7 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib"  \
 --add-dynamic-module=/opt/mod/ngx_devel_kit       \
 --add-dynamic-module=/opt/mod/misc                \
---add-dynamic-module=/opt/mod/naxsi/naxsi_src/    \
+--add-dynamic-module=/opt/mod/naxsi/naxsi_src    \
 --add-dynamic-module=/opt/mod/ngx_brotli          \
 --add-dynamic-module=/opt/mod/pagespeed           \
 --add-dynamic-module=/opt/mod/geoip2              \
@@ -67,4 +70,4 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --add-dynamic-module=/opt/mod/njs/nginx           \
 --add-dynamic-module=/opt/mod/lua                 \
 --add-dynamic-module=/opt/mod/testcookie
-cd /opt/nginx-1.23.1/; make modules
+make modules
