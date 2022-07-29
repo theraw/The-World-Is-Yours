@@ -4,7 +4,7 @@ sudo apt-get install libpcre2-dev mercurial -y
 cd /opt/mod/; git clone https://github.com/vision5/ngx_devel_kit.git ngx_devel_kit
 cd /opt/mod/; git clone https://github.com/apache/incubator-pagespeed-ngx.git pagespeed
 cd /opt/mod/; git clone https://github.com/leev/ngx_http_geoip2_module.git geoip2
-cd /opt/mod/; git clone https://github.com/nbs-system/naxsi.git naxsi
+cd /opt/mod/; git clone https://github.com/nbs-system/naxsi.git naxsi; cd /opt/mod/naxsi; git reset --hard 304e66d; wget https://patch-diff.githubusercontent.com/raw/nbs-system/naxsi/pull/598.patch; patch -p1 < 598.patch
 cd /opt/mod/; git clone https://github.com/SpiderLabs/ModSecurity-nginx.git ModSecurity-nginx
 cd /opt/mod/; git clone https://github.com/google/ngx_brotli.git ngx_brotli
 cd /opt/mod/; git clone https://github.com/winshining/nginx-http-flv-module.git flv_mod
@@ -30,6 +30,7 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --error-log-path=/var/log/nginx/error.log         \
 --http-log-path=/var/log/nginx/access.log         \
 --with-pcre                                       \
+--without-pcre2                                   \
 --with-threads                                    \
 --with-file-aio                                   \
 --with-http_ssl_module                            \
