@@ -1,6 +1,6 @@
 #!/bin/bash
 export NGINX="1.23.1"
-sudo apt-get install libpcre2-dev -y
+sudo apt-get install libpcre2-dev mercurial -y
 cd /opt/mod/; git clone https://github.com/vision5/ngx_devel_kit.git ngx_devel_kit
 cd /opt/mod/; git clone https://github.com/apache/incubator-pagespeed-ngx.git pagespeed
 cd /opt/mod/; git clone https://github.com/leev/ngx_http_geoip2_module.git geoip2
