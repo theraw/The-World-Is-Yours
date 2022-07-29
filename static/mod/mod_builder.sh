@@ -20,7 +20,7 @@ cd /opt/mod/pagespeed; wget https://dl.google.com/dl/page-speed/psol/1.13.35.2-x
 rm -Rf /opt/nginx-${NGINX}.tar.gz; cd /opt/; wget https://nginx.org/download/nginx-${NGINX}.tar.gz; tar xf nginx-${NGINX}.tar.gz; rm -Rf nginx-${NGINX}.tar.gz
 cd /opt/nginx-${NGINX} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch
 cd /opt/nginx-${NGINX}/
-LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-2.1/" ./configure --with-ld-opt='-lpcre' --with-compat \
+LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-2.1/" ./configure --with-compat \
 --user=nginx                                      \
 --group=nginx                                     \
 --sbin-path=/usr/sbin/nginx                       \
