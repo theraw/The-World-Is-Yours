@@ -1,5 +1,5 @@
 #!/bin/bash
-export NGINX="1.21.6"
+export NGINX="1.23.1"
 case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
       focal)
              if [ "$(whoami)" != "root" ]
