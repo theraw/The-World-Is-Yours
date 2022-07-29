@@ -1,5 +1,5 @@
 #!/bin/bash
-export NGINX="1.21.6"
+export NGINX="1.23.1"
 sudo apt-get install libpcre2-dev -y
 cd /opt/mod/; git clone https://github.com/vision5/ngx_devel_kit.git ngx_devel_kit
 cd /opt/mod/; git clone https://github.com/apache/incubator-pagespeed-ngx.git pagespeed
