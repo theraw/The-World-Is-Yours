@@ -102,7 +102,9 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              # Start
              killall nginx
              useradd nginx
+             systemctl enable nginx
              systemctl daemon-reload
+             systemctl enable nginx
              systemctl stop nginx
              systemctl start nginx
              systemctl enable nginx
