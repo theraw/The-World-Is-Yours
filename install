@@ -107,6 +107,5 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              systemctl enable nginx
              systemctl stop nginx
              systemctl start nginx
-             systemctl enable nginx
       ;;
 esac
