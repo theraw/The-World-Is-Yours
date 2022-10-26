@@ -21,21 +21,18 @@ So if its a offensive request that modsecurity or naxsi detect it as such then t
 
 2. **`curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/install > install; bash install`**
 
-## FOLDER PATH.
+## Basic info.
 
 ```
-=> /nginx/                                = Nginx Path, (private)
-=> /nginx/live/                           = Vhosts Configs (private)
-=> /nginx/modsec/                         = Security Rules Dir (private)
-=> /hostdata/                             = Place to store your domain folders. (private)
-=> /hostdata/yourdomain.com/              = Ex of domain dir (private folder),
-=> /hostdata/yourdomain.com/public_html/  = Ex of your domain webroot (public files only),
-=> /hostdata/yourdomain.com/logs/         = Place where to store your Domains logs (access.log) (private folder),
-=> /hostdata/yourdomain.com/ssl/          = Place where to store domain ssl/key (private folder),
-=> /hostdata/yourdomain.com/cache/        = Place where to store site cache (private folder).
+=> Nginx Folder     = /nginx/
+=> --conf-path      = /nginx/nginx.conf
+=> --pid-path       = /var/run/nginx.pid 
+=> --user           = nginx 
+=> --group          = nginx
+=> --sbin-path      = /usr/sbin/nginx
+=> --error-log-path = /var/log/nginx/error.log
 
-// Private Folder - Means this cannot be accessed by public.
-// Public Folder  - Means files into this folder can be accessed by public.
+// YOUR NGINX IS LOCATED AT /nginx NOT /etc/nginx
 ```
 
 
