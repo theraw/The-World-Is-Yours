@@ -8,6 +8,7 @@ Now easier then before, you will have to compile only Nginx, Rest of modules com
 -- Security Dynamic Modules.
  - [x] ModSecurity Support.
  - [x] Naxsi Support.
+ - [x] Lua Support.
  - [x] Cookie Based Challenge.
  - [x] [ALL MOD LIST](https://github.com/theraw/The-World-Is-Yours/tree/u22.04.1/static/mod/)
  - [x] [View nginx compile options](https://github.com/theraw/The-World-Is-Yours/blob/u22.04.1/static/builder)
