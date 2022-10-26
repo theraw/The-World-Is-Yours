@@ -40,7 +40,7 @@ So if its a offensive request that modsecurity or naxsi detect it as such then t
 ## KEEP IN MIND!
 1. You're trading perfomance for security.
 2. If your server provider does not have anti-ddos your IPTABLES will fail to keep the bans, and your server may be offline in cases of big attacks.
-3. This is not a free script that will do everything for you. Read Modules Documentations about how to use them.
+3. This is not a free script that will do everything for you. Read Modules Documentations about how to get the best out of them.
 
 ## Contributors
 
