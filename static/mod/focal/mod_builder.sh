@@ -9,10 +9,10 @@ cd /opt/mod/; git clone https://github.com/SpiderLabs/ModSecurity-nginx.git ModS
 cd /opt/mod/; git clone https://github.com/google/ngx_brotli.git ngx_brotli
 cd /opt/mod/; git clone https://github.com/winshining/nginx-http-flv-module.git flv_mod
 cd /opt/mod/; git clone https://github.com/openresty/headers-more-nginx-module.git headers_more
-cd /opt/mod/; hg clone http://hg.nginx.org/njs njs
 cd /opt/mod/; git clone https://github.com/openresty/lua-nginx-module.git lua
 cd /opt/mod/; git clone https://github.com/openresty/set-misc-nginx-module.git misc
 cd /opt/mod/; git clone https://github.com/kyprizel/testcookie-nginx-module.git testcookie
+cd /opt/mod/; git clone --recurse-submodules https://github.com/wargio/naxsi.git naxsi
 
 cd /opt/mod/ngx_brotli && git submodule update --init
 cd /opt/mod/pagespeed; wget https://dl.google.com/dl/page-speed/psol/1.13.35.2-x64.tar.gz; tar -xzvf 1.13.35.2-x64.tar.gz; rm -Rf 1.13.35.2-x64.tar.gz
