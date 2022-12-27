@@ -1,11 +1,12 @@
 #!/bin/bash
 export NGINX="1.23.1"
+export NGINX_FOCAL="1.22.1"
 case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
       focal)
              if [ "$(whoami)" != "root" ]
              then
                  echo "You should Login as root to use this script!";
-                 echo "May you already have access for sudo, but commands aren't designed with sudo! so..";
+                 echo "Maybe you already have access for sudo, but commands aren't designed with sudo! so..";
                  echo "sudo -i";
                  exit 1
              fi
@@ -13,7 +14,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              if [ -d "/nginx/" ]; then
                  echo "We've detect a folder '/nginx/' which means"
                  echo "Maybe you have use this script before!"
-                 echo "You wipe old installation by executing!"
+                 echo "You can wipe old installation by executing!"
                  echo "(**THIS WILL DELETE ALL YOUR OLD NGINX CONFIGS MAKE SURE YOU BACKUP BEFORE USING**)"
                  echo "execute: rm -Rf /nginx; rm -Rf /usr/sbin/nginx; rm -Rf /opt/mod; rm -Rf /opt/nginx*"
                  echo "then execute again bash install"
@@ -21,11 +22,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              fi
 
              if [ -d "/etc/nginx" ]; then
-                 echo "We've detect a folder '/etc/nginx' which means"
-                 echo "Maybe you have use this script before!"
-                 echo "(**THIS WILL DELETE ALL YOUR OLD NGINX CONFIGS MAKE SURE YOU BACKUP BEFORE USING**)"
-                 echo "execute: rm -Rf /nginx; rm -Rf /usr/sbin/nginx; rm -Rf /opt/mod; rm -Rf /opt/nginx*"
-                 echo "then execute again bash install"
+                 echo "We've detect a folder '/etc/nginx' which means you already got nginx up and running!"
                  exit 1
              fi
 
@@ -58,11 +55,11 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /opt/mod/ModSecurity && ./configure && make -j`nproc` && make install
 
              # Nginx
-             cd /opt/ && wget https://nginx.org/download/nginx-${NGINX}.tar.gz && tar xf nginx-${NGINX}.tar.gz && rm -Rf nginx-${NGINX}.tar.gz
-             cd /opt/nginx-${NGINX} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch
-             cd /opt/nginx-${NGINX} && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/builder > builder; bash builder
-             cd /opt/nginx-${NGINX} && make -j`nproc`
-             cd /opt/nginx-${NGINX} && make install
+             cd /opt/ && wget https://nginx.org/download/nginx-${NGINX_FOCAL}.tar.gz && tar xf nginx-${NGINX_FOCAL}.tar.gz && rm -Rf nginx-${NGINX_FOCAL}.tar.gz
+             cd /opt/nginx-${NGINX_FOCAL} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch
+             cd /opt/nginx-${NGINX_FOCAL} && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/builder > builder; bash builder
+             cd /opt/nginx-${NGINX_FOCAL} && make -j`nproc`
+             cd /opt/nginx-${NGINX_FOCAL} && make install
              curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.service.Focal > /lib/systemd/system/nginx.service
              rm -Rf /nginx/*.default
 
