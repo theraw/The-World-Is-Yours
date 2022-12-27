@@ -10,8 +10,8 @@ Now easier then before, you will have to compile only Nginx, Rest of modules com
  - [x] Naxsi Support.
  - [x] Lua Support.
  - [x] Cookie Based Challenge.
- - [x] [ALL MOD LIST](https://github.com/theraw/The-World-Is-Yours/tree/u22.04.1/static/mod/)
- - [x] [View nginx compile options](https://github.com/theraw/The-World-Is-Yours/blob/u22.04.1/static/builder)
+ - [x] [ALL MOD LIST](https://github.com/theraw/The-World-Is-Yours/tree/master/static/mod)
+ - [x] [View nginx compile options](https://github.com/theraw/The-World-Is-Yours/blob/master/static/builder)
  
 How do these 3 modules work together? Well L7 will block all or most of bots, however modSecurity and Naxsi take priority over cookie challenge!
 So if its a offensive request that modsecurity or naxsi detect it as such then these 2 will deal with that request otherwise cookie challenge will appear.
