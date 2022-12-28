@@ -1,19 +1,36 @@
 #!/bin/bash
-export NGINX="1.22.1"
-sudo apt-get install libpcre2-dev mercurial -y
-cd /opt/mod/; git clone https://github.com/vision5/ngx_devel_kit.git ngx_devel_kit
-cd /opt/mod/; git clone https://github.com/apache/incubator-pagespeed-ngx.git pagespeed
-cd /opt/mod/; git clone https://github.com/leev/ngx_http_geoip2_module.git geoip2
-cd /opt/mod/; git clone --recurse-submodules https://github.com/wargio/naxsi.git naxsi
-cd /opt/mod/; git clone https://github.com/SpiderLabs/ModSecurity-nginx.git ModSecurity-nginx
-cd /opt/mod/; git clone https://github.com/google/ngx_brotli.git ngx_brotli
-cd /opt/mod/; git clone https://github.com/winshining/nginx-http-flv-module.git flv_mod
-cd /opt/mod/; git clone https://github.com/openresty/headers-more-nginx-module.git headers_more
-cd /opt/mod/; git clone https://github.com/openresty/lua-nginx-module.git lua
-cd /opt/mod/; git clone https://github.com/openresty/set-misc-nginx-module.git misc
-cd /opt/mod/; git clone https://github.com/kyprizel/testcookie-nginx-module.git testcookie
+curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/theraw-broken-lua/version > /tmp/version; source /tmp/version
 
-cd /opt/mod/ngx_brotli && git submodule update --init
+sudo apt-get install libpcre2-dev mercurial -y
+
+cd /opt/mod/; wget https://github.com/vision5/ngx_devel_kit/archive/refs/tags/v${NGX_DEVEL_KIT}.tar.gz
+cd /opt/mod/; tar xf v${NGX_DEVEL_KIT}.tar.gz; rm -Rf v${NGX_DEVEL_KIT}.tar.gz
+
+cd /opt/mod/; wget https://github.com/apache/incubator-pagespeed-ngx/archive/refs/tags/v${NGX_PAGESPEED}-stable.tar.gz
+cd /opt/mod/; tar xf v${NGX_PAGESPEED}-stable.tar.gz; rm -Rf v${NGX_PAGESPEED}-stable.tar.gz
+
+cd /opt/mod/; wget https://github.com/leev/ngx_http_geoip2_module/archive/refs/tags/${NGX_GEOIP2}.tar.gz
+cd /opt/mod/; tar xf ${NGX_GEOIP2}.tar.gz; rm -Rf ${NGX_GEOIP2}.tar.gz
+
+cd /opt/mod/; wget https://github.com/SpiderLabs/ModSecurity-nginx/archive/refs/tags/v${NGX_MODSECURITY}.tar.gz
+cd /opt/mod/; tar xf v${NGX_MODSECURITY}.tar.gz; rm -Rf v${NGX_MODSECURITY}.tar.gz
+
+cd /opt/mod/; wget https://github.com/winshining/nginx-http-flv-module/archive/refs/tags/v${NGX_HTTP_FLV}.tar.gz
+cd /opt/mod/; tar xf v${NGX_HTTP_FLV}.tar.gz; rm -Rf v${NGX_HTTP_FLV}.tar.gz
+
+cd /opt/mod/; wget https://github.com/openresty/headers-more-nginx-module/archive/refs/tags/v${NGX_HEADERS_MORE}.tar.gz
+cd /opt/mod/; tar xf v${NGX_HEADERS_MORE}.tar.gz; rm -Rf v${NGX_HEADERS_MORE}.tar.gz
+
+cd /opt/mod/; wget https://github.com/openresty/lua-nginx-module/archive/refs/tags/v${NGX_LUA}.tar.gz
+cd /opt/mod/; tar xf v${NGX_LUA}.tar.gz; rm -Rf v${NGX_LUA}.tar.gz
+
+cd /opt/mod/; wget https://github.com/openresty/set-misc-nginx-module/archive/refs/tags/v${NGX_SET_MISC}.tar.gz
+cd /opt/mod/; tar xf v${NGX_SET_MISC}.tar.gz; rm -Rf v${NGX_SET_MISC}.tar.gz
+
+cd /opt/mod/; git clone https://github.com/kyprizel/testcookie-nginx-module.git testcookie
+cd /opt/mod/; git clone https://github.com/google/ngx_brotli.git ngx_brotli; cd /opt/mod/ngx_brotli && git submodule update --init
+cd /opt/mod/; git clone --recurse-submodules https://github.com/wargio/naxsi.git naxsi
+
 cd /opt/mod/pagespeed; wget https://dl.google.com/dl/page-speed/psol/1.13.35.2-x64.tar.gz; tar -xzvf 1.13.35.2-x64.tar.gz; rm -Rf 1.13.35.2-x64.tar.gz
 
 rm -Rf /opt/nginx-${NGINX}.tar.gz; cd /opt/; wget https://nginx.org/download/nginx-${NGINX}.tar.gz; tar xf nginx-${NGINX}.tar.gz; rm -Rf nginx-${NGINX}.tar.gz
