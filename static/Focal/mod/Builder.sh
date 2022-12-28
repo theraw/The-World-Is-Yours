@@ -80,7 +80,7 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --add-dynamic-module=/opt/mod/headers-more-nginx-module-${NGX_HEADERS_MORE} \
 --add-dynamic-module=/opt/mod/incubator-pagespeed-ngx-${NGX_PAGESPEED}-stable \
 --add-dynamic-module=/opt/mod/lua-nginx-module-${NGX_LUA} \
---add-dynamic-module=/opt/mod/naxsi \
+--add-dynamic-module=/opt/mod/naxsi/naxsi_src \
 --add-dynamic-module=/opt/mod/nginx-http-flv-module-${NGX_HTTP_FLV} \
 --add-dynamic-module=/opt/mod/ngx_brotli \
 --add-dynamic-module=/opt/mod/ngx_http_geoip2_module-${NGX_GEOIP2} \
