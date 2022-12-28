@@ -35,4 +35,4 @@
 --with-stream_geoip_module                        \
 --with-http_v2_hpack_enc                          \
 --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC" \
---with-ld-opt="-Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie,-lpcre"
+--with-ld-opt="-Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -lpcre"
