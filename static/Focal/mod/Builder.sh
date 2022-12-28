@@ -29,8 +29,6 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --lock-path=/var/run/nginx.lock                   \
 --error-log-path=/var/log/nginx/error.log         \
 --http-log-path=/var/log/nginx/access.log         \
---with-pcre                                       \
---without-pcre2                                   \
 --with-threads                                    \
 --with-file-aio                                   \
 --with-http_ssl_module                            \
@@ -58,7 +56,8 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --with-stream_realip_module                       \
 --with-stream_geoip_module                        \
 --with-http_v2_hpack_enc                          \
---with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib"  \
+--with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC" \
+--with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -lpcre" \
 --add-dynamic-module=/opt/mod/ngx_devel_kit       \
 --add-dynamic-module=/opt/mod/misc                \
 --add-dynamic-module=/opt/mod/naxsi/naxsi_src    \
