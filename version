@@ -1,4 +1,7 @@
 #!/bin/bash
+#unless custom use default
+export NGINX="1.22.1"
+
 export LUA_SCRIPTS="/usr/twiylua/"
 export FOCAL_VERSION_NGINX="1.22.1"
 export FOCAL_VERSION_LUA="2.1-20220915"
