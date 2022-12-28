@@ -75,15 +75,15 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --with-http_v2_hpack_enc                          \
 --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC" \
 --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -lpcre" \
---add-dynamic-module=/opt/mod/ngx_devel_kit-0.3.2 \
---add-dynamic-module=/opt/mod/ModSecurity-nginx-1.0.3 \
---add-dynamic-module=/opt/mod/headers-more-nginx-module-0.34 \
---add-dynamic-module=/opt/mod/incubator-pagespeed-ngx-1.13.35.2-stable \
---add-dynamic-module=/opt/mod/lua-nginx-module-0.10.22 \
+--add-dynamic-module=/opt/mod/ngx_devel_kit-${NGX_DEVEL_KIT} \
+--add-dynamic-module=/opt/mod/ModSecurity-nginx-${NGX_MODSECURITY} \
+--add-dynamic-module=/opt/mod/headers-more-nginx-module-${NGX_HEADERS_MORE} \
+--add-dynamic-module=/opt/mod/incubator-pagespeed-ngx-${NGX_PAGESPEED}-stable \
+--add-dynamic-module=/opt/mod/lua-nginx-module-${NGX_LUA} \
 --add-dynamic-module=/opt/mod/naxsi \
---add-dynamic-module=/opt/mod/nginx-http-flv-module-1.2.10 \
+--add-dynamic-module=/opt/mod/nginx-http-flv-module-${NGX_HTTP_FLV} \
 --add-dynamic-module=/opt/mod/ngx_brotli \
---add-dynamic-module=/opt/mod/ngx_http_geoip2_module-3.4 \
---add-dynamic-module=/opt/mod/set-misc-nginx-module-0.33 \
+--add-dynamic-module=/opt/mod/ngx_http_geoip2_module-${NGX_GEOIP2} \
+--add-dynamic-module=/opt/mod/set-misc-nginx-module-${NGX_SET_MISC} \
 --add-dynamic-module=/opt/mod/testcookie
 make -j`nproc` modules
