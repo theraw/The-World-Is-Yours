@@ -1,6 +1,7 @@
 #!/bin/bash
 export NGINX="1.23.1"
-export NGINX_FOCAL="1.22.1"
+export FOCAL_VERSION_NGINX="1.22.1"
+export FOCAL_VERSION_LUA="2.1-20220915"
 case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
       focal)
              if [ "$(whoami)" != "root" ]
@@ -42,10 +43,11 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
 
              mkdir -p /opt/mod/
              #Luajit 2.1
-             cd /opt/mod && wget https://github.com/openresty/luajit2/archive/refs/tags/v2.1-20220310.tar.gz
-             cd /opt/mod && tar xf v2.1-20220310.tar.gz; rm -Rf v2.1-20220310.tar.gz
-             cd /opt/mod/luajit2-2.1-20220310/ && make install PREFIX=/usr/local/LuaJIT && ldconfig
-             rm -Rf /opt/mod/luajit2-2.1-20220310/
+             cd /opt/mod && wget https://github.com/openresty/luajit2/archive/refs/tags/v${FOCAL_VERSION_LUA}.tar.gz
+             #cd /opt/mod && wget https://github.com/openresty/luajit2/archive/refs/tags/v2.1-20220310.tar.gz
+             cd /opt/mod && tar xf v${FOCAL_VERSION_LUA}.tar.gz; rm -Rf v${FOCAL_VERSION_LUA}.tar.gz
+             cd /opt/mod/luajit2-${FOCAL_VERSION_LUA}/ && make install PREFIX=/usr/local/LuaJIT && ldconfig
+             rm -Rf /opt/mod/luajit2-${FOCAL_VERSION_LUA}/
 
              # ModSecurity
              cd /opt/mod && git clone https://github.com/SpiderLabs/ModSecurity
@@ -55,11 +57,11 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /opt/mod/ModSecurity && ./configure && make -j`nproc` && make install
 
              # Nginx
-             cd /opt/ && wget https://nginx.org/download/nginx-${NGINX_FOCAL}.tar.gz && tar xf nginx-${NGINX_FOCAL}.tar.gz && rm -Rf nginx-${NGINX_FOCAL}.tar.gz
-             cd /opt/nginx-${NGINX_FOCAL} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch
-             cd /opt/nginx-${NGINX_FOCAL} && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/builder > builder; bash builder
-             cd /opt/nginx-${NGINX_FOCAL} && make -j`nproc`
-             cd /opt/nginx-${NGINX_FOCAL} && make install
+             cd /opt/ && wget https://nginx.org/download/nginx-${FOCAL_VERSION_NGINX}.tar.gz && tar xf nginx-${FOCAL_VERSION_NGINX}.tar.gz && rm -Rf nginx-${FOCAL_VERSION_NGINX}.tar.gz
+             cd /opt/nginx-${FOCAL_VERSION_NGINX} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch
+             cd /opt/nginx-${FOCAL_VERSION_NGINX} && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/builder > builder; bash builder
+             cd /opt/nginx-${FOCAL_VERSION_NGINX} && make -j`nproc`
+             cd /opt/nginx-${FOCAL_VERSION_NGINX} && make install
              curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.service.Focal > /lib/systemd/system/nginx.service
              rm -Rf /nginx/*.default
 
@@ -80,12 +82,9 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_pagespeed.so
              cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_stream_geoip2_module.so
              cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_stream_js_module.so
-             #cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_php8-0.so
-             #cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_php8-1.so
 
              # Fixes
-             mkdir -p /nginx/modsec
-             curl -s https://raw.githubusercontent.com/nbs-system/naxsi/master/naxsi_config/naxsi_core.rules > /nginx/modsec/naxi.core
+             mkdir -p /nginx/modsec; curl -s https://raw.githubusercontent.com/nbs-system/naxsi/master/naxsi_config/naxsi_core.rules > /nginx/modsec/naxi.core
              curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/l7.conf > /nginx/modsec/l7.conf
              curl -s https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended > /nginx/modsec/modsecurity.conf
              curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/tester.conf > /nginx/modsec/tester.conf
@@ -99,7 +98,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              # Start
              unset NGINX
              killall nginx
-             useradd nginx
+             adduser nginx --shell=/bin/false --no-create-home
              systemctl enable nginx
              systemctl daemon-reload
              systemctl enable nginx
@@ -207,7 +206,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              # Start
              unset NGINX
              killall nginx
-             useradd nginx
+             adduser nginx --shell=/bin/false --no-create-home
              systemctl enable nginx
              systemctl daemon-reload
              systemctl enable nginx
