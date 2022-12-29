@@ -1,5 +1,5 @@
 #!/bin/bash
-curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/theraw-broken-lua/version > /tmp/version; source /tmp/version
+curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/version > /tmp/version; source /tmp/version
 case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
       focal)
              if [ "$(whoami)" != "root" ]
@@ -97,7 +97,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              # Start
              unset NGINX
              killall nginx
-             adduser nginx --shell=/bin/false --no-create-home
+             useradd nginx && usermod -s /bin/false nginx
              systemctl enable nginx
              systemctl daemon-reload
              systemctl enable nginx
@@ -147,47 +147,47 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              apt-get install libyajl-dev ssdeep zlib1g-dev libxslt1-dev libgd-dev libgeoip-dev liblmdb-dev libfuzzy-dev libmaxminddb-dev liblua5.2-dev libcurl4-openssl-dev libxml2 libxml2-dev libpcre3-dev -y
 
              mkdir -p /opt/mod/
-             #Luajit 2.1
-             cd /opt/mod && wget https://github.com/openresty/luajit2/archive/refs/tags/v2.1-20220310.tar.gz
-             cd /opt/mod && tar xf v2.1-20220310.tar.gz; rm -Rf v2.1-20220310.tar.gz
-             cd /opt/mod/luajit2-2.1-20220310/ && make install PREFIX=/usr/local/LuaJIT && ldconfig
-             rm -Rf /opt/mod/luajit2-2.1-20220310/
+             cd /opt/mod && wget https://github.com/openresty/luajit2/archive/refs/tags/v${JAMMY_VERSION_LUA}.tar.gz
+             cd /opt/mod && tar xf v${JAMMY_VERSION_LUA}.tar.gz && rm -Rf v${JAMMY_VERSION_LUA}.tar.gz
+             cd /opt/mod/luajit2-${JAMMY_VERSION_LUA}/ && make install PREFIX=/usr/local/LuaJIT && ldconfig
+             rm -Rf /opt/mod/luajit2-${JAMMY_VERSION_LUA}/
 
-             # ModSecurity
-             cd /opt/mod && git clone https://github.com/SpiderLabs/ModSecurity
-             cd /opt/mod/ModSecurity/ && git checkout -b v3/master origin/v3/master
-             cd /opt/mod/ModSecurity && sh build.sh
-             cd /opt/mod/ModSecurity && git submodule init && git submodule update
-             cd /opt/mod/ModSecurity && ./configure && make -j`nproc` && make install
+             cd /opt/mod && wget https://github.com/SpiderLabs/ModSecurity/releases/download/v${JAMMY_VERSION_NGX_MODSECURITY}/modsecurity-v${JAMMY_VERSION_NGX_MODSECURITY}.tar.gz
+             cd /opt/mod && tar xf modsecurity-v${JAMMY_VERSION_NGX_MODSECURITY}.tar.gz; rm -Rf modsecurity-v${JAMMY_VERSION_NGX_MODSECURITY}.tar.gz
+             cd /opt/mod/modsecurity-v${JAMMY_VERSION_NGX_MODSECURITY} && ./configure && make -j`nproc` && make install
+             
+             cd /opt/mod && wget https://github.com/openresty/lua-resty-core/archive/refs/tags/v${JAMMY_VERSION_NGX_RESTY_CORE}.tar.gz
+             cd /opt/mod && tar xf v${JAMMY_VERSION_NGX_RESTY_CORE}.tar.gz && rm -Rf v${JAMMY_VERSION_NGX_RESTY_CORE}.tar.gz
+             cd /opt/mod/lua-resty-core-${JAMMY_VERSION_NGX_RESTY_CORE} && make install PREFIX=${LUA_SCRIPTS}
+             
+             cd /opt/mod && wget https://github.com/openresty/lua-resty-lrucache/archive/refs/tags/v${JAMMY_VERSION_NGX_RESTY_LRUCACHE}.tar.gz
+             cd /opt/mod && tar xf v${JAMMY_VERSION_NGX_RESTY_LRUCACHE}.tar.gz && rm -Rf v${JAMMY_VERSION_NGX_RESTY_LRUCACHE}.tar.gz
+             cd /opt/mod/lua-resty-lrucache-${JAMMY_VERSION_NGX_RESTY_LRUCACHE} && make install PREFIX=${LUA_SCRIPTS}
 
              # Nginx
-             cd /opt/ && wget https://nginx.org/download/nginx-${NGINX}.tar.gz && tar xf nginx-${NGINX}.tar.gz && rm -Rf nginx-${NGINX}.tar.gz
-             cd /opt/nginx-${NGINX} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch
-             cd /opt/nginx-${NGINX} && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/builder > builder; bash builder
-             cd /opt/nginx-${NGINX} && make -j`nproc`
-             cd /opt/nginx-${NGINX} && make install
-             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.service.Focal > /lib/systemd/system/nginx.service
+             cd /opt/ && wget https://nginx.org/download/nginx-${JAMMY_VERSION_NGINX}.tar.gz && tar xf nginx-${JAMMY_VERSION_NGINX}.tar.gz && rm -Rf nginx-${JAMMY_VERSION_NGINX}.tar.gz
+             cd /opt/nginx-${JAMMY_VERSION_NGINX} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch
+             cd /opt/nginx-${JAMMY_VERSION_NGINX} && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Jammy/Builder.sh > builder; bash builder
+             cd /opt/nginx-${JAMMY_VERSION_NGINX} && make -j`nproc`
+             cd /opt/nginx-${JAMMY_VERSION_NGINX} && make install
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Jammy/nginx.service > /lib/systemd/system/nginx.service
              rm -Rf /nginx/*.default
 
              # Download Dynamic Modules
              mkdir -p /nginx/modules
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ndk_http_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_brotli_filter_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_brotli_static_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_flv_live_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_geoip2_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_headers_more_filter_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_js_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_lua_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_modsecurity_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_naxsi_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_set_misc_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_http_testcookie_access_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_pagespeed.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_stream_geoip2_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_stream_js_module.so
-             #cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_php8-0.so
-             #cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/mod/ngx_php8-1.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ndk_http_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_brotli_filter_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_brotli_static_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_flv_live_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_geoip2_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_headers_more_filter_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_lua_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_modsecurity_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_naxsi_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_set_misc_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_testcookie_access_module.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_pagespeed.so
+             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_stream_geoip2_module.so
 
              # Fixes
              mkdir -p /nginx/modsec
@@ -196,7 +196,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              curl -s https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended > /nginx/modsec/modsecurity.conf
              curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/tester.conf > /nginx/modsec/tester.conf
              curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/unicode.mapping > /nginx/modsec/unicode.mapping
-             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx.conf > /nginx/nginx.conf
+             curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Jammy/nginx.conf > /nginx/nginx.conf
              mkdir -p /nginx/live/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/default > /nginx/live/default
              mkdir -p /hostdata/default/public_html/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/index.html > /hostdata/default/public_html/index.html
              mkdir -p /hostdata/default/public_html/cdn/modsec && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/aes.min.js > /hostdata/default/public_html/cdn/modsec/aes.min.js
@@ -205,7 +205,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              # Start
              unset NGINX
              killall nginx
-             adduser nginx --shell=/bin/false --no-create-home
+             useradd nginx && usermod -s /bin/false nginx
              systemctl enable nginx
              systemctl daemon-reload
              systemctl enable nginx
