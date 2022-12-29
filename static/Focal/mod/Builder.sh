@@ -1,5 +1,5 @@
 #!/bin/bash
-curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/theraw-broken-lua/version > /tmp/version; source /tmp/version
+curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/version > /tmp/version; source /tmp/version
 
 sudo apt-get install libpcre2-dev mercurial -y; mkdir -p /opt/mod; mkdir -p /opt/nginx
 
