@@ -1,7 +1,7 @@
 #!/bin/bash
 curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/version > /tmp/version; source /tmp/version
 
-sudo apt-get install libpcre2-dev mercurial -y; mkdir -p /opt/mod; mkdir -p /opt/nginx
+sudo apt-get install libpcre2-dev mercurial -y; mkdir -p /opt/mod
 
 cd /opt/mod/; wget https://github.com/vision5/ngx_devel_kit/archive/refs/tags/v${NGX_DEVEL_KIT}.tar.gz
 cd /opt/mod/; tar xf v${NGX_DEVEL_KIT}.tar.gz; rm -Rf v${NGX_DEVEL_KIT}.tar.gz
