@@ -97,7 +97,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              # Start
              unset NGINX
              killall nginx
-             useradd nginx
+             useradd nginx && usermod -s /bin/false nginx
              systemctl enable nginx
              systemctl daemon-reload
              systemctl enable nginx
@@ -207,7 +207,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              # Start
              unset NGINX
              killall nginx
-             useradd nginx
+             useradd nginx && usermod -s /bin/false nginx
              systemctl enable nginx
              systemctl daemon-reload
              systemctl enable nginx
