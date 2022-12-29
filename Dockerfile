@@ -20,6 +20,6 @@ ARG NGX_LUA="0.10.22"
 ARG NGX_SET_MISC="0.33"
 
 RUN cd /opt/ && wget https://nginx.org/download/nginx-${JAMMY_VERSION_NGINX}.tar.gz && tar xf nginx-${JAMMY_VERSION_NGINX}.tar.gz && rm -Rf nginx-${JAMMY_VERSION_NGINX}.tar.gz; cd /opt/nginx-${JAMMY_VERSION_NGINX} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch; cd /opt/nginx-${JAMMY_VERSION_NGINX} && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Jammy/Builder.sh > builder; bash builder; cd /opt/nginx-${JAMMY_VERSION_NGINX} && make -j`nproc`; cd /opt/nginx-${JAMMY_VERSION_NGINX} && make install; rm -Rf /nginx/*.default; useradd nginx && usermod -s /bin/false nginx
-RUN mkdir -p /nginx/modules
+RUN mkdir -p /nginx/modules && mkdir -p /tmp && cd /tmp && wget https://github.com/theraw/The-World-Is-Yours/archive/refs/tags/0.0.1.tar.gz; tar xf 0.0.1.tar.gz; rm -Rf 0.0.1.tar.gz; cp -a /tmp/The-World-Is-Yours-0.0.1/static/Jammy/mod/*.so /nginx/modules/; cp -a /tmp/The-World-Is-Yours-0.0.1/static/modsec /nginx/modsec
 RUN curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/docker/supervisord.conf > /etc/supervisor/supervisord.conf
 CMD ["/usr/bin/supervisord","-c", "/etc/supervisor/supervisord.conf"]
