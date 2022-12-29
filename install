@@ -67,20 +67,9 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              rm -Rf /nginx/*.default
 
              # Download Dynamic Modules
-             mkdir -p /nginx/modules
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Focal/mod/ndk_http_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Focal/mod/ngx_http_brotli_filter_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Focal/mod/ngx_http_brotli_static_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Focal/mod/ngx_http_flv_live_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Focal/mod/ngx_http_geoip2_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Focal/mod/ngx_http_headers_more_filter_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Focal/mod/ngx_http_lua_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Focal/mod/ngx_http_modsecurity_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Focal/mod/ngx_pagespeed.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Focal/mod/ngx_stream_geoip2_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Focal/mod/ngx_http_naxsi_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Focal/mod/ngx_http_set_misc_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Focal/mod/ngx_http_testcookie_access_module.so
+             mkdir -p /nginx/modules; mkdir -p /tmp 
+             cd /tmp && wget https://github.com/theraw/The-World-Is-Yours/archive/refs/tags/0.0.1.tar.gz
+             cd /tmp && tar xf 0.0.1.tar.gz && rm -Rf 0.0.1.tar.gz && cp -a /tmp/The-World-Is-Yours-0.0.1/static/Focal/mod/*.so /nginx/modules/; rm -Rf /tmp/The-World-Is-Yours-0.0.1
 
              # Fixes
              mkdir -p /nginx/modsec; curl -s https://raw.githubusercontent.com/nbs-system/naxsi/master/naxsi_config/naxsi_core.rules > /nginx/modsec/naxi.core
@@ -174,20 +163,9 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              rm -Rf /nginx/*.default
 
              # Download Dynamic Modules
-             mkdir -p /nginx/modules
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ndk_http_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_brotli_filter_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_brotli_static_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_flv_live_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_geoip2_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_headers_more_filter_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_lua_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_modsecurity_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_naxsi_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_set_misc_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_http_testcookie_access_module.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_pagespeed.so
-             cd /nginx/modules && wget https://github.com/theraw/The-World-Is-Yours/raw/master/static/Jammy/mod/ngx_stream_geoip2_module.so
+             mkdir -p /nginx/modules; mkdir -p /tmp 
+             cd /tmp && wget https://github.com/theraw/The-World-Is-Yours/archive/refs/tags/0.0.1.tar.gz
+             cd /tmp && tar xf 0.0.1.tar.gz && rm -Rf 0.0.1.tar.gz && cp -a /tmp/The-World-Is-Yours-0.0.1/static/Jammy/mod/*.so /nginx/modules/; rm -Rf /tmp/The-World-Is-Yours-0.0.1
 
              # Fixes
              mkdir -p /nginx/modsec

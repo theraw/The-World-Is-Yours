@@ -23,6 +23,15 @@ So if its a offensive request that Modsecurity or Naxsi detect it as such then t
 
 2. **`curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/install > install; bash install`**
 
+## OR RUN IN DOCKER
+
+1. **`git clone https://github.com/theraw/The-World-Is-Yours.git; cd The-World-Is-Yours`**
+
+2. **`docker build -t mybuild .`**
+
+3. **`docker run -d mybuild`**
+
+
 ## Basic info.
 
 ```
