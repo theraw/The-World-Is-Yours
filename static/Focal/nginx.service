@@ -1,5 +1,5 @@
 [Nginx]
-Description=The World Is Yours HTTP Server
+Description=A high performance web server and a reverse proxy server
 After=syslog.target network-online.target remote-fs.target nss-lookup.target
 Wants=network-online.target
         

@@ -12,7 +12,7 @@ Now easier then before, you will have to compile only Nginx, Rest of modules com
  - [x] Cookie Based Challenge.
  - [x] [MOD LIST X Ubuntu 20.04](https://github.com/theraw/The-World-Is-Yours/tree/master/static/Focal/mod)
  - [x] [MOD LIST X Ubuntu 22.04](https://github.com/theraw/The-World-Is-Yours/tree/master/static/Jammy/mod)
- - [x] [View nginx compile options](https://github.com/theraw/The-World-Is-Yours/blob/master/static/Jammy/Builder.sh)
+ - [x] [Versions](https://github.com/theraw/The-World-Is-Yours/blob/master/version)
  
 How do these 3 modules work together? L7 will block all or most of bots, ModSecurity and Naxsi take priority over cookie challenge!
 So if its a offensive request that Modsecurity or Naxsi detect it as such then these 2 will deal with that request otherwise cookie challenge will appear.

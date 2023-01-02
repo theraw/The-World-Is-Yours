@@ -36,7 +36,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
 
              apt-get update -y; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y
              DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
-             apt-get install libtool pkg-config -y
+             apt-get install libtool pkg-config make cmake automake autoconf -y
              apt-get install libyajl-dev ssdeep zlib1g-dev libxslt1-dev libgd-dev libgeoip-dev liblmdb-dev libfuzzy-dev libmaxminddb-dev liblua5.2-dev libcurl4-openssl-dev libxml2 libxml2-dev libpcre3-dev -y
 
              mkdir -p /opt/mod/
@@ -56,11 +56,65 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /opt/mod && wget https://github.com/openresty/lua-resty-lrucache/archive/refs/tags/v${FOCAL_VERSION_NGX_RESTY_LRUCACHE}.tar.gz
              cd /opt/mod && tar xf v${FOCAL_VERSION_NGX_RESTY_LRUCACHE}.tar.gz && rm -Rf v${FOCAL_VERSION_NGX_RESTY_LRUCACHE}.tar.gz
              cd /opt/mod/lua-resty-lrucache-${FOCAL_VERSION_NGX_RESTY_LRUCACHE} && make install PREFIX=${LUA_SCRIPTS}
+             
+             cd /opt/mod && wget https://github.com/PCRE2Project/pcre2/archive/refs/tags/pcre2-${FOCAL_PCRE}.tar.gz
+             cd /opt/mod && tar xf pcre2-${FOCAL_PCRE}.tar.gz; rm -Rf pcre2-${FOCAL_PCRE}.tar.gz
+             cd /opt/mod/pcre2-pcre2-${FOCAL_PCRE} && ./autogen.sh 
+             #cd /opt/mod/pcre2-pcre2-${FOCAL_PCRE} && ./configure --prefix=/usr/local/pcre2_${FOCAL_PCRE} && make -j`nproc` && make install
+             
+             cd /opt/mod && wget https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_${FOCAL_OPENSSL}.tar.gz
+             cd /opt/mod && tar xf OpenSSL_${FOCAL_OPENSSL}.tar.gz; rm -Rf OpenSSL_${FOCAL_OPENSSL}.tar.gz
+             #cd /opt/mod/openssl-OpenSSL_${FOCAL_OPENSSL} && ./config --prefix=/usr/local/openssl_${FOCAL_OPENSSL} && make -j`nproc` && make install
+             
+             cd /opt/mod && wget http://zlib.net/zlib-${FOCAL_ZLIB}.tar.gz
+             cd /opt/mod && tar xf zlib-${FOCAL_ZLIB}.tar.gz; rm -Rf zlib-${FOCAL_ZLIB}.tar.gz
+             #cd /opt/mod/zlib-${FOCAL_ZLIB} && ./configure --prefix=/usr/local/zlib-${FOCAL_ZLIB} && make -j`nproc` && make install
 
              # Nginx
              cd /opt/ && wget https://nginx.org/download/nginx-${FOCAL_VERSION_NGINX}.tar.gz && tar xf nginx-${FOCAL_VERSION_NGINX}.tar.gz && rm -Rf nginx-${FOCAL_VERSION_NGINX}.tar.gz
              cd /opt/nginx-${FOCAL_VERSION_NGINX} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch
-             cd /opt/nginx-${FOCAL_VERSION_NGINX} && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Focal/Builder.sh > builder; bash builder
+             cd /opt/nginx-${FOCAL_VERSION_NGINX} && ./configure --with-compat \
+                                          --user=nginx                                             \
+                                          --group=nginx                                            \
+                                          --sbin-path=/usr/sbin/nginx                              \
+                                          --conf-path=/nginx/nginx.conf                            \
+                                          --pid-path=/var/run/nginx.pid                            \
+                                          --lock-path=/var/run/nginx.lock                          \
+                                          --error-log-path=/var/log/nginx/error.log                \
+                                          --http-log-path=/var/log/nginx/access.log                \
+                                          --with-openssl=/opt/mod/openssl-OpenSSL_${FOCAL_OPENSSL} \
+                                          --with-pcre                                              \
+                                          --with-pcre=/opt/mod/pcre2-pcre2-${FOCAL_PCRE}           \
+                                          --with-zlib=/opt/mod/zlib-${FOCAL_ZLIB}                  \
+                                          --with-threads                                           \
+                                          --with-file-aio                                          \
+                                          --with-http_ssl_module                                   \
+                                          --with-http_v2_module                                    \
+                                          --with-http_realip_module                                \
+                                          --with-http_addition_module                              \
+                                          --with-http_xslt_module                                  \
+                                          --with-http_image_filter_module                          \
+                                          --with-http_geoip_module                                 \
+                                          --with-http_sub_module                                   \
+                                          --with-http_dav_module                                   \
+                                          --with-http_flv_module                                   \
+                                          --with-http_mp4_module                                   \
+                                          --with-http_gunzip_module                                \
+                                          --with-http_gzip_static_module                           \
+                                          --with-http_auth_request_module                          \
+                                          --with-http_random_index_module                          \
+                                          --with-http_secure_link_module                           \
+                                          --with-http_slice_module                                 \
+                                          --with-http_stub_status_module                           \
+                                          --with-mail                                              \
+                                          --with-mail_ssl_module                                   \
+                                          --with-stream                                            \
+                                          --with-stream_ssl_module                                 \
+                                          --with-stream_realip_module                              \
+                                          --with-stream_geoip_module                               \
+                                          --with-http_v2_hpack_enc                                 \
+                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC" \
+                                          --with-ld-opt="-Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie"
              cd /opt/nginx-${FOCAL_VERSION_NGINX} && make -j`nproc`
              cd /opt/nginx-${FOCAL_VERSION_NGINX} && make install
              curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Focal/nginx.service > /lib/systemd/system/nginx.service
@@ -132,7 +186,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
 
              apt-get update -y; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y
              DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
-             apt-get install libtool pkg-config -y
+             apt-get install libtool pkg-config make cmake automake autoconf -y
              apt-get install libyajl-dev ssdeep zlib1g-dev libxslt1-dev libgd-dev libgeoip-dev liblmdb-dev libfuzzy-dev libmaxminddb-dev liblua5.2-dev libcurl4-openssl-dev libxml2 libxml2-dev libpcre3-dev -y
 
              mkdir -p /opt/mod/
@@ -153,10 +207,64 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /opt/mod && tar xf v${JAMMY_VERSION_NGX_RESTY_LRUCACHE}.tar.gz && rm -Rf v${JAMMY_VERSION_NGX_RESTY_LRUCACHE}.tar.gz
              cd /opt/mod/lua-resty-lrucache-${JAMMY_VERSION_NGX_RESTY_LRUCACHE} && make install PREFIX=${LUA_SCRIPTS}
 
+             cd /opt/mod && wget https://github.com/PCRE2Project/pcre2/archive/refs/tags/pcre2-${JAMMY_PCRE}.tar.gz
+             cd /opt/mod && tar xf pcre2-${JAMMY_PCRE}.tar.gz; rm -Rf pcre2-${JAMMY_PCRE}.tar.gz
+             cd /opt/mod/pcre2-pcre2-${JAMMY_PCRE} && ./autogen.sh 
+             #cd /opt/mod/pcre2-pcre2-${JAMMY_PCRE} && ./configure --prefix=/usr/local/pcre2_${JAMMY_PCRE} && make -j`nproc` && make install
+             
+             cd /opt/mod && wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${JAMMY_OPENSSL}.tar.gz
+             cd /opt/mod && tar xf openssl-${JAMMY_OPENSSL}.tar.gz; rm -Rf openssl-${JAMMY_OPENSSL}.tar.gz
+             #cd /opt/mod/openssl-OpenSSL_${JAMMY_OPENSSL} && ./config --prefix=/usr/local/openssl_${JAMMY_OPENSSL} && make -j`nproc` && make install
+             
+             cd /opt/mod && wget http://zlib.net/zlib-${JAMMY_ZLIB}.tar.gz
+             cd /opt/mod && tar xf zlib-${JAMMY_ZLIB}.tar.gz; rm -Rf zlib-${JAMMY_ZLIB}.tar.gz
+             #cd /opt/mod/zlib-${JAMMY_ZLIB} && ./configure --prefix=/usr/local/zlib-${JAMMY_ZLIB} && make -j`nproc` && make install
+             
              # Nginx
              cd /opt/ && wget https://nginx.org/download/nginx-${JAMMY_VERSION_NGINX}.tar.gz && tar xf nginx-${JAMMY_VERSION_NGINX}.tar.gz && rm -Rf nginx-${JAMMY_VERSION_NGINX}.tar.gz
              cd /opt/nginx-${JAMMY_VERSION_NGINX} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch
-             cd /opt/nginx-${JAMMY_VERSION_NGINX} && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Jammy/Builder.sh > builder; bash builder
+             cd /opt/nginx-${JAMMY_VERSION_NGINX} && ./configure --with-compat                     \
+                                          --user=nginx                                             \
+                                          --group=nginx                                            \
+                                          --sbin-path=/usr/sbin/nginx                              \
+                                          --conf-path=/nginx/nginx.conf                            \
+                                          --pid-path=/var/run/nginx.pid                            \
+                                          --lock-path=/var/run/nginx.lock                          \
+                                          --error-log-path=/var/log/nginx/error.log                \
+                                          --http-log-path=/var/log/nginx/access.log                \
+                                          --with-openssl=/opt/mod/openssl-openssl-${JAMMY_OPENSSL} \
+                                          --with-pcre                                              \
+                                          --with-pcre=/opt/mod/pcre2-pcre2-${JAMMY_PCRE}           \
+                                          --with-zlib=/opt/mod/zlib-${JAMMY_ZLIB}                  \
+                                          --with-threads                                           \
+                                          --with-file-aio                                          \
+                                          --with-http_ssl_module                                   \
+                                          --with-http_v2_module                                    \
+                                          --with-http_realip_module                                \
+                                          --with-http_addition_module                              \
+                                          --with-http_xslt_module                                  \
+                                          --with-http_image_filter_module                          \
+                                          --with-http_geoip_module                                 \
+                                          --with-http_sub_module                                   \
+                                          --with-http_dav_module                                   \
+                                          --with-http_flv_module                                   \
+                                          --with-http_mp4_module                                   \
+                                          --with-http_gunzip_module                                \
+                                          --with-http_gzip_static_module                           \
+                                          --with-http_auth_request_module                          \
+                                          --with-http_random_index_module                          \
+                                          --with-http_secure_link_module                           \
+                                          --with-http_slice_module                                 \
+                                          --with-http_stub_status_module                           \
+                                          --with-mail                                              \
+                                          --with-mail_ssl_module                                   \
+                                          --with-stream                                            \
+                                          --with-stream_ssl_module                                 \
+                                          --with-stream_realip_module                              \
+                                          --with-stream_geoip_module                               \
+                                          --with-http_v2_hpack_enc                                 \
+                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC" \
+                                          --with-ld-opt="-Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie"
              cd /opt/nginx-${JAMMY_VERSION_NGINX} && make -j`nproc`
              cd /opt/nginx-${JAMMY_VERSION_NGINX} && make install
              curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Jammy/nginx.service > /lib/systemd/system/nginx.service
