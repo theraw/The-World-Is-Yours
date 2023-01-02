@@ -62,19 +62,19 @@ if [ ! -d /opt/mod/pcre2-pcre2-${FOCAL_PCRE} ]; then
     cd /opt/mod/pcre2-pcre2-${FOCAL_PCRE} && ./autogen.sh 
 fi
 
-if [ ! -d /opt/mod/openssl-OpenSSL_${JAMMY_OPENSSL} ]; then
+if [ ! -d /opt/mod/openssl-OpenSSL_${FOCAL_OPENSSL} ]; then
     cd /opt/mod && wget https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_${FOCAL_OPENSSL}.tar.gz
     cd /opt/mod && tar xf OpenSSL_${FOCAL_OPENSSL}.tar.gz; rm -Rf OpenSSL_${FOCAL_OPENSSL}.tar.gz
 fi
 
-if [ ! -d /opt/mod/zlib-${JAMMY_ZLIB} ]; then
+if [ ! -d /opt/mod/zlib-${FOCAL_ZLIB} ]; then
 cd /opt/mod && wget http://zlib.net/zlib-${FOCAL_ZLIB}.tar.gz
 cd /opt/mod && tar xf zlib-${FOCAL_ZLIB}.tar.gz; rm -Rf zlib-${FOCAL_ZLIB}.tar.gz
 fi
 
-rm -Rf /opt/nginx-${NGINX}; cd /opt/; wget https://nginx.org/download/nginx-${NGINX}.tar.gz; tar xf nginx-${NGINX}.tar.gz; rm -Rf nginx-${NGINX}.tar.gz
-cd /opt/nginx-${NGINX} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch
-cd /opt/nginx-${NGINX}/
+rm -Rf /opt/nginx-${FOCAL_VERSION_NGINX}; cd /opt/; wget https://nginx.org/download/nginx-${FOCAL_VERSION_NGINX}.tar.gz; tar xf nginx-${FOCAL_VERSION_NGINX}.tar.gz; rm -Rf nginx-${FOCAL_VERSION_NGINX}.tar.gz
+cd /opt/nginx-${FOCAL_VERSION_NGINX} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch
+cd /opt/nginx-${FOCAL_VERSION_NGINX}/
 LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-2.1/" ./configure --with-compat \
 --user=nginx                                             \
 --group=nginx                                            \
@@ -84,10 +84,10 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --lock-path=/var/run/nginx.lock                          \
 --error-log-path=/var/log/nginx/error.log                \
 --http-log-path=/var/log/nginx/access.log                \
---with-openssl=/opt/mod/openssl-OpenSSL_${JAMMY_OPENSSL} \
+--with-openssl=/opt/mod/openssl-OpenSSL_${FOCAL_OPENSSL} \
 --with-pcre                                              \
---with-pcre=/opt/mod/pcre2-pcre2-${JAMMY_PCRE}           \
---with-zlib=/opt/mod/zlib-${JAMMY_ZLIB}                  \
+--with-pcre=/opt/mod/pcre2-pcre2-${FOCAL_PCRE}           \
+--with-zlib=/opt/mod/zlib-${FOCAL_ZLIB}                  \
 --with-threads                                           \
 --with-file-aio                                          \
 --with-http_ssl_module                                   \
@@ -128,9 +128,9 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --add-dynamic-module=/opt/mod/set-misc-nginx-module-${NGX_SET_MISC} \
 --add-dynamic-module=/opt/mod/testcookie
 make -j`nproc` modules
-rm -Rf /nginx/modules/*.so; cp /opt/nginx-${NGINX}/objs/*.so /nginx/modules/
+rm -Rf /nginx/modules/*.so; cp /opt/nginx-${FOCAL_VERSION_NGINX}/objs/*.so /nginx/modules/
 
-cd /opt/nginx-${NGINX}/
+cd /opt/nginx-${FOCAL_VERSION_NGINX}/
 LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-2.1/" ./configure --with-compat \
 --user=nginx                                             \
 --group=nginx                                            \
@@ -140,8 +140,8 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --lock-path=/var/run/nginx.lock                          \
 --error-log-path=/var/log/nginx/error.log                \
 --http-log-path=/var/log/nginx/access.log                \
---with-openssl=/opt/mod/openssl-OpenSSL_${JAMMY_OPENSSL} \
---with-zlib=/opt/mod/zlib-${JAMMY_ZLIB}                  \
+--with-openssl=/opt/mod/openssl-OpenSSL_${FOCAL_OPENSSL} \
+--with-zlib=/opt/mod/zlib-${FOCAL_ZLIB}                  \
 --with-threads                                           \
 --with-file-aio                                          \
 --with-http_ssl_module                                   \
@@ -174,4 +174,4 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --add-dynamic-module=/opt/mod/ngx_devel_kit-${NGX_DEVEL_KIT} \
 --add-dynamic-module=/opt/mod/lua-nginx-module-${NGX_LUA}
 make -j`nproc` modules
-cp /opt/nginx-${NGINX}/objs/*.so /nginx/modules/
+cp /opt/nginx-${FOCAL_VERSION_NGINX}/objs/*.so /nginx/modules/
