@@ -223,7 +223,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              # Nginx
              cd /opt/ && wget https://nginx.org/download/nginx-${JAMMY_VERSION_NGINX}.tar.gz && tar xf nginx-${JAMMY_VERSION_NGINX}.tar.gz && rm -Rf nginx-${JAMMY_VERSION_NGINX}.tar.gz
              cd /opt/nginx-${JAMMY_VERSION_NGINX} && curl -s https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch > hpack_push.patch && patch -p1 < hpack_push.patch
-             cd /opt/nginx-${FOCAL_VERSION_NGINX} && ./configure --with-compat                     \
+             cd /opt/nginx-${JAMMY_VERSION_NGINX} && ./configure --with-compat                     \
                                           --user=nginx                                             \
                                           --group=nginx                                            \
                                           --sbin-path=/usr/sbin/nginx                              \
