@@ -212,8 +212,8 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /opt/mod/pcre2-pcre2-${JAMMY_PCRE} && ./autogen.sh 
              #cd /opt/mod/pcre2-pcre2-${JAMMY_PCRE} && ./configure --prefix=/usr/local/pcre2_${JAMMY_PCRE} && make -j`nproc` && make install
              
-             cd /opt/mod && wget https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_${JAMMY_OPENSSL}.tar.gz
-             cd /opt/mod && tar xf OpenSSL_${JAMMY_OPENSSL}.tar.gz; rm -Rf OpenSSL_${JAMMY_OPENSSL}.tar.gz
+             cd /opt/mod && wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${JAMMY_OPENSSL}.tar.gz
+             cd /opt/mod && tar xf openssl-${JAMMY_OPENSSL}.tar.gz; rm -Rf openssl-${JAMMY_OPENSSL}.tar.gz
              #cd /opt/mod/openssl-OpenSSL_${JAMMY_OPENSSL} && ./config --prefix=/usr/local/openssl_${JAMMY_OPENSSL} && make -j`nproc` && make install
              
              cd /opt/mod && wget http://zlib.net/zlib-${JAMMY_ZLIB}.tar.gz
@@ -232,7 +232,7 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
                                           --lock-path=/var/run/nginx.lock                          \
                                           --error-log-path=/var/log/nginx/error.log                \
                                           --http-log-path=/var/log/nginx/access.log                \
-                                          --with-openssl=/opt/mod/openssl-OpenSSL_${JAMMY_OPENSSL} \
+                                          --with-openssl=/opt/mod/openssl-openssl-${JAMMY_OPENSSL} \
                                           --with-pcre                                              \
                                           --with-pcre=/opt/mod/pcre2-pcre2-${JAMMY_PCRE}           \
                                           --with-zlib=/opt/mod/zlib-${JAMMY_ZLIB}                  \
