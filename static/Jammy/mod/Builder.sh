@@ -62,9 +62,9 @@ if [ ! -d /opt/mod/pcre2-pcre2-${JAMMY_PCRE} ]; then
     cd /opt/mod/pcre2-pcre2-${JAMMY_PCRE} && ./autogen.sh 
 fi
 
-if [ ! -d /opt/mod/openssl-OpenSSL_${JAMMY_OPENSSL} ]; then
-    cd /opt/mod && wget https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_${JAMMY_OPENSSL}.tar.gz
-    cd /opt/mod && tar xf OpenSSL_${JAMMY_OPENSSL}.tar.gz; rm -Rf OpenSSL_${JAMMY_OPENSSL}.tar.gz
+if [ ! -d /opt/mod/openssl-openssl-${JAMMY_OPENSSL} ]; then
+    cd /opt/mod && wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${JAMMY_OPENSSL}.tar.gz
+    cd /opt/mod && tar xf openssl-${JAMMY_OPENSSL}.tar.gz; rm -Rf openssl-${JAMMY_OPENSSL}.tar.gz
 fi
 
 if [ ! -d /opt/mod/zlib-${JAMMY_ZLIB} ]; then
@@ -84,7 +84,7 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --lock-path=/var/run/nginx.lock                          \
 --error-log-path=/var/log/nginx/error.log                \
 --http-log-path=/var/log/nginx/access.log                \
---with-openssl=/opt/mod/openssl-OpenSSL_${JAMMY_OPENSSL} \
+--with-openssl=/opt/mod/openssl-openssl-${JAMMY_OPENSSL} \
 --with-pcre                                              \
 --with-pcre=/opt/mod/pcre2-pcre2-${JAMMY_PCRE}           \
 --with-zlib=/opt/mod/zlib-${JAMMY_ZLIB}                  \
@@ -128,7 +128,7 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --add-dynamic-module=/opt/mod/set-misc-nginx-module-${NGX_SET_MISC} \
 --add-dynamic-module=/opt/mod/testcookie
 make -j`nproc` modules
-rm -Rf /nginx/modules/*.so; cp /opt/nginx-${NGINX}/objs/*.so /nginx/modules/
+rm -Rf /nginx/modules/*.so; cp /opt/nginx-${JAMMY_VERSION_NGINX}/objs/*.so /nginx/modules/
 
 cd /opt/nginx-${JAMMY_VERSION_NGINX}/
 LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-2.1/" ./configure --with-compat \
@@ -140,7 +140,7 @@ LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-
 --lock-path=/var/run/nginx.lock                          \
 --error-log-path=/var/log/nginx/error.log                \
 --http-log-path=/var/log/nginx/access.log                \
---with-openssl=/opt/mod/openssl-OpenSSL_${JAMMY_OPENSSL} \
+--with-openssl=/opt/mod/openssl-openssl-${JAMMY_OPENSSL} \
 --with-zlib=/opt/mod/zlib-${JAMMY_ZLIB}                  \
 --with-threads                                           \
 --with-file-aio                                          \
