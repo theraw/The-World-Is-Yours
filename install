@@ -56,6 +56,11 @@ case "`grep DISTRIB_CODENAME /etc/*-release | awk -F '=' '{print $2}'`" in
              cd /opt/mod && wget https://github.com/openresty/lua-resty-lrucache/archive/refs/tags/v${FOCAL_VERSION_NGX_RESTY_LRUCACHE}.tar.gz
              cd /opt/mod && tar xf v${FOCAL_VERSION_NGX_RESTY_LRUCACHE}.tar.gz && rm -Rf v${FOCAL_VERSION_NGX_RESTY_LRUCACHE}.tar.gz
              cd /opt/mod/lua-resty-lrucache-${FOCAL_VERSION_NGX_RESTY_LRUCACHE} && make install PREFIX=${LUA_SCRIPTS}
+             
+             cd /opt/mod && wget https://github.com/PCRE2Project/pcre2/archive/refs/tags/pcre2-${FOCAL_PCRE}.tar.gz
+             cd /opt/mod && tar xf pcre2-${FOCAL_PCRE}.tar.gz; rm -Rf pcre2-${FOCAL_PCRE}.tar.gz
+             cd /opt/mod/pcre2-pcre2-${FOCAL_PCRE} && ./autogen.sh 
+             cd /opt/mod/pcre2-pcre2-${FOCAL_PCRE} && ./configure
 
              # Nginx
              cd /opt/ && wget https://nginx.org/download/nginx-${FOCAL_VERSION_NGINX}.tar.gz && tar xf nginx-${FOCAL_VERSION_NGINX}.tar.gz && rm -Rf nginx-${FOCAL_VERSION_NGINX}.tar.gz
