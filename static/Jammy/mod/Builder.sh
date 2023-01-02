@@ -56,20 +56,20 @@ if [ ! -d /opt/mod/naxsi ]; then
     cd /opt/mod/; git clone --recurse-submodules https://github.com/wargio/naxsi.git naxsi
 fi
 
-if [ ! -d /opt/mod/pcre2-pcre2-${FOCAL_PCRE} ]; then
-    cd /opt/mod && wget https://github.com/PCRE2Project/pcre2/archive/refs/tags/pcre2-${FOCAL_PCRE}.tar.gz
-    cd /opt/mod && tar xf pcre2-${FOCAL_PCRE}.tar.gz; rm -Rf pcre2-${FOCAL_PCRE}.tar.gz
-    cd /opt/mod/pcre2-pcre2-${FOCAL_PCRE} && ./autogen.sh 
+if [ ! -d /opt/mod/pcre2-pcre2-${JAMMY_PCRE} ]; then
+    cd /opt/mod && wget https://github.com/PCRE2Project/pcre2/archive/refs/tags/pcre2-${JAMMY_PCRE}.tar.gz
+    cd /opt/mod && tar xf pcre2-${JAMMY_PCRE}.tar.gz; rm -Rf pcre2-${JAMMY_PCRE}.tar.gz
+    cd /opt/mod/pcre2-pcre2-${JAMMY_PCRE} && ./autogen.sh 
 fi
 
 if [ ! -d /opt/mod/openssl-OpenSSL_${JAMMY_OPENSSL} ]; then
-    cd /opt/mod && wget https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_${FOCAL_OPENSSL}.tar.gz
-    cd /opt/mod && tar xf OpenSSL_${FOCAL_OPENSSL}.tar.gz; rm -Rf OpenSSL_${FOCAL_OPENSSL}.tar.gz
+    cd /opt/mod && wget https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_${JAMMY_OPENSSL}.tar.gz
+    cd /opt/mod && tar xf OpenSSL_${JAMMY_OPENSSL}.tar.gz; rm -Rf OpenSSL_${JAMMY_OPENSSL}.tar.gz
 fi
 
 if [ ! -d /opt/mod/zlib-${JAMMY_ZLIB} ]; then
-cd /opt/mod && wget http://zlib.net/zlib-${FOCAL_ZLIB}.tar.gz
-cd /opt/mod && tar xf zlib-${FOCAL_ZLIB}.tar.gz; rm -Rf zlib-${FOCAL_ZLIB}.tar.gz
+cd /opt/mod && wget http://zlib.net/zlib-${JAMMY_ZLIB}.tar.gz
+cd /opt/mod && tar xf zlib-${JAMMY_ZLIB}.tar.gz; rm -Rf zlib-${JAMMY_ZLIB}.tar.gz
 fi
 
 rm -Rf /opt/nginx-${JAMMY_VERSION_NGINX}; cd /opt/; wget https://nginx.org/download/nginx-${JAMMY_VERSION_NGINX}.tar.gz; tar xf nginx-${JAMMY_VERSION_NGINX}.tar.gz; rm -Rf nginx-${JAMMY_VERSION_NGINX}.tar.gz
