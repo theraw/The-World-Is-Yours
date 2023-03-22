@@ -52,7 +52,18 @@ LUA RESTY CORE SCRIPTS = /usr/twiylua/
 ## KEEP IN MIND!
 1. You're trading perfomance for security.
 2. If your server provider does not have anti-ddos your IPTABLES will fail to keep the bans, and your server may be offline in cases of big attacks.
-3. This is not a script that with one command your ddos problem is fixed, there's no such thing for L7 attacks as they change and new methods come out very often and no one has any ideas where your server is lacking security so this script is a basic thing more advanced protection require knowledge, monitoring logs, and applying filters in order to automatically ban attackers, this project is suggested to run with fail2ban + iptables.
+3. This is not a script that with one command your ddos problem is fixed, there's no such thing for L7 attacks as they change and new methods come out very often and no one has any ideas where your server is lacking security so this script is a basic thing more advanced protection require knowledge, monitoring logs, and applying filters in order to automatically ban attackers, this project gives you the tools how you do the job is up to you!
+
+## Premium Available.
+
+As anything else on internet a **Pro** Version of this is available and not released to public, is actually possible in 2 ways.
+
+1. Monthly billing, is like a managed plan you will be offered reverse-proxy, you can customize filters even yourself.
+
+2. One time payment, you can purchase a one time payment script that can detect proxies, rate limit, cacheable, autoban, easily to change filter or action. *(one time payment option has no support you'll be given the script and you're on your own!)*
+
+The second offer (2), is not a php script 😂 .
+you can write me on discord or `raw@dopehosting.net`
 
 ## Contributors
 
