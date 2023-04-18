@@ -60,9 +60,9 @@ As anything else on internet a **Pro** Version of this is available and not rele
 
 1. Monthly billing, is like a managed plan you will be offered reverse-proxy, you can customize filters even yourself.
 
-2. One time payment, you can purchase a one time payment script that can detect proxies, rate limit, cacheable, autoban, easily to change filter or action. *(one time payment option has no support you'll be given the script and you're on your own!)*
+~~2. One time payment, you can purchase a one time payment script that can detect proxies, rate limit, cacheable, autoban, easily to change filter or action. *(one time payment option has no support you'll be given the script and you're on your own!)*~~
 
-The second offer (2), is not a php script 😂 .
+~~The second offer (2), is not a php script 😂 .~~
 you can write me on discord or `raw@dopehosting.net`
 
 ## Contributors
