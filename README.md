@@ -17,11 +17,13 @@ Now easier then before, you will have to compile only Nginx, Rest of modules com
 How do these 3 modules work together? L7 will block all or most of bots, ModSecurity and Naxsi take priority over cookie challenge!
 So if its a offensive request that Modsecurity or Naxsi detect it as such then these 2 will deal with that request otherwise cookie challenge will appear.
 
-## INSTALLATION
-
-1. **`apt-get update; apt-get -y install build-essential libssl-dev curl nano wget zip unzip sudo git psmisc tar`**
-
-2. **`curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/install > install; bash install`**
+## Compile from source
+```
+git clone
+cd The-World-Is-Yours/
+bash run.sh new
+bash run.sh build
+```
 
 
 
