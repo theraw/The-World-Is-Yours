@@ -3,6 +3,7 @@
 function reqs() {
     apt-get update -y; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y
     DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata dialog
+    apt-get install build-essential libssl-dev curl nano wget zip unzip sudo psmisc tar -y
     apt-get install libtool pkg-config make cmake automake autoconf -y
     apt-get install libyajl-dev ssdeep zlib1g-dev libxslt1-dev libgd-dev libgeoip-dev liblmdb-dev libfuzzy-dev libmaxminddb-dev liblua5.2-dev libcurl4-openssl-dev libxml2 libxml2-dev libpcre3-dev mercurial libpcre2-dev -y
     mkdir -p $LUA_SCRIPTS
