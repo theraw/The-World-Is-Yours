@@ -49,6 +49,3 @@ export NGX_MOD_LUA_LOCK="0.09"
 
 # https://github.com/openresty/srcache-nginx-module/tags
 export NGX_MOD_LUA_SRCACHE="0.33"
-
-# https://github.com/nginxinc/nginx-otel/tags
-export NGX_OPENTELEMETRY="0.1.1"
