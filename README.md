@@ -22,9 +22,15 @@ If you want to try with a custom nginx version then, open `version` file and cha
 ```bash
 bash build/run.sh new
 bash build/run.sh build
+bash build/run.sh postfix
 ```
-The `bash build/run.sh new` will always download things that are missing, 
-for example if you change a version from file it will download the new version, if you want to clear things out then run `rm -rf /opt/mod && rm -rf /opt/nginx-*`
+## Basic cli info
+```
+bash build/run.sh new     => Download all modules + nginx that are missing from /opt/, (if you make version changes to 'version' file then simply rerun this to download again)
+bash build/run.sh build   => This is going to simply compile nginx nothing else. You can run this as many times as you need, its not going to replace configs. 
+bash build/run.sh postfix => This will redownload /nginx/nginx.conf everything you run it. Suggested to run only once when you install nginx via my repo for first time.
+```
+
 
 ## Basic info.
 
