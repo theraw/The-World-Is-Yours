@@ -23,6 +23,13 @@
             index  index.html index.htm;
         }
 
+        location /lua-test {
+            default_type 'text/plain';
+            content_by_lua_block {
+                ngx.say('Hello, world!')
+            }
+        }
+
         location /denied/ {
           return 403;
         }
