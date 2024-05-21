@@ -1,5 +1,4 @@
-# https://nginx.org/download/
-export NGINX="1.25.1"
+export NGINX="1.26.0"
 
 export LUA_SCRIPTS="/usr/nginx_lua/"
 
@@ -30,7 +29,6 @@ export LUA_SCRIPTS_RESTYCORE="0.1.28"
 # https://github.com/openresty/lua-resty-lrucache/tags
 export LUA_SCRIPTS_LRUCACHE="0.13"
 
-
 # https://github.com/openresty/luajit2/tags
 export SYSTEM_LUAJIT="2.1-20231117"
 
@@ -38,7 +36,19 @@ export SYSTEM_LUAJIT="2.1-20231117"
 export SYSTEM_PCRE="10.43"
 
 # https://github.com/openssl/openssl
-export SYSTEM_OPENSSL="1_1_1f"
+export SYSTEM_OPENSSL="3.1.5-quic1"
 
 # https://github.com/SpiderLabs/ModSecurity/releases
 export SYSTEM_MODSECURITY="3.0.12"
+
+# https://github.com/openresty/lua-resty-mysql/tags
+export NGX_MOD_LUA_MYSQL="0.27"
+
+# https://github.com/openresty/lua-resty-lock/tags
+export NGX_MOD_LUA_LOCK="0.09"
+
+# https://github.com/openresty/srcache-nginx-module/tags
+export NGX_MOD_LUA_SRCACHE="0.33"
+
+# https://github.com/nginxinc/nginx-otel/tags
+export NGX_OPENTELEMETRY="0.1.1"
