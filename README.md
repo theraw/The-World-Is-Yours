@@ -26,9 +26,9 @@ bash build/run.sh postfix
 ```
 ## Basic cli info
 ```
-bash build/run.sh new     => Download all modules + nginx that are missing from /opt/, (if you make version changes to 'version' file then simply rerun this to download again)
-bash build/run.sh build   => This is going to simply compile nginx nothing else. You can run this as many times as you need, its not going to replace configs. 
-bash build/run.sh postfix => This will redownload /nginx/nginx.conf everything you run it. Suggested to run only once when you install nginx via my repo for first time.
+bash build/run.sh new     => Download all modules + nginx that are missing from /opt/. (If you make version changes to 'version' file then simply rerun this to download again)
+bash build/run.sh build   => This is going to simply compile nginx nothing else. (You can run this as many times as you need, its not going to replace configs)
+bash build/run.sh postfix => This will redownload /nginx/nginx.conf everytime you run it. (Suggested to run only once when you install nginx via my repo for first time)
 ```
 
 
