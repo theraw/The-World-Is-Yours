@@ -232,7 +232,7 @@ test_nginx() {
                                           --add-module=/opt/mod/ngx_brotli                                        \
                                           --add-module=/opt/mod/testcookie                                        \
                                           --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC" \
-                                          --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie"
+                                          --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -L/opt/mod/pcre2-pcre2-${SYSTEM_PCRE}/.libs -lpcre2-8 -L/lib/x86_64-linux-gnu -lpcre"
                                           make clean
 }
 function build() {
@@ -307,8 +307,8 @@ function post_build() {
     curl -s https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended > /nginx/modsec/modsecurity.conf
     curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/tester.conf > /nginx/modsec/tester.conf
     curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/unicode.mapping > /nginx/modsec/unicode.mapping
-    curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Focal/nginx.conf > /nginx/nginx.conf
-    mkdir -p /nginx/live/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/default > /nginx/live/default
+    curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx/nginx.conf > /nginx/nginx.conf
+    curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx/live/default > /nginx/live/default
     mkdir -p /hostdata/default/public_html/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/index.html > /hostdata/default/public_html/index.html
     mkdir -p /hostdata/default/public_html/cdn/modsec && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/aes.min.js > /hostdata/default/public_html/cdn/modsec/aes.min.js
 }
