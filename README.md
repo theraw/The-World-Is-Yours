@@ -12,8 +12,8 @@
 
 ## Compile from source
 ```bash
-git clone https://github.com/theraw/The-World-Is-Yours.git
-cd The-World-Is-Yours/
+apt-get -y install git && cd /root/ && git clone https://github.com/theraw/The-World-Is-Yours.git && cd The-World-Is-Yours/
+
 bash build/run.sh new
 bash build/run.sh build
 bash build/run.sh postfix
