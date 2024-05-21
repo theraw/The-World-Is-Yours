@@ -16,13 +16,13 @@ git clone https://github.com/theraw/The-World-Is-Yours.git
 cd The-World-Is-Yours/
 bash build/run.sh new
 bash build/run.sh build
+bash build/run.sh postfix
 ```
 
 If you want to try with a custom nginx version then, open `version` file and change versions then run
 ```bash
 bash build/run.sh new
 bash build/run.sh build
-bash build/run.sh postfix
 ```
 ## Basic cli info
 ```
