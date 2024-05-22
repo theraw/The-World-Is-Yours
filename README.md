@@ -4,6 +4,7 @@
 
 - [x] Support Ubuntu 22.04
 - [x] Latest Nginx 1.26.0
+- [x] HTTP/3
 - [x] ModSecurity Support.
 - [x] Naxsi Support.
 - [x] Lua Support.
