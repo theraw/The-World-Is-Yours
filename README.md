@@ -24,7 +24,7 @@ If you want to try with a custom nginx version then, open `version` file and cha
 bash build/run.sh new
 bash build/run.sh build
 ```
-## Basic cli info
+## CLI Info
 ```
 bash build/run.sh new     => Download all modules + nginx that are missing from /opt/. (If you make version changes to 'version' file then simply rerun this to download again)
 bash build/run.sh build   => This is going to simply compile nginx nothing else. (You can run this as many times as you need, its not going to replace configs)
@@ -32,7 +32,7 @@ bash build/run.sh postfix => This will redownload /nginx/nginx.conf everytime yo
 ```
 
 
-## Basic info.
+## Nginx info.
 
 ```
 => Nginx Folder     = /nginx/
