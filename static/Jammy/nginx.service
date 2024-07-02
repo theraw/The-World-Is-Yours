@@ -1,8 +1,8 @@
-[Nginx]
+[Unit]
 Description=A high performance web server and a reverse proxy server
 After=syslog.target network-online.target remote-fs.target nss-lookup.target
 Wants=network-online.target
-        
+
 [Service]
 Type=forking
 PIDFile=/var/run/nginx.pid
@@ -11,6 +11,6 @@ ExecStart=/usr/sbin/nginx
 ExecReload=/usr/sbin/nginx -s reload
 ExecStop=/bin/kill -s QUIT $MAINPID
 PrivateTmp=true
-        
+
 [Install]
 WantedBy=multi-user.target
