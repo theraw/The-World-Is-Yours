@@ -86,10 +86,16 @@ jobs:
             echo "Debian package created at /opt/${PKG_NAME}_${VERSION}_${ARCH}.deb"
         }; create_deb'
 
+    - name: Create Git Tag
+      run: |
+        git config user.name "theraw"
+        git config user.email "raw@dopehosting.net"
+        git tag v${{ steps.build.outputs.VERSION }}
+        git push origin v${{ steps.build.outputs.VERSION }}
+
     - name: Upload .deb Package as Release Asset
       uses: softprops/action-gh-release@v1
       with:
         files: /opt/*.deb
       env:
-        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
-        RELEASE_TAG: v${{ steps.build.outputs.VERSION }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
