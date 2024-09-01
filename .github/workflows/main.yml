@@ -1,4 +1,5 @@
 name: Build and Publish NGINX
+
 on:
   push:
     branches:
@@ -6,27 +7,32 @@ on:
   pull_request:
     branches:
       - main
+
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get -y install git dpkg-dev
+
     - name: Clone the repository
       run: |
         cd $HOME
         git clone https://github.com/theraw/The-World-Is-Yours.git
         cd The-World-Is-Yours/
+
     - name: Build NGINX
       run: |
         cd $HOME/The-World-Is-Yours/
         sudo bash build/run.sh new
         sudo bash build/run.sh build
         sudo bash build/run.sh postfix
+
     - name: Build .deb Package
       run: |
         cd $HOME/The-World-Is-Yours/
@@ -79,8 +85,11 @@ jobs:
             mv ${PKG_DIR}.deb /opt/${PKG_NAME}_${VERSION}_${ARCH}.deb
             echo "Debian package created at /opt/${PKG_NAME}_${VERSION}_${ARCH}.deb"
         }; create_deb'
-    - name: Upload .deb Package as Artifact
-      uses: actions/upload-artifact@v3
+
+    - name: Upload .deb Package as Release Asset
+      uses: softprops/action-gh-release@v1
       with:
-        name: twiy-nginx-deb
-        path: /opt/*.deb
+        files: /opt/*.deb
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+        RELEASE_TAG: v${{ steps.build.outputs.VERSION }}
