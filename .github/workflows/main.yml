@@ -1,0 +1,93 @@
+name: Build and Publish NGINX
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get -y update
+        sudo apt-get -y install git dpkg-dev build-essential
+
+    - name: Clone the repository
+      run: |
+        git clone https://github.com/theraw/The-World-Is-Yours.git $GITHUB_WORKSPACE/The-World-Is-Yours
+
+    - name: Build NGINX
+      run: |
+        cd $GITHUB_WORKSPACE/The-World-Is-Yours
+        sudo bash build/run.sh new
+        sudo bash build/run.sh build
+        sudo bash build/run.sh postfix
+
+    - name: Build .deb Package
+      run: |
+        cd $GITHUB_WORKSPACE/The-World-Is-Yours
+        sudo bash -c '
+        PKG_NAME="twiy"
+        VERSION=$(nginx -v 2>&1 | awk -F"/" "{print \$2}")
+        ARCH="amd64"
+        PKG_DIR="$GITHUB_WORKSPACE/${PKG_NAME}_${VERSION}_${ARCH}"
+        DEB_DIR="${PKG_DIR}/DEBIAN"
+
+        mkdir -p ${PKG_DIR}/usr/sbin
+        mkdir -p ${PKG_DIR}/usr/local/nginx
+        mkdir -p ${PKG_DIR}/nginx
+        mkdir -p ${PKG_DIR}/etc/systemd/system
+        mkdir -p ${PKG_DIR}/var/log/nginx
+        mkdir -p ${PKG_DIR}/nginx/conf.d
+        mkdir -p ${PKG_DIR}/nginx/live
+        mkdir -p ${PKG_DIR}/nginx/modsec
+        mkdir -p ${PKG_DIR}/usr/lib
+        mkdir -p ${PKG_DIR}/usr/local/lib
+        mkdir -p ${PKG_DIR}/hostdata/default/public_html
+        mkdir -p ${PKG_DIR}/usr/nginx_lua
+        cp /usr/sbin/nginx ${PKG_DIR}/usr/sbin/
+        cp -R /nginx/* ${PKG_DIR}/nginx/
+        cp /etc/systemd/system/nginx.service ${PKG_DIR}/etc/systemd/system/
+        cp -R /hostdata/default ${PKG_DIR}/hostdata/
+        cp -R /usr/nginx_lua ${PKG_DIR}/usr/
+        for lib in $(ldd /usr/sbin/nginx | grep "=> /" | awk "{print \$3}"); do
+            cp "$lib" "${PKG_DIR}/usr/lib/"
+        done
+        for module in /opt/mod/*; do
+            if [ -f "$module" ]; then
+                for lib in $(ldd "$module" | grep "=> /" | awk "{print \$3}"); do
+                    cp "$lib" "${PKG_DIR}/usr/lib/"
+                done
+            fi
+        done
+        mkdir -p ${DEB_DIR}
+        echo "Package: ${PKG_NAME}" > ${DEB_DIR}/control
+        echo "Version: ${VERSION}" >> ${DEB_DIR}/control
+        echo "Section: base" >> ${DEB_DIR}/control
+        echo "Priority: optional" >> ${DEB_DIR}/control
+        echo "Architecture: ${ARCH}" >> ${DEB_DIR}/control
+        echo "Maintainer: theraw <me@julio.al>" >> ${DEB_DIR}/control
+        echo "Description: Custom NGINX build with modules and dependencies" >> ${DEB_DIR}/control
+        cat <<'EOF' > ${DEB_DIR}/postinst
+        #!/bin/bash
+        useradd -r -d /usr/local/nginx -s /bin/false nginx || true
+        EOF
+        chmod 755 ${DEB_DIR}/postinst
+        dpkg-deb --build ${PKG_DIR}
+        mv ${PKG_DIR}.deb $GITHUB_WORKSPACE/${PKG_NAME}_${VERSION}_${ARCH}.deb
+        echo "Debian package created at $GITHUB_WORKSPACE/${PKG_NAME}_${VERSION}_${ARCH}.deb"
+        '
+
+    - name: Upload .deb Package as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: twiy-nginx-deb
+        path: $GITHUB_WORKSPACE/*.deb
