@@ -11,6 +11,9 @@
 - [x] Cookie Based Challenge.
 - [x] [Versions List](https://github.com/theraw/The-World-Is-Yours/blob/master/version)
 
+## Easy install 
+(This is beta please create an issue if any errors) Download .deb from https://github.com/theraw/The-World-Is-Yours/releases
+
 ## Compile from source
 ```bash
 apt-get -y install git && cd /root/ && git clone https://github.com/theraw/The-World-Is-Yours.git && cd The-World-Is-Yours/
