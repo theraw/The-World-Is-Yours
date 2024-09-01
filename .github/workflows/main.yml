@@ -3,10 +3,10 @@ name: Build and Publish NGINX
 on:
   push:
     branches:
-      - theraw-testrun
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build:
