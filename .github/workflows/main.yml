@@ -34,6 +34,7 @@ jobs:
         sudo bash build/run.sh postfix
 
     - name: Build .deb Package
+      id: build_deb
       run: |
         cd $HOME/The-World-Is-Yours/
         sudo bash -c 'function create_deb() {
@@ -84,18 +85,20 @@ jobs:
             dpkg-deb --build ${PKG_DIR}
             mv ${PKG_DIR}.deb /opt/${PKG_NAME}_${VERSION}_${ARCH}.deb
             echo "Debian package created at /opt/${PKG_NAME}_${VERSION}_${ARCH}.deb"
+            echo "::set-output name=VERSION::${VERSION}"
         }; create_deb'
 
     - name: Create Git Tag
       run: |
+        VERSION=${{ steps.build_deb.outputs.VERSION }}
         git config user.name "theraw"
-        git config user.email "raw@dopehosting.net"
-        git tag v${{ steps.build.outputs.VERSION }}
-        git push origin v${{ steps.build.outputs.VERSION }}
+        git config user.email "me@julio.al"
+        git tag v$VERSION
+        git push origin v$VERSION
 
     - name: Upload .deb Package as Release Asset
       uses: softprops/action-gh-release@v1
       with:
         files: /opt/*.deb
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
