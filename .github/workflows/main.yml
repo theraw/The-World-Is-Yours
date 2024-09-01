@@ -14,7 +14,7 @@ jobs:
       uses: actions/checkout@v3
     - name: Install dependencies
       run: |
-        sudo apt-get update
+        sudo apt-get -y update
         sudo apt-get -y install git dpkg-dev
     - name: Clone the repository
       run: |
