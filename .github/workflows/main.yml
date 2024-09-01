@@ -97,8 +97,9 @@ jobs:
         git push origin v$VERSION
 
     - name: Upload .deb Package as Release Asset
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: /opt/*.deb
+        tag_name: v${{ steps.build_deb.outputs.version }}
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
