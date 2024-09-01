@@ -23,20 +23,20 @@ jobs:
 
     - name: Clone the repository
       run: |
-        cd /root/
+        cd $HOME
         git clone https://github.com/theraw/The-World-Is-Yours.git
         cd The-World-Is-Yours/
 
     - name: Build NGINX
       run: |
-        cd /root/The-World-Is-Yours/
+        cd $HOME/The-World-Is-Yours/
         sudo bash build/run.sh new
         sudo bash build/run.sh build
         sudo bash build/run.sh postfix
 
     - name: Build .deb Package
       run: |
-        cd /root/The-World-Is-Yours/
+        cd $HOME/The-World-Is-Yours/
         sudo bash -c 'function create_deb() {
             PKG_NAME="twiy"
             VERSION=$(nginx -v 2>&1 | awk -F"/" "{print \$2}")
