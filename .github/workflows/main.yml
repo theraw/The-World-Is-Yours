@@ -1,0 +1,120 @@
+name: Build and Publish NGINX
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js 16.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16.x'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install git dpkg-dev
+
+    - name: Clone the repository
+      run: |
+        cd /root/
+        git clone https://github.com/theraw/The-World-Is-Yours.git
+        cd The-World-Is-Yours/
+
+    - name: Build NGINX
+      run: |
+        cd /root/The-World-Is-Yours/
+        sudo bash build/run.sh new
+        sudo bash build/run.sh build
+        sudo bash build/run.sh postfix
+
+    - name: Build .deb Package
+      run: |
+        cd /root/The-World-Is-Yours/
+        sudo bash -c 'function create_deb() {
+            # Define package information
+            PKG_NAME="twiy"
+            VERSION=$(nginx -v 2>&1 | awk -F"/" "{print \$2}")
+            ARCH="amd64"
+            PKG_DIR="/opt/${PKG_NAME}_${VERSION}_${ARCH}"
+            DEB_DIR="${PKG_DIR}/DEBIAN"
+
+            # Create directory structure
+            mkdir -p ${PKG_DIR}/usr/sbin
+            mkdir -p ${PKG_DIR}/usr/local/nginx
+            mkdir -p ${PKG_DIR}/nginx
+            mkdir -p ${PKG_DIR}/etc/systemd/system
+            mkdir -p ${PKG_DIR}/var/log/nginx
+            mkdir -p ${PKG_DIR}/nginx/conf.d
+            mkdir -p ${PKG_DIR}/nginx/live
+            mkdir -p ${PKG_DIR}/nginx/modsec
+            mkdir -p ${PKG_DIR}/usr/lib
+            mkdir -p ${PKG_DIR}/usr/local/lib
+            mkdir -p ${PKG_DIR}/hostdata/default/public_html
+            mkdir -p ${PKG_DIR}/usr/nginx_lua
+
+            # Copy necessary files
+            cp /usr/sbin/nginx ${PKG_DIR}/usr/sbin/
+            cp -R /nginx/* ${PKG_DIR}/nginx/
+            cp /etc/systemd/system/nginx.service ${PKG_DIR}/etc/systemd/system/
+            cp -R /hostdata/default ${PKG_DIR}/hostdata/
+            cp -R /usr/nginx_lua ${PKG_DIR}/usr/
+
+            # Copy required libraries using ldd to detect dependencies
+            for lib in $(ldd /usr/sbin/nginx | grep "=> /" | awk "{print \$3}"); do
+                cp "$lib" "${PKG_DIR}/usr/lib/"
+            done
+
+            # Repeat for each additional library or binary you need to include
+            for module in /opt/mod/*; do
+                if [ -f "$module" ]; then
+                    for lib in $(ldd "$module" | grep "=> /" | awk "{print \$3}"); do
+                        cp "$lib" "${PKG_DIR}/usr/lib/"
+                    done
+                fi
+            done
+
+            # Create user nginx during package installation
+            mkdir -p ${DEB_DIR}
+            cat <<EOL > ${DEB_DIR}/control
+Package: ${PKG_NAME}
+Version: ${VERSION}
+Section: base
+Priority: optional
+Architecture: ${ARCH}
+Maintainer: You <you@example.com>
+Description: Custom NGINX build with modules and dependencies
+EOL
+
+            cat <<EOL > ${DEB_DIR}/postinst
+#!/bin/bash
+# Post-installation script
+useradd -r -d /usr/local/nginx -s /bin/false nginx || true
+EOL
+            chmod 755 ${DEB_DIR}/postinst
+
+            # Build the .deb package
+            dpkg-deb --build ${PKG_DIR}
+
+            # Move the .deb package to the /opt directory
+            mv ${PKG_DIR}.deb /opt/${PKG_NAME}_${VERSION}_${ARCH}.deb
+
+            echo "Debian package created at /opt/${PKG_NAME}_${VERSION}_${ARCH}.deb"
+        }; create_deb'
+
+    - name: Upload .deb Package as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: twiy-nginx-deb
+        path: /opt/*.deb
