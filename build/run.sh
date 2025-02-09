@@ -312,6 +312,13 @@ function post_build() {
     mkdir -p /hostdata/default/public_html/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/index.html > /hostdata/default/public_html/index.html
     mkdir -p /hostdata/default/public_html/cdn/modsec && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/aes.min.js > /hostdata/default/public_html/cdn/modsec/aes.min.js
     curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Jammy/nginx.service > /etc/systemd/system/nginx.service
+    if [ "$CI" == "true" ]; then
+        echo "Skipping systemctl commands on GitHub runner"
+    else
+        systemctl daemon-reload
+        systemctl start nginx.service
+        systemctl enable nginx.service
+    fi
     systemctl daemon-reload; systemctl start nginx.service && systemctl enable nginx.service
 }
 
