@@ -319,7 +319,6 @@ function post_build() {
         systemctl start nginx.service
         systemctl enable nginx.service
     fi
-    systemctl daemon-reload; systemctl start nginx.service && systemctl enable nginx.service
 }
 
 # Handling command-line arguments
