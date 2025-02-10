@@ -28,8 +28,7 @@ jobs:
 
     - name: Build NGINX
       run: |
-        ls -la /
-        sleep 3000
+        touch /.dockerenv
         cd $HOME/The-World-Is-Yours/
         sudo bash build/run.sh new
         sudo bash build/run.sh build
