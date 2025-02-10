@@ -311,7 +311,7 @@ function post_build() {
     curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx/live/default > /nginx/live/default
     mkdir -p /hostdata/default/public_html/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/index.html > /hostdata/default/public_html/index.html
     mkdir -p /hostdata/default/public_html/cdn/modsec && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/aes.min.js > /hostdata/default/public_html/cdn/modsec/aes.min.js
-    if [ "$CI" == "BOT" ]; then
+    if [ -f "/run/.containerenv" ] || [ -f "/.dockerenv" ]; then
         echo "Skipping systemctl commands on GitHub runner"
         mkdir -p /etc/systemd/system/
         curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Jammy/nginx.service > /etc/systemd/system/nginx.service
