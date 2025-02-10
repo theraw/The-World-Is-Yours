@@ -27,8 +27,6 @@ jobs:
         cd The-World-Is-Yours/
 
     - name: Build NGINX
-      env:
-        CI: "BOT"
       run: |
         cd $HOME/The-World-Is-Yours/
         sudo bash build/run.sh new
