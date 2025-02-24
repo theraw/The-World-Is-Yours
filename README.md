@@ -39,7 +39,7 @@
      ```bash
      Download them from : https://github.com/theraw/The-World-Is-Yours/releases
      ```
-- 2 : **Compile from source (Hard)**
+- 3 : **Compile from source (Hard)**
      ```bash
      apt-get -y install git && cd /root/ && git clone https://github.com/theraw/The-World-Is-Yours.git && cd The-World-Is-Yours/
 
@@ -47,9 +47,9 @@
      bash build/run.sh build
      bash build/run.sh postfix
      ```
-     - 2.1 : **Compiling from source with changed versions**
+     - 3.1 : **Compiling from source with changed versions**
           ```bash
-          # assuming you did step 2
+          # assuming you completed step 3.
           # update "version" file then run again
           bash build/run.sh new
           bash build/run.sh build
