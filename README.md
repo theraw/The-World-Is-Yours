@@ -83,12 +83,20 @@ LUA RESTY CORE SCRIPTS = /usr/nginx_lua
 ```
 
 ## How to install lua scripts 
-```bash
-. /root/The-World-Is-Yours/version
-cd /opt/mod/; git clone https://github.com/openresty/lua-resty-lrucache.git
-cd /opt/mod/lua-resty-lrucache; make install PREFIX=${LUA_SCRIPTS}
-nginx -s reload
-```
+
+- Method 1
+  ```bash
+  . /root/The-World-Is-Yours/version
+  cd /opt/mod/; git clone https://github.com/openresty/lua-resty-lrucache.git
+  cd /opt/mod/lua-resty-lrucache; make install PREFIX=${LUA_SCRIPTS}
+  nginx -s reload
+  ```
+- Method 2
+  ```bash
+  # At first when you use this method you may get errors for missing lua scripts, you can install them with "luarocks".
+  apt-get install luarocks
+  luarocks install lua-resty-lrucache
+  ```
 
 # Support options.
 
