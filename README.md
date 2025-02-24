@@ -25,12 +25,14 @@
 
 - 1 : **Repository (Easy)**
      ```bash
+     # Add repository and update system.
      echo '' > /etc/apt/sources.list.d/the-world-is-yours.list
      apt-get update; apt-get upgrade -y
-     # install this repo nginx only build
+     
+     # Install nginx.
      apt-get install raweb -y
 
-     # install admin panel
+     # Install admin panel.
      apt-get install raweb-admin -y
      ```
 - 2 : **Manual .deb (Med)**
