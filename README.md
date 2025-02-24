@@ -2,43 +2,70 @@
 
 ![Simple](https://c.tenor.com/uYqsM9uIyuYAAAAC/simple-easy.gif)
 
-- [x] Support Ubuntu 22.04
-- [x] Latest Nginx 1.26.0
-- [x] HTTP/3
-- [x] ModSecurity Support.
-- [x] Naxsi Support.
+- [x] **Support Ubuntu 22.04**
+- [x] **Latest Nginx 1.26.0**
+- [x] **HTTP/3**
+- [x] **Admin Panel** : Optional *(Not installed by default)*
+     - [X] **Home Page** *(Nginx stats/graph via nginx stub stats)*
+     - [X] **Vhosts Page** *(Create, Delete, Edit)*
+     - [ ] **Nginx Settings Page** *(Only change existing nginx.conf values)*
+     - [ ] **Log Reporting Page** (Not set yet, might be all in one page or seperated pages for access logs, modsec logs)
+     - [ ] **Php installer and selector**
+     - [ ] **One click App installer** *(WordPress)*
+- [x] ModSecurity Support *(Ngx Mod)*
+- [x] Naxsi Support *(Ngx Mod)*
 - [x] Lua Support.
-- [x] Cookie Based Challenge.
+     - [X] **AutoSSL** *(Lua Mod)*
+     - [ ] **Rate Limit** *(Lua Mod)*
+     - [ ] **Captcha**  *(Lua Mod)*
+- [x] Cookie Based Challenge *(Ngx Mod)*
 - [x] [Versions List](https://github.com/theraw/The-World-Is-Yours/blob/master/version)
 
-## Easy install 
-(This is beta please create an issue if any errors) Download .deb from https://github.com/theraw/The-World-Is-Yours/releases
+# Installation methods.
 
-## Compile from source
-```bash
-apt-get -y install git && cd /root/ && git clone https://github.com/theraw/The-World-Is-Yours.git && cd The-World-Is-Yours/
+- 1 : **Repository (Easy)**
+     ```bash
+     echo '' > /etc/apt/sources.list.d/the-world-is-yours.list
+     apt-get update; apt-get upgrade -y
+     # install this repo nginx only build
+     apt-get install raweb -y
 
-bash build/run.sh new
-bash build/run.sh build
-bash build/run.sh postfix
-```
+     # install admin panel
+     apt-get install raweb-admin -y
+     ```
+- 2 : **Manual .deb (Med)**
+     ```bash
+     Download them from : https://github.com/theraw/The-World-Is-Yours/releases
+     ```
+- 2 : **Compile from source (Hard)**
+     ```bash
+     apt-get -y install git && cd /root/ && git clone https://github.com/theraw/The-World-Is-Yours.git && cd The-World-Is-Yours/
 
-If you want to try with a custom nginx version then, open `version` file and change versions then run
-```bash
-bash build/run.sh new
-bash build/run.sh build
-```
+     bash build/run.sh new
+     bash build/run.sh build
+     bash build/run.sh postfix
+     ```
+     - 2.1 : **Compiling from source with changed versions**
+          ```bash
+          # assuming you did step 2
+          # update "version" file then run again
+          bash build/run.sh new
+          bash build/run.sh build
+          ```
+          
+
+
 ## CLI Info
-```
+```bash
 bash build/run.sh new     => Download all modules + nginx that are missing from /opt/. (If you make version changes to 'version' file then simply rerun this to download again)
 bash build/run.sh build   => This is going to simply compile nginx nothing else. (You can run this as many times as you need, its not going to replace configs)
 bash build/run.sh postfix => This will redownload /nginx/nginx.conf everytime you run it. (Suggested to run only once when you install nginx via my repo for first time)
 ```
 
 
-## Nginx info.
+## Nginx Structure.
 
-```
+```bash
 => Nginx Folder     = /nginx/
 => --conf-path      = /nginx/nginx.conf
 => --pid-path       = /var/run/nginx.pid 
@@ -48,10 +75,13 @@ bash build/run.sh postfix => This will redownload /nginx/nginx.conf everytime yo
 => --error-log-path = /var/log/nginx/error.log
 
 LUA RESTY CORE SCRIPTS = /usr/nginx_lua
+
+# Admin Panel Info
+=> Folder           = /nginx/admin/public_html 
 ```
 
 ## How to install lua scripts 
-```
+```bash
 . /root/The-World-Is-Yours/version
 cd /opt/mod/; git clone https://github.com/openresty/lua-resty-lrucache.git
 cd /opt/mod/lua-resty-lrucache; make install PREFIX=${LUA_SCRIPTS}
