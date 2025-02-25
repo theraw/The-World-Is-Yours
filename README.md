@@ -8,9 +8,11 @@
 - [x] **Admin Panel** : Optional *(Not installed by default)*
      - [X] **Home Page** *(Nginx stats/graph via nginx stub stats)*
      - [X] **Vhosts Page** *(Create, Delete, Edit)*
+     - [ ] **IP Management** *(add, edit, delete)* *selectable on vhost creation*
+     - [ ] **Ports Management** *(add, edit, delete)* *selectable on vhost creation*
      - [ ] **Nginx Settings Page** *(Only change existing nginx.conf values)*
      - [ ] **Log Reporting Page** (Not set yet, might be all in one page or seperated pages for access logs, modsec logs)
-     - [ ] **Php installer and selector**
+     - [ ] **Php Selector** (a.k.a creation of dedicated fpm pool) *selectable on vhost creation*
      - [ ] **One click App installer** *(WordPress)*
 - [x] ModSecurity Support *(Ngx Mod)*
 - [x] Naxsi Support *(Ngx Mod)*
