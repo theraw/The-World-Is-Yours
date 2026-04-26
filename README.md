@@ -35,7 +35,7 @@ sudo apt update && sudo apt install twiy
 
 ## Compile from source
 
-Pick the script that matches your OS — they're separate so apt package
+Pick the script that matches your OS, they're separate so apt package
 divergences (e.g. the t64 ABI transition on Ubuntu 24.04+) stay isolated.
 
 ```bash
