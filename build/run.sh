@@ -6,8 +6,8 @@ function reqs() {
     # apt-get purge nftables firewalld ufw -y; apt-get autoremove -y
     apt-get -y install wget zip unzip build-essential libssl-dev curl nano git
     # apt-get -y install iptables ipset
-    apt-get install libtool pkg-config make cmake automake autoconf -y
-    apt-get install libyajl-dev ssdeep zlib1g-dev libxslt1-dev libgd-dev libgeoip-dev liblmdb-dev libfuzzy-dev libmaxminddb-dev liblua5.1-dev libcurl4-openssl-dev libxml2 libxml2-dev libpcre3-dev mercurial libpcre2-dev libc-ares-dev libre2-dev -y
+    apt-get install libtool pkg-config make cmake automake autoconf golang-go ninja-build -y
+    apt-get install libyajl-dev ssdeep zlib1g-dev libxslt1-dev libgd-dev libgeoip-dev liblmdb-dev libfuzzy-dev libmaxminddb-dev liblua5.1-dev libcurl4-openssl-dev libxml2 libxml2-dev mercurial libpcre2-dev libc-ares-dev libre2-dev libzstd-dev libjemalloc2 -y
     mkdir -p $LUA_SCRIPTS
 }
 function clean_install() {
@@ -21,10 +21,23 @@ function clean_install() {
 
     # START OF SYSTEM REQUIRED LIBS
     # ============================================================================================================
-    # OPENSSL
-    if [ ! -d /opt/mod/openssl-opernssl-${SYSTEM_OPENSSL} ]; then
-        cd /opt/mod; wget https://github.com/quictls/openssl/archive/refs/tags/opernssl-${SYSTEM_OPENSSL}.tar.gz
-        cd /opt/mod && tar xf opernssl-${SYSTEM_OPENSSL}.tar.gz; rm -Rf opernssl-${SYSTEM_OPENSSL}.tar.gz
+    # AWS-LC — TLS+QUIC backend. Replaces quictls/openssl. Built standalone
+    # (cmake+ninja) and installed to /usr/local/aws-lc/. nginx 1.29.2+ links
+    # against it via -I/-L; we no longer pass --with-openssl=PATH because we
+    # don't want nginx's configure to rebuild OpenSSL itself.
+    if [ ! -d /opt/mod/aws-lc-${SYSTEM_AWSLC} ]; then
+        cd /opt/mod && wget https://github.com/aws/aws-lc/archive/refs/tags/v${SYSTEM_AWSLC}.tar.gz
+        cd /opt/mod && tar xf v${SYSTEM_AWSLC}.tar.gz; rm -Rf v${SYSTEM_AWSLC}.tar.gz
+    fi
+    if [ ! -f /usr/local/aws-lc/lib/libssl.so ]; then
+        cd /opt/mod/aws-lc-${SYSTEM_AWSLC} && \
+            cmake -GNinja -B build \
+                -DCMAKE_INSTALL_PREFIX=/usr/local/aws-lc \
+                -DBUILD_SHARED_LIBS=1 \
+                -DCMAKE_BUILD_TYPE=Release && \
+            cmake --build build -j`nproc` && \
+            cmake --install build && \
+            ldconfig
     fi
 
     # ZLIB
@@ -43,20 +56,22 @@ function clean_install() {
         fi
     fi
 
-    # SYSTEM_MODSECURITY
+    # SYSTEM_MODSECURITY (v3 — libmodsecurity, what ModSecurity-nginx connector needs)
     if [ ! -d /opt/mod/modsecurity-v${SYSTEM_MODSECURITY} ]; then
         cd /opt/mod && wget https://github.com/SpiderLabs/ModSecurity/releases/download/v${SYSTEM_MODSECURITY}/modsecurity-v${SYSTEM_MODSECURITY}.tar.gz
         cd /opt/mod && tar xf modsecurity-v${SYSTEM_MODSECURITY}.tar.gz; rm -Rf modsecurity-v${SYSTEM_MODSECURITY}.tar.gz
-        if [ ! -d /usr/local/modsecurity ]; then
-            cd /opt/mod/modsecurity-v${SYSTEM_MODSECURITY} && ./configure && make -j`nproc` && make install
-        fi
+    fi
+    if [ ! -f /usr/local/modsecurity/lib/libmodsecurity.so ]; then
+        cd /opt/mod/modsecurity-v${SYSTEM_MODSECURITY} && ./build.sh && ./configure --without-pcre --with-pcre2 && make -j`nproc` && make install
     fi
 
     # SYSTEM_PCRE
-    if [ ! -d /opt/mod/pcre2-pcre2-${SYSTEM_PCRE} ]; then
-        cd /opt/mod && wget https://github.com/PCRE2Project/pcre2/archive/refs/tags/pcre2-${SYSTEM_PCRE}.tar.gz
+    # Use the official release tarball (bundles the sljit submodule needed for
+    # JIT). The /archive/refs/tags/ tarball from GitHub is a raw source snapshot
+    # that omits submodules and breaks `--with-pcre-jit`.
+    if [ ! -d /opt/mod/pcre2-${SYSTEM_PCRE} ]; then
+        cd /opt/mod && wget https://github.com/PCRE2Project/pcre2/releases/download/pcre2-${SYSTEM_PCRE}/pcre2-${SYSTEM_PCRE}.tar.gz
         cd /opt/mod && tar xf pcre2-${SYSTEM_PCRE}.tar.gz; rm -Rf pcre2-${SYSTEM_PCRE}.tar.gz
-        cd /opt/mod/pcre2-pcre2-${SYSTEM_PCRE} && ./autogen.sh
     fi
 
     # LibInjection
@@ -75,18 +90,36 @@ function clean_install() {
         cd /opt/mod/; wget https://github.com/openresty/lua-nginx-module/archive/refs/tags/v${NGX_MOD_LUA}.tar.gz
         cd /opt/mod/; tar xf v${NGX_MOD_LUA}.tar.gz; rm -Rf v${NGX_MOD_LUA}.tar.gz
         sed -i 's/cookies/cookie/g' /opt/mod/lua-nginx-module-${NGX_MOD_LUA}/src/ngx_http_lua_headers_in.c
+        # AWS-LC compatibility: lua-nginx-module already has guards around APIs
+        # missing from BoringSSL (SSL_get1_supported_ciphers, SSL_export_keying_
+        # material_early, etc.). AWS-LC has the same API limitations but defines
+        # OPENSSL_IS_AWSLC instead of OPENSSL_IS_BORINGSSL, so the guards never
+        # fire. Broaden every form (#if, #ifdef, #ifndef, #elif) to recognise
+        # both macros. Order matters: the bare `defined()` substitution runs
+        # first so the later #ifdef/#ifndef substitutions don't double-rewrite.
+        sed -i \
+            -e 's@defined(OPENSSL_IS_BORINGSSL)@(defined(OPENSSL_IS_BORINGSSL) || defined(OPENSSL_IS_AWSLC))@g' \
+            -e 's@#ifdef OPENSSL_IS_BORINGSSL@#if (defined(OPENSSL_IS_BORINGSSL) || defined(OPENSSL_IS_AWSLC))@g' \
+            -e 's@#ifndef OPENSSL_IS_BORINGSSL@#if !(defined(OPENSSL_IS_BORINGSSL) || defined(OPENSSL_IS_AWSLC))@g' \
+            /opt/mod/lua-nginx-module-${NGX_MOD_LUA}/src/*.c
     fi
 
-    # NGX_LUA_CORE
-    if [ ! -d /opt/mod/lua-resty-core ]; then
-        cd /opt/mod/; git clone https://github.com/openresty/lua-resty-core.git
-        cd /opt/mod/lua-resty-core; make install PREFIX=${LUA_SCRIPTS}
+    # NGX_LUA_CORE — must stay in lockstep with NGX_MOD_LUA. lua-resty-core
+    # does a strict-equality check on ngx.config.ngx_lua_version at startup,
+    # so an upstream bump on master silently breaks the build. Pinning via
+    # the tagged tarball (dir name embeds the version) means changing
+    # LUA_SCRIPTS_RESTYCORE in `version` invalidates the cache automatically.
+    if [ ! -d /opt/mod/lua-resty-core-${LUA_SCRIPTS_RESTYCORE} ]; then
+        cd /opt/mod/; wget https://github.com/openresty/lua-resty-core/archive/refs/tags/v${LUA_SCRIPTS_RESTYCORE}.tar.gz
+        cd /opt/mod/; tar xf v${LUA_SCRIPTS_RESTYCORE}.tar.gz; rm -Rf v${LUA_SCRIPTS_RESTYCORE}.tar.gz
+        cd /opt/mod/lua-resty-core-${LUA_SCRIPTS_RESTYCORE} && make install PREFIX=${LUA_SCRIPTS}
     fi
 
-    # NGX_LUA_LRUCACHE
-    if [ ! -d /opt/mod/lua-resty-lrucache ]; then
-        cd /opt/mod/; git clone https://github.com/openresty/lua-resty-lrucache.git
-        cd /opt/mod/lua-resty-lrucache; make install PREFIX=${LUA_SCRIPTS}
+    # NGX_LUA_LRUCACHE — same pattern, pinned to LUA_SCRIPTS_LRUCACHE.
+    if [ ! -d /opt/mod/lua-resty-lrucache-${LUA_SCRIPTS_LRUCACHE} ]; then
+        cd /opt/mod/; wget https://github.com/openresty/lua-resty-lrucache/archive/refs/tags/v${LUA_SCRIPTS_LRUCACHE}.tar.gz
+        cd /opt/mod/; tar xf v${LUA_SCRIPTS_LRUCACHE}.tar.gz; rm -Rf v${LUA_SCRIPTS_LRUCACHE}.tar.gz
+        cd /opt/mod/lua-resty-lrucache-${LUA_SCRIPTS_LRUCACHE} && make install PREFIX=${LUA_SCRIPTS}
     fi
 
     # NGX_MOD_LUA_MYSQL
@@ -171,6 +204,14 @@ function clean_install() {
         cd /opt/mod/; git clone --recurse-submodules https://github.com/wargio/naxsi.git naxsi
     fi
 
+    # NGX_MOD_ZSTD — Zstandard compression module from tokers. Pinned via
+    # NGX_MOD_ZSTD; tarball pattern (dir name embeds version → cache invalidates
+    # automatically when the pin moves).
+    if [ ! -d /opt/mod/zstd-nginx-module-${NGX_MOD_ZSTD} ]; then
+        cd /opt/mod/; wget https://github.com/tokers/zstd-nginx-module/archive/refs/tags/${NGX_MOD_ZSTD}.tar.gz
+        cd /opt/mod/; tar xf ${NGX_MOD_ZSTD}.tar.gz; rm -Rf ${NGX_MOD_ZSTD}.tar.gz
+    fi
+
     # END OF NGINX MODULES
     # ============================================================================================================
 }
@@ -186,11 +227,9 @@ test_nginx() {
                                           --lock-path=/var/run/nginx.lock                                         \
                                           --error-log-path=/var/log/nginx/error.log                               \
                                           --http-log-path=/var/log/nginx/access.log                               \
-                                          --with-openssl=/opt/mod/openssl-opernssl-${SYSTEM_OPENSSL}              \
-                                          --with-openssl-opt=enable-tls1_3                                        \
                                           --with-pcre                                                             \
                                           --with-pcre-jit                                                         \
-                                          --with-pcre=/opt/mod/pcre2-pcre2-${SYSTEM_PCRE}                         \
+                                          --with-pcre=/opt/mod/pcre2-${SYSTEM_PCRE}                         \
                                           --with-zlib=/opt/mod/zlib                                               \
                                           --with-threads                                                          \
                                           --with-file-aio                                                         \
@@ -230,9 +269,10 @@ test_nginx() {
                                           --add-module=/opt/mod/srcache-nginx-module-${NGX_MOD_LUA_SRCACHE}       \
                                           --add-module=/opt/mod/redis2-nginx-module                               \
                                           --add-module=/opt/mod/ngx_brotli                                        \
+                                          --add-module=/opt/mod/zstd-nginx-module-${NGX_MOD_ZSTD}                  \
                                           --add-module=/opt/mod/testcookie                                        \
-                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC" \
-                                          --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -L/opt/mod/pcre2-pcre2-${SYSTEM_PCRE}/.libs -lpcre2-8 -L/lib/x86_64-linux-gnu -lpcre"
+                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC -I/usr/local/aws-lc/include" \
+                                          --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -L/opt/mod/pcre2-${SYSTEM_PCRE}/.libs -lpcre2-8 -L/usr/local/aws-lc/lib -lssl -lcrypto -Wl,-rpath,/usr/local/aws-lc/lib"
                                           make clean
 }
 function build() {
@@ -246,11 +286,9 @@ function build() {
                                           --lock-path=/var/run/nginx.lock                                         \
                                           --error-log-path=/var/log/nginx/error.log                               \
                                           --http-log-path=/var/log/nginx/access.log                               \
-                                          --with-openssl=/opt/mod/openssl-opernssl-${SYSTEM_OPENSSL}              \
-                                          --with-openssl-opt=enable-tls1_3                                        \
                                           --with-pcre                                                             \
                                           --with-pcre-jit                                                         \
-                                          --with-pcre=/opt/mod/pcre2-pcre2-${SYSTEM_PCRE}                         \
+                                          --with-pcre=/opt/mod/pcre2-${SYSTEM_PCRE}                         \
                                           --with-zlib=/opt/mod/zlib                                               \
                                           --with-threads                                                          \
                                           --with-file-aio                                                         \
@@ -290,11 +328,17 @@ function build() {
                                           --add-module=/opt/mod/srcache-nginx-module-${NGX_MOD_LUA_SRCACHE}       \
                                           --add-module=/opt/mod/redis2-nginx-module                               \
                                           --add-module=/opt/mod/ngx_brotli                                        \
+                                          --add-module=/opt/mod/zstd-nginx-module-${NGX_MOD_ZSTD}                  \
                                           --add-module=/opt/mod/testcookie                                        \
-                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC" \
-                                          --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -L/opt/mod/pcre2-pcre2-${SYSTEM_PCRE}/.libs -lpcre2-8 -L/lib/x86_64-linux-gnu -lpcre"
-                                          make -j`nproc` && make install && make clean
-                                          unset NGINX
+                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC -I/usr/local/aws-lc/include" \
+                                          --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -L/opt/mod/pcre2-${SYSTEM_PCRE}/.libs -lpcre2-8 -L/usr/local/aws-lc/lib -lssl -lcrypto -Wl,-rpath,/usr/local/aws-lc/lib"
+    # NOTE: kept as separate statements (not `make && make install && make clean`)
+    # so `set -e` actually fires on a make failure. The && chain hides left-side
+    # failures from set -e, which previously let half-built nginx ship.
+    cd /opt/nginx-${NGINX} && make -j`nproc`
+    cd /opt/nginx-${NGINX} && make install
+    cd /opt/nginx-${NGINX} && make clean
+    unset NGINX
 }
 function post_build() {
     useradd nginx; unset NGINX; rm -rf /nginx/*.default;

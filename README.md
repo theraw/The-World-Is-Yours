@@ -2,21 +2,30 @@
 
 ![Simple](https://c.tenor.com/uYqsM9uIyuYAAAAC/simple-easy.gif)
 
-- [x] Support Ubuntu 22.04
-- [x] Latest Nginx 1.26.0
-- [x] HTTP/3
-- [x] ModSecurity Support.
-- [x] Naxsi Support.
-- [x] Lua Support.
-- [x] Cookie Based Challenge.
-- [x] [Versions List](https://github.com/theraw/The-World-Is-Yours/blob/master/version)
+- [x] Debian 13 (trixie) supported
+- [x] nginx 1.30.0
+- [x] HTTP/3 (QUIC) via AWS-LC
+- [x] ModSecurity v3 (libmodsecurity)
+- [x] Naxsi
+- [x] Lua (LuaJIT 2.1)
+- [x] Cookie-based challenge
+- [x] [Versions List](https://git.julio.al/theraw/The-World-Is-Yours/src/branch/master/version)
+
+## Note
+
+I am no longer maintaining the github repo actively, because github has started charging for self hosted runners which this project requires, so the project is moved to https://git.julio.al/theraw/The-World-Is-Yours
 
 ## Easy install 
-(This is beta please create an issue if any errors) Download .deb from https://github.com/theraw/The-World-Is-Yours/releases
+```bash
+sudo install -d /etc/apt/keyrings
+sudo curl -fsSL https://apt.julio.al/repository/public/keys/raweb.asc -o /etc/apt/keyrings/raweb.asc
+echo "deb [signed-by=/etc/apt/keyrings/raweb.asc] https://apt.julio.al/repository/raweb trixie main" | sudo tee /etc/apt/sources.list.d/raweb.list
+sudo apt update && sudo apt install twiy
+```
 
 ## Compile from source
 ```bash
-apt-get -y install git && cd /root/ && git clone https://github.com/theraw/The-World-Is-Yours.git && cd The-World-Is-Yours/
+apt-get -y install git && cd /root/ && git clone https://git.julio.al/theraw/The-World-Is-Yours.git && cd The-World-Is-Yours/
 
 bash build/run.sh new
 bash build/run.sh build
@@ -57,6 +66,15 @@ cd /opt/mod/; git clone https://github.com/openresty/lua-resty-lrucache.git
 cd /opt/mod/lua-resty-lrucache; make install PREFIX=${LUA_SCRIPTS}
 nginx -s reload
 ```
+
+## Performance
+
+### vs. vanilla nginx (same version, default config)
+
+| Area | Twiy | Vanilla nginx | Why |
+|---|---|---|---|
+| TLS handshake throughput | **+5–15%** | baseline | AWS-LC's tuned AES/ChaCha asm vs OpenSSL |
+| WAF, Lua, HTTP/3 | included | not included | needs custom build |
 
 # Support options.
 
