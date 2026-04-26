@@ -1,3 +1,4 @@
+# Nginx Version
 export NGINX="1.30.0"
 
 # Lua Path
@@ -37,9 +38,6 @@ export SYSTEM_LUAJIT="2.1-20260311"
 export SYSTEM_PCRE="10.47"
 
 # https://github.com/aws/aws-lc/tags
-# AWS-LC = Amazon's BoringSSL fork. Supported natively in nginx since 1.29.2.
-# Picked over quictls (EOL OpenSSL 3.1 base) and over OpenSSL 3.5 native QUIC
-# because of better TLS handshake throughput and clean release tagging.
 export SYSTEM_AWSLC="1.72.0"
 
 # https://github.com/SpiderLabs/ModSecurity/releases 3.0.12
@@ -55,6 +53,4 @@ export NGX_MOD_LUA_LOCK="0.09"
 export NGX_MOD_LUA_SRCACHE="0.33"
 
 # https://github.com/tokers/zstd-nginx-module/tags
-# Zstandard compression module. Chrome 123+ and Firefox 126+ send
-# `Accept-Encoding: zstd`; older clients fall back to brotli/gzip.
 export NGX_MOD_ZSTD="0.1.1"
