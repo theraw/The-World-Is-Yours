@@ -6,51 +6,12 @@ Wants=network-online.target
 [Service]
 Type=forking
 PIDFile=/run/nginx.pid
-
-# jemalloc replaces glibc malloc — better fragmentation/perf under nginx's
-# alloc/free churn at scale. Package depends on libjemalloc2 so the .so is
-# guaranteed present. Removing this line falls back to glibc malloc cleanly.
 Environment=LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
-
-# Self-heal: nginx was compiled without --http-*-temp-path so it expects
-# these dirs under /usr/local/nginx; install -d is idempotent and fixes any
-# missing/wrong ownership on every restart.
 ExecStartPre=/usr/bin/install -d -o nginx -g nginx -m 0755 /usr/local/nginx /usr/local/nginx/client_body_temp /usr/local/nginx/proxy_temp /usr/local/nginx/fastcgi_temp /usr/local/nginx/uwsgi_temp /usr/local/nginx/scgi_temp /var/log/nginx
 ExecStartPre=/usr/sbin/nginx -t
 ExecStart=/usr/sbin/nginx
 ExecReload=/usr/sbin/nginx -s reload
 ExecStop=/bin/kill -s QUIT $MAINPID
-
-# ---- systemd hardening (systemd 257+ on Debian 13 / Ubuntu 26.04) ----
-# Each line shrinks the worker's blast radius without affecting throughput.
-NoNewPrivileges=true
-ProtectSystem=strict
-ProtectHome=true
-ProtectKernelTunables=true
-ProtectKernelModules=true
-ProtectKernelLogs=true
-ProtectControlGroups=true
-ProtectClock=true
-ProtectHostname=true
-PrivateDevices=true
-PrivateTmp=true
-RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
-RestrictNamespaces=true
-RestrictRealtime=true
-RestrictSUIDSGID=true
-LockPersonality=true
-SystemCallArchitectures=native
-SystemCallFilter=@system-service
-SystemCallFilter=~@privileged @resources @mount @debug @cpu-emulation @obsolete @raw-io @reboot @swap
-
-# Paths nginx legitimately writes to. ProtectSystem=strict makes everything
-# else read-only; these carve out the exceptions.
-ReadWritePaths=/var/log/nginx /usr/local/nginx /run /nginx /hostdata
-
-# NOTE on MemoryDenyWriteExecute: LuaJIT does runtime JIT compilation and
-# therefore needs writable+executable pages — enabling MDWE breaks Lua. Left
-# off intentionally.
-
 LimitNOFILE=65535
 
 [Install]
