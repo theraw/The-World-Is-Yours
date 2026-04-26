@@ -2,7 +2,7 @@
 
 ![Simple](https://c.tenor.com/uYqsM9uIyuYAAAAC/simple-easy.gif)
 
-- [x] Debian 13 (trixie) supported
+- [x] Debian 13 (trixie) and Ubuntu 26.04 LTS (raccoon) supported
 - [x] nginx 1.30.0
 - [x] HTTP/3 (QUIC) via AWS-LC
 - [x] ModSecurity v3 (libmodsecurity)
@@ -15,34 +15,55 @@
 
 I am no longer maintaining the github repo actively, because github has started charging for self hosted runners which this project requires, so the project is moved to https://git.julio.al/theraw/The-World-Is-Yours
 
-## Easy install 
+## Easy install
+
+### Debian 13 (trixie)
 ```bash
 sudo install -d /etc/apt/keyrings
 sudo curl -fsSL https://apt.julio.al/repository/public/keys/raweb.asc -o /etc/apt/keyrings/raweb.asc
-echo "deb [signed-by=/etc/apt/keyrings/raweb.asc] https://apt.julio.al/repository/raweb trixie main" | sudo tee /etc/apt/sources.list.d/raweb.list
+echo "deb [signed-by=/etc/apt/keyrings/raweb.asc] https://apt.julio.al/repository/raweb-trixie trixie main" | sudo tee /etc/apt/sources.list.d/raweb.list
+sudo apt update && sudo apt install twiy
+```
+
+### Ubuntu 26.04 LTS (raccoon)
+```bash
+sudo install -d /etc/apt/keyrings
+sudo curl -fsSL https://apt.julio.al/repository/public/keys/raweb.asc -o /etc/apt/keyrings/raweb.asc
+echo "deb [signed-by=/etc/apt/keyrings/raweb.asc] https://apt.julio.al/repository/raweb-raccoon raccoon main" | sudo tee /etc/apt/sources.list.d/raweb.list
 sudo apt update && sudo apt install twiy
 ```
 
 ## Compile from source
+
+Pick the script that matches your OS — they're separate so apt package
+divergences (e.g. the t64 ABI transition on Ubuntu 24.04+) stay isolated.
+
 ```bash
 apt-get -y install git && cd /root/ && git clone https://git.julio.al/theraw/The-World-Is-Yours.git && cd The-World-Is-Yours/
 
-bash build/run.sh new
-bash build/run.sh build
-bash build/run.sh postfix
+# Debian 13
+bash build/trixie.sh new
+bash build/trixie.sh build
+bash build/trixie.sh postfix
+
+# Ubuntu 26.04 LTS
+bash build/raccoon.sh new
+bash build/raccoon.sh build
+bash build/raccoon.sh postfix
 ```
 
-If you want to try with a custom nginx version then, open `version` file and change versions then run
-```bash
-bash build/run.sh new
-bash build/run.sh build
-```
+To try a different upstream version, edit `version` and re-run `new` then `build`.
+
 ## CLI Info
 ```
-bash build/run.sh new     => Download all modules + nginx that are missing from /opt/. (If you make version changes to 'version' file then simply rerun this to download again)
-bash build/run.sh build   => This is going to simply compile nginx nothing else. (You can run this as many times as you need, its not going to replace configs)
-bash build/run.sh postfix => This will redownload /nginx/nginx.conf everytime you run it. (Suggested to run only once when you install nginx via my repo for first time)
+bash build/<distro>.sh new     => Download all modules + nginx that are missing from /opt/.
+                                  (Re-run after changing the `version` file to fetch new versions.)
+bash build/<distro>.sh build   => Compile nginx. Re-runnable; will not touch your configs.
+bash build/<distro>.sh postfix => Drop the default /nginx/nginx.conf, vhost, and systemd unit
+                                  into place. Run once on first install; re-running overwrites
+                                  /nginx/nginx.conf.
 ```
+where `<distro>` is `trixie` or `raccoon`.
 
 
 ## Nginx info.

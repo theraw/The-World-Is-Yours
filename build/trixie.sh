@@ -358,9 +358,9 @@ function post_build() {
     if [ -f "/run/.containerenv" ] || [ -f "/.dockerenv" ] || [ -f "/home/runner/.dockerenv" ]; then
         echo "Skipping systemctl commands on GitHub runner"
         mkdir -p /etc/systemd/system/
-        curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Jammy/nginx.service > /etc/systemd/system/nginx.service
+        curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Trixie/nginx.service > /etc/systemd/system/nginx.service
     else
-        curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Jammy/nginx.service > /etc/systemd/system/nginx.service
+        curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Trixie/nginx.service > /etc/systemd/system/nginx.service
         systemctl daemon-reload
         systemctl start nginx.service
         systemctl enable nginx.service
