@@ -1,5 +1,4 @@
-# Nginx Version
-export NGINX="1.30.0"
+export NGINX="1.31.0"
 
 # Lua Path
 export LUA_SCRIPTS="/usr/nginx_lua"
@@ -38,6 +37,9 @@ export SYSTEM_LUAJIT="2.1-20260311"
 export SYSTEM_PCRE="10.47"
 
 # https://github.com/aws/aws-lc/tags
+# AWS-LC = Amazon's BoringSSL fork. Supported natively in nginx since 1.29.2.
+# Picked over quictls (EOL OpenSSL 3.1 base) and over OpenSSL 3.5 native QUIC
+# because of better TLS handshake throughput and clean release tagging.
 export SYSTEM_AWSLC="1.72.0"
 
 # https://github.com/SpiderLabs/ModSecurity/releases 3.0.12
@@ -53,4 +55,34 @@ export NGX_MOD_LUA_LOCK="0.09"
 export NGX_MOD_LUA_SRCACHE="0.33"
 
 # https://github.com/tokers/zstd-nginx-module/tags
+# Zstandard compression module. Chrome 123+ and Firefox 126+ send
+# `Accept-Encoding: zstd`; older clients fall back to brotli/gzip.
 export NGX_MOD_ZSTD="0.1.1"
+
+# https://github.com/zlib-ng/zlib-ng/releases
+# Drop-in libz replacement with SIMD-accelerated DEFLATE. Built in --zlib-compat
+# mode, installed to /usr/local/zlib-ng/. ~2-3x faster gzip CPU vs stock zlib.
+export SYSTEM_ZLIBNG="2.3.3"
+
+# ---------------------------------------------------------------------------
+# Patches applied on top of upstream nginx source (committed at build/patches/).
+# 1 = apply, 0 = skip. Each patch's filename embeds the nginx version it was
+# authored against — bumping NGINX above means reviewing/refreshing every patch
+# in build/patches/.
+# ---------------------------------------------------------------------------
+# Required for Type=notify in the systemd unit. Mainline nginx has the
+# #if (NGX_HAVE_SYSTEMD) guards but no actual sd_notify call sites; every distro
+# carries their own patch. Without this, `Type=notify` times out at startup.
+export APPLY_PATCH_SYSTEMD_NOTIFY=1
+
+# Cloudflare's dynamic TLS records: ssl_dyn_rec_* directives. Varies TLS record
+# size based on connection state. -1 RTT TTFB on first byte, +reduced overhead
+# at steady state. Patch shipped at build/patches/.
+export APPLY_PATCH_DYNAMIC_TLS_RECORDS=1
+
+# Cloudflare's HPACK dynamic-table encoder: --with-http_v2_hpack_enc. Smaller
+# HTTP/2 response headers on the wire. Upstream patch is stale (last touched
+# 2017; nginx 1.31 has already absorbed parts of it upstream and the remaining
+# hunks reference internals that have drifted). Patch NOT yet shipped — would
+# need a full rebase. Keep toggle here for the day someone ports it.
+export APPLY_PATCH_HTTP2_HPACK_ENC=0

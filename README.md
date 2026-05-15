@@ -3,17 +3,13 @@
 ![Simple](https://c.tenor.com/uYqsM9uIyuYAAAAC/simple-easy.gif)
 
 - [x] Debian 13 (trixie) and Ubuntu 26.04 LTS (raccoon) supported
-- [x] nginx 1.30.0
+- [x] nginx 1.31.0
 - [x] HTTP/3 (QUIC) via AWS-LC
 - [x] ModSecurity v3 (libmodsecurity)
 - [x] Naxsi
 - [x] Lua (LuaJIT 2.1)
 - [x] Cookie-based challenge
 - [x] [Versions List](https://git.julio.al/theraw/The-World-Is-Yours/src/branch/master/version)
-
-## Note
-
-I am no longer maintaining the github repo actively, because github has started charging for self hosted runners which this project requires, so the project is moved to https://git.julio.al/theraw/The-World-Is-Yours
 
 ## Easy install
 
@@ -35,7 +31,7 @@ sudo apt update && sudo apt install twiy
 
 ## Compile from source
 
-Pick the script that matches your OS, they're separate so apt package
+Pick the script that matches your OS — they're separate so apt package
 divergences (e.g. the t64 ABI transition on Ubuntu 24.04+) stay isolated.
 
 ```bash

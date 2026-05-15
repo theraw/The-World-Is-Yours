@@ -1,5 +1,6 @@
 . ./version
 set -e
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 function reqs() {
     apt-get update -y; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y
     DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata dialog
@@ -7,9 +8,33 @@ function reqs() {
     apt-get -y install wget zip unzip build-essential libssl-dev curl nano git
     # apt-get -y install iptables ipset
     apt-get install libtool pkg-config make cmake automake autoconf golang-go ninja-build -y
-    apt-get install libyajl-dev ssdeep zlib1g-dev libxslt1-dev libgd-dev libgeoip-dev liblmdb-dev libfuzzy-dev libmaxminddb-dev liblua5.1-dev libcurl4-openssl-dev libxml2 libxml2-dev mercurial libpcre2-dev libc-ares-dev libre2-dev libzstd-dev libjemalloc2 -y
+    apt-get install libyajl-dev ssdeep zlib1g-dev libxslt1-dev libgd-dev libgeoip-dev liblmdb-dev libfuzzy-dev libmaxminddb-dev liblua5.1-dev libcurl4-openssl-dev libxml2 libxml2-dev mercurial libpcre2-dev libc-ares-dev libre2-dev libzstd-dev libjemalloc2 libsystemd-dev -y
     mkdir -p $LUA_SCRIPTS
 }
+function apply_patches() {
+    local nginx_src="/opt/nginx-${NGINX}"
+    local patch_dir="${SCRIPT_DIR}/patches"
+    [ -f "${nginx_src}/.patches_applied" ] && return 0
+
+    apply_one() {
+        local toggle="$1" file="$2"
+        if [ "$toggle" != "1" ]; then
+            echo "[patch] skip $file (toggle=$toggle)"; return 0
+        fi
+        if [ ! -f "${patch_dir}/${file}" ]; then
+            echo "[patch] MISSING ${patch_dir}/${file}"; return 1
+        fi
+        echo "[patch] applying ${file}"
+        ( cd "$nginx_src" && patch -p1 < "${patch_dir}/${file}" )
+    }
+
+    apply_one "${APPLY_PATCH_SYSTEMD_NOTIFY:-0}"      "nginx-${NGINX}-systemd-notify.patch"
+    apply_one "${APPLY_PATCH_DYNAMIC_TLS_RECORDS:-0}" "nginx-${NGINX}-dynamic-tls-records.patch"
+    apply_one "${APPLY_PATCH_HTTP2_HPACK_ENC:-0}"     "nginx-${NGINX}-http2-hpack-enc.patch"
+
+    touch "${nginx_src}/.patches_applied"
+}
+
 function clean_install() {
      mkdir -p /opt/mod
 
@@ -18,6 +43,7 @@ function clean_install() {
         cd /opt/ && wget https://nginx.org/download/nginx-${NGINX}.tar.gz
         tar xf nginx-${NGINX}.tar.gz && rm -Rf nginx-${NGINX}.tar.gz
     fi
+    apply_patches
 
     # START OF SYSTEM REQUIRED LIBS
     # ============================================================================================================
@@ -40,10 +66,23 @@ function clean_install() {
             ldconfig
     fi
 
-    # ZLIB
-    if [ ! -d /opt/mod/zlib ]; then
-        cd /opt/mod && wget http://zlib.net/current/zlib.tar.gz
-        cd /opt/mod && tar xf zlib.tar.gz; rm -Rf zlib.tar.gz; mv zlib-* zlib
+    # ZLIB (zlib-ng, --zlib-compat mode). Drop-in libz replacement with SIMD-
+    # accelerated DEFLATE. Installed to /usr/local/zlib-ng/. nginx links via
+    # -I/-L below (no more --with-zlib=PATH; nginx finds libz via -L+rpath).
+    if [ ! -d /opt/mod/zlib-ng-${SYSTEM_ZLIBNG} ]; then
+        cd /opt/mod && wget https://github.com/zlib-ng/zlib-ng/archive/refs/tags/${SYSTEM_ZLIBNG}.tar.gz
+        cd /opt/mod && tar xf ${SYSTEM_ZLIBNG}.tar.gz; rm -Rf ${SYSTEM_ZLIBNG}.tar.gz
+    fi
+    if [ ! -f /usr/local/zlib-ng/lib/libz.so ]; then
+        cd /opt/mod/zlib-ng-${SYSTEM_ZLIBNG} && \
+            cmake -GNinja -B build \
+                -DCMAKE_INSTALL_PREFIX=/usr/local/zlib-ng \
+                -DZLIB_COMPAT=ON \
+                -DBUILD_SHARED_LIBS=ON \
+                -DCMAKE_BUILD_TYPE=Release && \
+            cmake --build build -j`nproc` && \
+            cmake --install build && \
+            ldconfig
     fi
 
     # SYSTEM_LUAJIT
@@ -223,14 +262,18 @@ test_nginx() {
                                           --sbin-path=/usr/sbin/nginx                                             \
                                           --conf-path=/nginx/nginx.conf                                           \
                                           --modules-path=/nginx/modules                                           \
-                                          --pid-path=/var/run/nginx.pid                                           \
-                                          --lock-path=/var/run/nginx.lock                                         \
+                                          --pid-path=/run/nginx.pid                                           \
+                                          --lock-path=/run/nginx.lock                                               \
                                           --error-log-path=/var/log/nginx/error.log                               \
                                           --http-log-path=/var/log/nginx/access.log                               \
+                                          --http-client-body-temp-path=/run/nginx/temp/client_body                \
+                                          --http-proxy-temp-path=/run/nginx/temp/proxy                            \
+                                          --http-fastcgi-temp-path=/run/nginx/temp/fastcgi                        \
+                                          --http-uwsgi-temp-path=/run/nginx/temp/uwsgi                            \
+                                          --http-scgi-temp-path=/run/nginx/temp/scgi                              \
                                           --with-pcre                                                             \
                                           --with-pcre-jit                                                         \
                                           --with-pcre=/opt/mod/pcre2-${SYSTEM_PCRE}                         \
-                                          --with-zlib=/opt/mod/zlib                                               \
                                           --with-threads                                                          \
                                           --with-file-aio                                                         \
                                           --with-http_ssl_module                                                  \
@@ -271,8 +314,8 @@ test_nginx() {
                                           --add-module=/opt/mod/ngx_brotli                                        \
                                           --add-module=/opt/mod/zstd-nginx-module-${NGX_MOD_ZSTD}                  \
                                           --add-module=/opt/mod/testcookie                                        \
-                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC -I/usr/local/aws-lc/include" \
-                                          --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -L/opt/mod/pcre2-${SYSTEM_PCRE}/.libs -lpcre2-8 -L/usr/local/aws-lc/lib -lssl -lcrypto -Wl,-rpath,/usr/local/aws-lc/lib"
+                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC -I/usr/local/aws-lc/include -I/usr/local/zlib-ng/include -DNGX_HAVE_SYSTEMD" \
+                                          --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -L/opt/mod/pcre2-${SYSTEM_PCRE}/.libs -lpcre2-8 -L/usr/local/aws-lc/lib -lssl -lcrypto -Wl,-rpath,/usr/local/aws-lc/lib -L/usr/local/zlib-ng/lib -lz -Wl,-rpath,/usr/local/zlib-ng/lib -lsystemd"
                                           make clean
 }
 function build() {
@@ -282,14 +325,18 @@ function build() {
                                           --sbin-path=/usr/sbin/nginx                                             \
                                           --conf-path=/nginx/nginx.conf                                           \
                                           --modules-path=/nginx/modules                                           \
-                                          --pid-path=/var/run/nginx.pid                                           \
-                                          --lock-path=/var/run/nginx.lock                                         \
+                                          --pid-path=/run/nginx.pid                                           \
+                                          --lock-path=/run/nginx.lock                                               \
                                           --error-log-path=/var/log/nginx/error.log                               \
                                           --http-log-path=/var/log/nginx/access.log                               \
+                                          --http-client-body-temp-path=/run/nginx/temp/client_body                \
+                                          --http-proxy-temp-path=/run/nginx/temp/proxy                            \
+                                          --http-fastcgi-temp-path=/run/nginx/temp/fastcgi                        \
+                                          --http-uwsgi-temp-path=/run/nginx/temp/uwsgi                            \
+                                          --http-scgi-temp-path=/run/nginx/temp/scgi                              \
                                           --with-pcre                                                             \
                                           --with-pcre-jit                                                         \
                                           --with-pcre=/opt/mod/pcre2-${SYSTEM_PCRE}                         \
-                                          --with-zlib=/opt/mod/zlib                                               \
                                           --with-threads                                                          \
                                           --with-file-aio                                                         \
                                           --with-http_ssl_module                                                  \
@@ -330,8 +377,8 @@ function build() {
                                           --add-module=/opt/mod/ngx_brotli                                        \
                                           --add-module=/opt/mod/zstd-nginx-module-${NGX_MOD_ZSTD}                  \
                                           --add-module=/opt/mod/testcookie                                        \
-                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC -I/usr/local/aws-lc/include" \
-                                          --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -L/opt/mod/pcre2-${SYSTEM_PCRE}/.libs -lpcre2-8 -L/usr/local/aws-lc/lib -lssl -lcrypto -Wl,-rpath,/usr/local/aws-lc/lib"
+                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC -I/usr/local/aws-lc/include -I/usr/local/zlib-ng/include -DNGX_HAVE_SYSTEMD" \
+                                          --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -L/opt/mod/pcre2-${SYSTEM_PCRE}/.libs -lpcre2-8 -L/usr/local/aws-lc/lib -lssl -lcrypto -Wl,-rpath,/usr/local/aws-lc/lib -L/usr/local/zlib-ng/lib -lz -Wl,-rpath,/usr/local/zlib-ng/lib -lsystemd"
     # NOTE: kept as separate statements (not `make && make install && make clean`)
     # so `set -e` actually fires on a make failure. The && chain hides left-side
     # failures from set -e, which previously let half-built nginx ship.
@@ -355,14 +402,14 @@ function post_build() {
     curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/nginx/live/default > /nginx/live/default
     mkdir -p /hostdata/default/public_html/ && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/index.html > /hostdata/default/public_html/index.html
     mkdir -p /hostdata/default/public_html/cdn/modsec && curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/modsec/aes.min.js > /hostdata/default/public_html/cdn/modsec/aes.min.js
+    SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+    install -m 0644 "${SRC_DIR}/static/Trixie/nginx.service" /etc/systemd/system/nginx.service
     if [ -f "/run/.containerenv" ] || [ -f "/.dockerenv" ] || [ -f "/home/runner/.dockerenv" ]; then
         echo "Skipping systemctl commands on GitHub runner"
         mkdir -p /etc/systemd/system/
-        curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Trixie/nginx.service > /etc/systemd/system/nginx.service
     else
-        curl -s https://raw.githubusercontent.com/theraw/The-World-Is-Yours/master/static/Trixie/nginx.service > /etc/systemd/system/nginx.service
         systemctl daemon-reload
-        systemctl start nginx.service
+        systemctl restart nginx.service
         systemctl enable nginx.service
     fi
 }

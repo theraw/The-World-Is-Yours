@@ -7,11 +7,12 @@ Wants=network-online.target
 Type=forking
 PIDFile=/run/nginx.pid
 Environment=LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
-ExecStartPre=/usr/bin/install -d -o nginx -g nginx -m 0755 /usr/local/nginx /usr/local/nginx/client_body_temp /usr/local/nginx/proxy_temp /usr/local/nginx/fastcgi_temp /usr/local/nginx/uwsgi_temp /usr/local/nginx/scgi_temp /var/log/nginx
+ExecStartPre=/usr/bin/install -d -o nginx -g nginx -m 0755 /run/nginx/temp /run/nginx/temp/client_body /run/nginx/temp/proxy /run/nginx/temp/fastcgi /run/nginx/temp/uwsgi /run/nginx/temp/scgi /var/log/nginx
 ExecStartPre=/usr/sbin/nginx -t
-ExecStart=/usr/sbin/nginx
-ExecReload=/usr/sbin/nginx -s reload
-ExecStop=/bin/kill -s QUIT $MAINPID
+ExecStart=/usr/sbin/nginx -c /nginx/nginx.conf
+ExecReload=/bin/sh -c "/bin/kill -s HUP $(/bin/cat /run/nginx.pid)"
+ExecStop=/bin/sh -c "/bin/kill -s QUIT $(/bin/cat /run/nginx.pid)"
+TimeoutStartSec=10
 LimitNOFILE=65535
 
 [Install]
