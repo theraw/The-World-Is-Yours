@@ -13,6 +13,10 @@
 
 ## Easy install
 
+## CAREFUL
+
+Raweb-nginx uses custom .service that limits system visibility for security reasons, basically you need to store your data on /hostdata, or /srv, if you use custom folders then you have to edit the service, for more details check : https://github.com/theraw/The-World-Is-Yours/blob/master/static/Trixie/nginx.service
+
 ### Debian 13 (trixie)
 ```bash
 sudo install -d /etc/apt/keyrings
