@@ -15,56 +15,5 @@ ExecStop=/bin/sh -c "/bin/kill -s QUIT $(/bin/cat /run/nginx.pid)"
 TimeoutStartSec=10
 LimitNOFILE=65535
 
-# === hardening: deny-everything by default, allowlist via bind mounts ===
-# TemporaryFileSystem=/ replaces the visible filesystem with an empty tmpfs.
-# Everything not bind-mounted below is invisible to nginx workers — even
-# read access. Compromise of a worker can no longer enumerate /etc/passwd,
-# /home/*, /var/lib/*, /root, /opt, etc.
-TemporaryFileSystem=/
-
-# Read-only: nginx binary, dynamic linker, all linked libs, system config,
-# CA bundles, Let's Encrypt certs (live/ + archive/ both under /etc).
-BindReadOnlyPaths=/usr
-BindReadOnlyPaths=/lib
-BindReadOnlyPaths=/lib64
-BindReadOnlyPaths=/bin
-BindReadOnlyPaths=/sbin
-BindReadOnlyPaths=/etc
-
-# Read-write: nginx runtime state.
-#   /run               nginx.pid, nginx.lock, /run/nginx/temp/*, PHP-FPM sock
-#   /var/log/nginx     access.log, error.log
-#   /nginx             config dir (read-mostly but reload writes some state)
-BindPaths=/run
-BindPaths=/var/log/nginx
-BindPaths=/nginx
-BindPaths=/var/cache/nginx
-BindPaths=/srv
-BindPaths=/hostdata
-BindPaths=/raweb
-
-NoNewPrivileges=true
-ProtectKernelTunables=true
-ProtectKernelModules=true
-ProtectKernelLogs=true
-ProtectControlGroups=true
-ProtectClock=true
-ProtectHostname=true
-PrivateDevices=true
-PrivateTmp=true
-RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
-RestrictNamespaces=true
-RestrictRealtime=true
-RestrictSUIDSGID=true
-LockPersonality=true
-SystemCallArchitectures=native
-SystemCallFilter=@system-service
-SystemCallErrorNumber=EPERM
-
-# NOTE deliberately OFF:
-#   MemoryDenyWriteExecute=true       breaks LuaJIT (JIT writable+executable pages)
-#   SystemCallFilter=~@resources      breaks nginx workers' prlimit64()
-# ProtectSystem and ProtectHome are redundant under TemporaryFileSystem=/.
-
 [Install]
 WantedBy=multi-user.target

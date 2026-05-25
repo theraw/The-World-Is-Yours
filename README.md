@@ -3,19 +3,13 @@
 ![Simple](https://c.tenor.com/uYqsM9uIyuYAAAAC/simple-easy.gif)
 
 - [x] Debian 13 (trixie) and Ubuntu 26.04 LTS (raccoon) supported
-- [x] nginx 1.31.0
+- [x] nginx 1.31.1
 - [x] HTTP/3 (QUIC) via AWS-LC
 - [x] ModSecurity v3 (libmodsecurity)
 - [x] Naxsi
 - [x] Lua (LuaJIT 2.1)
 - [x] Cookie-based challenge
 - [x] [Versions List](https://git.julio.al/theraw/The-World-Is-Yours/src/branch/master/version)
-
-## Easy install
-
-## CAREFUL
-
-Raweb-nginx uses custom .service that limits system visibility for security reasons, basically you need to store your data on /hostdata, or /srv, if you use custom folders then you have to edit the service, for more details check : https://github.com/theraw/The-World-Is-Yours/blob/master/static/Trixie/nginx.service
 
 ### Debian 13 (trixie)
 ```bash
@@ -33,10 +27,7 @@ echo "deb [signed-by=/etc/apt/keyrings/raweb.asc] https://apt.julio.al/repositor
 sudo apt update && sudo apt install twiy
 ```
 
-## Compile from source
-
-Pick the script that matches your OS — they're separate so apt package
-divergences (e.g. the t64 ABI transition on Ubuntu 24.04+) stay isolated.
+## Compile from source by yourself.
 
 ```bash
 apt-get -y install git && cd /root/ && git clone https://git.julio.al/theraw/The-World-Is-Yours.git && cd The-World-Is-Yours/
