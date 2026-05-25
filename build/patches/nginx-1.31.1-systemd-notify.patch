@@ -1,0 +1,70 @@
+Add sd_notify() integration to nginx master process so the systemd unit can
+use Type=notify. nginx mainline ships #if (NGX_HAVE_SYSTEMD) guards in nothing
+of its own — every distro carries its own patch. This is ours, kept minimal.
+
+Send:
+  READY=1     after workers + cache manager are spawned (master enters loop)
+  READY=1     again after a successful reconfigure
+  RELOADING=1 when reconfigure starts
+  STOPPING=1  in ngx_master_process_exit
+
+The build script provides -DNGX_HAVE_SYSTEMD and -lsystemd, so this patch
+doesn't touch auto/ configure scripts — only the source.
+
+--- a/src/os/unix/ngx_process_cycle.c
++++ b/src/os/unix/ngx_process_cycle.c
+@@ -12,6 +12,10 @@
+ #include <ngx_channel.h>
+
+
++#if (NGX_HAVE_SYSTEMD)
++#include <systemd/sd-daemon.h>
++#endif
++
+ static void ngx_start_worker_processes(ngx_cycle_t *cycle, ngx_int_t n,
+     ngx_int_t type);
+ static void ngx_start_cache_manager_processes(ngx_cycle_t *cycle,
+@@ -132,6 +136,10 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
+     sigio = 0;
+     live = 1;
+
++#if (NGX_HAVE_SYSTEMD)
++    sd_notify(0, "READY=1\nSTATUS=nginx is ready\n");
++#endif
++
+     for ( ;; ) {
+         if (delay) {
+             if (ngx_sigalrm) {
+@@ -211,6 +219,10 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
+         if (ngx_reconfigure) {
+             ngx_reconfigure = 0;
+
++#if (NGX_HAVE_SYSTEMD)
++            sd_notify(0, "RELOADING=1\nSTATUS=nginx is reloading\n");
++#endif
++
+             if (ngx_new_binary) {
+                 ngx_start_worker_processes(cycle, ccf->worker_processes,
+                                            NGX_PROCESS_RESPAWN);
+@@ -241,6 +253,10 @@ ngx_master_process_cycle(ngx_cycle_t *cycle)
+             live = 1;
+             ngx_signal_worker_processes(cycle,
+                                         ngx_signal_value(NGX_SHUTDOWN_SIGNAL));
++
++#if (NGX_HAVE_SYSTEMD)
++            sd_notify(0, "READY=1\nSTATUS=nginx is ready\n");
++#endif
+         }
+
+         if (ngx_restart) {
+@@ -655,6 +671,10 @@ static void
+ ngx_master_process_exit(ngx_cycle_t *cycle)
+ {
+     ngx_uint_t  i;
++
++#if (NGX_HAVE_SYSTEMD)
++    sd_notify(0, "STOPPING=1\nSTATUS=nginx is stopping\n");
++#endif
+
+     ngx_delete_pidfile(cycle);
+
