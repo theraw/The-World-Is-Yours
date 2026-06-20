@@ -1,0 +1,18 @@
+#!/bin/sh
+# preinst — shared by the twiy and twiy-raweb packages.
+#
+# Older releases shipped /nginx as dpkg-tracked files. When upgrading from one
+# of those, dpkg deletes the old /nginx/* files during unpack (they are no
+# longer part of the package) BEFORE postinst runs. Stash a copy of the live
+# config tree first so postinst can restore any admin-edited config and it
+# survives the migration. Never touched on a fresh install.
+
+set -e
+
+if [ "$1" = upgrade ] && [ -d /nginx ]; then
+    rm -rf /var/backups/twiy-nginx
+    mkdir -p /var/backups
+    cp -a /nginx /var/backups/twiy-nginx
+fi
+
+exit 0

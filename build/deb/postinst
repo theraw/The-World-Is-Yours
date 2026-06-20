@@ -1,0 +1,58 @@
+#!/bin/sh
+# postinst — shared by the twiy and twiy-raweb packages.
+#
+# Config files live under /nginx but are NOT tracked by dpkg. The package
+# ships an empty /nginx skeleton (so dpkg keeps the dirs across upgrades) plus
+# a pristine copy of every config under /usr/share/twiy/defaults/nginx. We
+# place configs from that stash here and NEVER overwrite a file that already
+# exists — our copy is dropped beside it as <file>.new instead (e.g.
+# nginx.conf.new). An upgrade therefore never changes an admin-edited config.
+#
+# /hostdata is left entirely to the admin: we only make sure the dir exists,
+# and we never touch or remove its contents.
+
+set -e
+
+useradd -r -s /bin/false nginx 2>/dev/null || true
+
+# Existing dirs are left exactly as they are (mkdir -p is a no-op then).
+mkdir -p /nginx /hostdata
+
+# Migration: older releases shipped /nginx/* as dpkg-tracked files, so the
+# upgrade unpack deletes them before this script runs. preinst stashed a copy
+# first — restore it now, without clobbering anything already present.
+if [ -d /var/backups/twiy-nginx ]; then
+    cp -an /var/backups/twiy-nginx/. /nginx/ 2>/dev/null || true
+    rm -rf /var/backups/twiy-nginx
+fi
+
+# Seed packaged defaults:
+#   - target absent          -> install it
+#   - target present, differs -> keep theirs, drop ours as <file>.new
+#   - target present, same    -> do nothing
+seed_tree() {
+    stash="$1"
+    target="$2"
+    [ -d "$stash" ] || return 0
+    find "$stash" -type f | while IFS= read -r src; do
+        rel=${src#$stash/}
+        dst="$target/$rel"
+        install -d "$(dirname "$dst")"
+        if [ -e "$dst" ]; then
+            cmp -s "$src" "$dst" || cp -p "$src" "$dst.new"
+        else
+            cp -p "$src" "$dst"
+        fi
+    done
+}
+seed_tree /usr/share/twiy/defaults/nginx /nginx
+
+install -d /nginx/conf.d /nginx/config
+install -d -o nginx -g nginx -m 0755 /var/log/nginx
+chown -R nginx:nginx /var/log/nginx /nginx 2>/dev/null || true
+
+systemctl daemon-reload  2>/dev/null || true
+systemctl enable  nginx.service 2>/dev/null || true
+systemctl restart nginx.service 2>/dev/null || true
+
+exit 0

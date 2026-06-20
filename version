@@ -1,4 +1,4 @@
-export NGINX="1.31.1"
+export NGINX="1.31.2"
 
 # Lua Path
 export LUA_SCRIPTS="/usr/nginx_lua"
