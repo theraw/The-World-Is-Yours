@@ -1,0 +1,351 @@
+--- a/src/http/modules/ngx_http_static_module.c	2026-06-17 14:40:35.000000000 +0000
++++ b/src/http/modules/ngx_http_static_module.c	2026-06-26 00:59:37.635956019 +0000
+@@ -14,6 +14,97 @@
+ static ngx_int_t ngx_http_static_init(ngx_conf_t *cf);
+ 
+ 
++/*
++ * twiy tenant isolation
++ * ---------------------
++ * Optional, kernel-enforced confinement of static file resolution to the
++ * tenant's document root (or an explicit tenant_isolation_root). Every static
++ * open is validated with openat2(RESOLVE_BENEATH|RESOLVE_NO_MAGICLINKS) anchored
++ * at the confinement root, so a symlink, ".." or magic-link that would escape
++ * the tenant tree is refused (403) at the syscall level -- independent of config
++ * correctness and free of the TOCTOU window of disable_symlinks.
++ *
++ * Compiled in only when the build applies the tenant-isolation patch. Per-vhost
++ * default is off unless NGX_TENANT_ISOLATION_DEFAULT_ON is defined at compile
++ * time: the twiy-raweb build defines it (always-on, override with
++ * `tenant_isolation off;`); a plain build leaves it off and opt-in via
++ * `tenant_isolation on;`. Runtime is inert on kernels without openat2 -- nginx's
++ * own disable_symlinks still applies.
++ */
++
++#ifndef NGX_TENANT_ISOLATION_DEFAULT_ON
++#define NGX_TENANT_ISOLATION_DEFAULT_ON 0
++#endif
++
++#if defined(__linux__)
++#include <sys/syscall.h>
++#if defined(SYS_openat2)
++#define NGX_TI_OPENAT2 1
++#endif
++#endif
++
++#if (NGX_TI_OPENAT2)
++#include <unistd.h>
++#include <fcntl.h>
++#include <stdint.h>
++#include <stdlib.h>
++#include <limits.h>
++#if defined(__has_include)
++#  if __has_include(<linux/openat2.h>)
++#    include <linux/openat2.h>
++#    define NGX_TI_HAVE_OPENAT2_H 1
++#  endif
++#endif
++#ifndef NGX_TI_HAVE_OPENAT2_H
++struct open_how { uint64_t flags; uint64_t mode; uint64_t resolve; };
++#endif
++#ifndef RESOLVE_BENEATH
++#define RESOLVE_BENEATH 0x08
++#endif
++#ifndef RESOLVE_NO_MAGICLINKS
++#define RESOLVE_NO_MAGICLINKS 0x02
++#endif
++#ifndef O_PATH
++#define O_PATH 010000000
++#endif
++#endif
++
++
++typedef struct {
++    ngx_flag_t  tenant_isolation;
++    ngx_str_t   tenant_isolation_root;
++} ngx_http_static_loc_conf_t;
++
++
++static void *ngx_http_static_create_loc_conf(ngx_conf_t *cf);
++static char *ngx_http_static_merge_loc_conf(ngx_conf_t *cf, void *parent,
++    void *child);
++#if (NGX_TI_OPENAT2)
++static ngx_int_t ngx_http_static_tenant_check(ngx_http_request_t *r,
++    ngx_http_static_loc_conf_t *slcf, ngx_str_t *path, size_t root);
++#endif
++
++
++static ngx_command_t  ngx_http_static_commands[] = {
++
++    { ngx_string("tenant_isolation"),
++      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_FLAG,
++      ngx_conf_set_flag_slot,
++      NGX_HTTP_LOC_CONF_OFFSET,
++      offsetof(ngx_http_static_loc_conf_t, tenant_isolation),
++      NULL },
++
++    { ngx_string("tenant_isolation_root"),
++      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
++      ngx_conf_set_str_slot,
++      NGX_HTTP_LOC_CONF_OFFSET,
++      offsetof(ngx_http_static_loc_conf_t, tenant_isolation_root),
++      NULL },
++
++      ngx_null_command
++};
++
++
+ static ngx_http_module_t  ngx_http_static_module_ctx = {
+     NULL,                                  /* preconfiguration */
+     ngx_http_static_init,                  /* postconfiguration */
+@@ -24,15 +115,15 @@
+     NULL,                                  /* create server configuration */
+     NULL,                                  /* merge server configuration */
+ 
+-    NULL,                                  /* create location configuration */
+-    NULL                                   /* merge location configuration */
++    ngx_http_static_create_loc_conf,       /* create location configuration */
++    ngx_http_static_merge_loc_conf         /* merge location configuration */
+ };
+ 
+ 
+ ngx_module_t  ngx_http_static_module = {
+     NGX_MODULE_V1,
+     &ngx_http_static_module_ctx,           /* module context */
+-    NULL,                                  /* module directives */
++    ngx_http_static_commands,              /* module directives */
+     NGX_HTTP_MODULE,                       /* module type */
+     NULL,                                  /* init master */
+     NULL,                                  /* init module */
+@@ -87,6 +178,21 @@
+ 
+     clcf = ngx_http_get_module_loc_conf(r, ngx_http_core_module);
+ 
++#if (NGX_TI_OPENAT2)
++    {
++        ngx_http_static_loc_conf_t  *slcf;
++
++        slcf = ngx_http_get_module_loc_conf(r, ngx_http_static_module);
++
++        if (slcf->tenant_isolation == 1) {
++            rc = ngx_http_static_tenant_check(r, slcf, &path, root);
++            if (rc != NGX_OK) {
++                return rc;
++            }
++        }
++    }
++#endif
++
+     ngx_memzero(&of, sizeof(ngx_open_file_info_t));
+ 
+     of.read_ahead = clcf->read_ahead;
+@@ -278,6 +384,209 @@
+ }
+ 
+ 
++#if (NGX_TI_OPENAT2)
++
++/*
++ * Fallback for kernels/seccomp where openat2() is unavailable: canonicalize the
++ * mapped target with realpath() (which resolves symlinks via readlink/lstat --
++ * all permitted by the default service syscall set) and confirm it stays within
++ * the canonical confinement root. Blocks escaping symlinks/".."; carries the
++ * same TOCTOU caveat as nginx's own disable_symlinks (the openat2 path is
++ * race-free and is preferred whenever the kernel permits it).
++ */
++
++static ngx_int_t
++ngx_http_static_tenant_check_realpath(ngx_http_request_t *r, u_char *root_buf,
++    ngx_str_t *path)
++{
++    char    real[PATH_MAX], rroot[PATH_MAX];
++    size_t  rl;
++
++    if (realpath((const char *) path->data, real) == NULL) {
++        /* nonexistent / dangling / unreadable: let nginx report 404/403 */
++        return NGX_OK;
++    }
++    if (realpath((const char *) root_buf, rroot) == NULL) {
++        return NGX_OK;
++    }
++
++    rl = ngx_strlen(rroot);
++    if (ngx_strncmp(real, rroot, rl) == 0
++        && (real[rl] == '\0' || real[rl] == '/'))
++    {
++        return NGX_OK;                      /* canonical target is in-tree */
++    }
++
++    ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
++                  "tenant_isolation: blocked escape for \"%V\" "
++                  "(resolves outside \"%s\")", path, rroot);
++    return NGX_HTTP_FORBIDDEN;
++}
++
++
++/*
++ * Validate that `path` (already mapped from the request URI) resolves to a
++ * target beneath the tenant's confinement root, using openat2() so the kernel
++ * itself rejects escapes via symlink, "..", magic-link or absolute symlink.
++ *
++ * Confinement root = tenant_isolation_root if configured, else the document
++ * root portion of `path` (its first `root` bytes). Returns NGX_OK to let nginx
++ * proceed (in-tree target, or genuinely missing file -> nginx makes the 404),
++ * NGX_HTTP_FORBIDDEN on a blocked escape. If openat2 is unavailable (old kernel
++ * or a seccomp filter that ENOSYS/EPERMs it), it latches and uses the realpath
++ * fallback for the life of the worker instead of failing open.
++ */
++
++static ngx_int_t
++ngx_http_static_tenant_check(ngx_http_request_t *r,
++    ngx_http_static_loc_conf_t *slcf, ngx_str_t *path, size_t root)
++{
++    int                 dirfd;
++    long                fd;
++    char               *rel;
++    u_char             *root_buf;
++    ngx_str_t           croot;
++    ngx_err_t           err;
++    struct open_how     how;
++    static ngx_uint_t   openat2_unavailable = 0;   /* per-worker latch */
++
++    if (slcf->tenant_isolation_root.len) {
++        croot = slcf->tenant_isolation_root;
++
++        if (path->len < croot.len
++            || ngx_strncmp(path->data, croot.data, croot.len) != 0)
++        {
++            ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
++                          "tenant_isolation: \"%V\" is outside root \"%V\"",
++                          path, &croot);
++            return NGX_HTTP_FORBIDDEN;
++        }
++
++        rel = (char *) path->data + croot.len;
++
++    } else {
++        if (root == 0 || root >= path->len) {
++            /* cannot determine the document root: leave it to nginx */
++            return NGX_OK;
++        }
++
++        croot.data = path->data;
++        croot.len = root;
++        rel = (char *) path->data + root;
++    }
++
++    while (*rel == '/') {
++        rel++;
++    }
++
++    if (*rel == '\0') {
++        /* request maps to the confinement root itself: nothing to confine */
++        return NGX_OK;
++    }
++
++    root_buf = ngx_pnalloc(r->pool, croot.len + 1);
++    if (root_buf == NULL) {
++        return NGX_HTTP_INTERNAL_SERVER_ERROR;
++    }
++    ngx_memcpy(root_buf, croot.data, croot.len);
++    root_buf[croot.len] = '\0';
++
++    if (openat2_unavailable) {
++        return ngx_http_static_tenant_check_realpath(r, root_buf, path);
++    }
++
++    dirfd = open((const char *) root_buf, O_PATH|O_DIRECTORY|O_CLOEXEC);
++    if (dirfd < 0) {
++        /* root dir missing/unsearchable: let nginx's own open report it */
++        return NGX_OK;
++    }
++
++    ngx_memzero(&how, sizeof(how));
++    how.flags = (uint64_t) (O_PATH|O_CLOEXEC);
++    how.resolve = (uint64_t) (RESOLVE_BENEATH|RESOLVE_NO_MAGICLINKS);
++
++    fd = syscall(SYS_openat2, dirfd, rel, &how, sizeof(how));
++
++    if (fd >= 0) {
++        (void) close((int) fd);
++        (void) close(dirfd);
++        return NGX_OK;
++    }
++
++    err = ngx_errno;
++    (void) close(dirfd);
++
++    switch (err) {
++
++    case NGX_ENOENT:
++    case NGX_ENOTDIR:
++    case NGX_ENAMETOOLONG:
++        /* genuinely-missing target: let nginx produce its normal 404 */
++        return NGX_OK;
++
++    case EXDEV:   /* RESOLVE_BENEATH: resolution would escape the root */
++    case NGX_ELOOP:   /* magic-link / symlink loop refused */
++    case EAGAIN:  /* lost a resolution race: fail closed */
++        ngx_log_error(NGX_LOG_ERR, r->connection->log, err,
++                      "tenant_isolation: blocked escape for \"%V\"", path);
++        return NGX_HTTP_FORBIDDEN;
++
++    case NGX_ENOSYS:
++    case EOPNOTSUPP:
++    case EPERM:
++        /* openat2 unavailable (old kernel, or a seccomp filter that
++         * ENOSYS/EPERMs it -- e.g. a hardened systemd unit). Latch and use the
++         * realpath containment check from now on rather than failing open. */
++        if (!openat2_unavailable) {
++            openat2_unavailable = 1;
++            ngx_log_error(NGX_LOG_WARN, r->connection->log, err,
++                          "tenant_isolation: openat2 unavailable (an old kernel, "
++                          "or the unit's RestrictSUIDSGID= seccomp ENOSYSes it), "
++                          "using realpath fallback -- drop RestrictSUIDSGID for "
++                          "race-free enforcement");
++        }
++        return ngx_http_static_tenant_check_realpath(r, root_buf, path);
++
++    default:
++        /* unexpected: let nginx's own open path decide */
++        return NGX_OK;
++    }
++}
++
++#endif
++
++
++static void *
++ngx_http_static_create_loc_conf(ngx_conf_t *cf)
++{
++    ngx_http_static_loc_conf_t  *conf;
++
++    conf = ngx_pcalloc(cf->pool, sizeof(ngx_http_static_loc_conf_t));
++    if (conf == NULL) {
++        return NULL;
++    }
++
++    conf->tenant_isolation = NGX_CONF_UNSET;
++
++    return conf;
++}
++
++
++static char *
++ngx_http_static_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
++{
++    ngx_http_static_loc_conf_t  *prev = parent;
++    ngx_http_static_loc_conf_t  *conf = child;
++
++    ngx_conf_merge_value(conf->tenant_isolation, prev->tenant_isolation,
++                         NGX_TENANT_ISOLATION_DEFAULT_ON);
++    ngx_conf_merge_str_value(conf->tenant_isolation_root,
++                             prev->tenant_isolation_root, "");
++
++    return NGX_CONF_OK;
++}
++
++
+ static ngx_int_t
+ ngx_http_static_init(ngx_conf_t *cf)
+ {

@@ -1,0 +1,26 @@
+#!/bin/sh
+# postinst — twiy-raweb package ONLY.
+#
+# STRICT RULE: this package MUST NOT touch /nginx in any way. It never creates,
+# updates, replaces, removes, or re-owns any file or directory under /nginx.
+# The admin owns /nginx entirely; an upgrade only refreshes the nginx binary
+# (handled by dpkg), the systemd unit, the nginx system user, and the log dir.
+#
+# Note: the empty /nginx skeleton is still part of the package payload, so dpkg
+# keeps those dirs across upgrades without ever removing or rewriting them. This
+# script deliberately performs ZERO operations on /nginx — no mkdir, no seed,
+# no restore, no chown.
+
+set -e
+
+useradd -r -s /bin/false nginx 2>/dev/null || true
+
+# Log dir only — this is /var/log/nginx, NOT /nginx.
+install -d -o nginx -g nginx -m 0755 /var/log/nginx
+chown -R nginx:nginx /var/log/nginx 2>/dev/null || true
+
+systemctl daemon-reload  2>/dev/null || true
+systemctl enable  nginx.service 2>/dev/null || true
+systemctl restart nginx.service 2>/dev/null || true
+
+exit 0

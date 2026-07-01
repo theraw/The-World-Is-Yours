@@ -54,10 +54,16 @@ export NGX_MOD_LUA_LOCK="0.09"
 # https://github.com/openresty/srcache-nginx-module/tags
 export NGX_MOD_LUA_SRCACHE="0.33"
 
-# https://github.com/tokers/zstd-nginx-module/tags
+# https://github.com/eilandert/zstd-nginx-module/tags
 # Zstandard compression module. Chrome 123+ and Firefox 126+ send
 # `Accept-Encoding: zstd`; older clients fall back to brotli/gzip.
-export NGX_MOD_ZSTD="0.1.1"
+# Switched from tokers/zstd-nginx-module (unmaintained since 0.1.1, 2023-10-23)
+# to eilandert/zstd-nginx-module, an actively maintained fork that has already
+# absorbed the flush-loop CPU-spin fix we previously carried as a local patch
+# (PR #23 + PR #49 + follow-up work — see filter/ngx_http_zstd_filter_module.c
+# in the fork for the "content-less flush completed" branch that supersedes
+# our patch).
+export NGX_MOD_ZSTD="0.90.6"
 
 # https://github.com/zlib-ng/zlib-ng/releases
 # Drop-in libz replacement with SIMD-accelerated DEFLATE. Built in --zlib-compat
@@ -86,3 +92,19 @@ export APPLY_PATCH_DYNAMIC_TLS_RECORDS=1
 # hunks reference internals that have drifted). Patch NOT yet shipped — would
 # need a full rebase. Keep toggle here for the day someone ports it.
 export APPLY_PATCH_HTTP2_HPACK_ENC=0
+
+# Tenant isolation: kernel-enforced (openat2 RESOLVE_BENEATH|NO_MAGICLINKS)
+# confinement of static-file resolution to each tenant's document root, so a
+# symlink/".."/magic-link that would escape the tenant tree is refused with 403
+# at the syscall level (no TOCTOU, unlike disable_symlinks). Patch shipped at
+# build/patches/nginx-${NGINX}-tenant-isolation.patch; self-contained in
+# ngx_http_static_module.c (adds the `tenant_isolation` + `tenant_isolation_root`
+# directives). Optional for a plain nginx build — set =0 to exclude entirely.
+export APPLY_PATCH_TENANT_ISOLATION=1
+
+# When the patch is applied, also compile the `tenant_isolation` directive
+# default-ON (-DNGX_TENANT_ISOLATION_DEFAULT_ON=1) so EVERY vhost is confined
+# unless it sets `tenant_isolation off;`. This is the twiy-raweb posture. Set =0
+# to ship the patch but leave the directive opt-in per vhost (`tenant_isolation
+# on;`) — the "default nginx" posture. Inert at runtime on kernels w/o openat2.
+export TENANT_ISOLATION_DEFAULT_ON=1

@@ -31,6 +31,7 @@ function apply_patches() {
     apply_one "${APPLY_PATCH_SYSTEMD_NOTIFY:-0}"      "nginx-${NGINX}-systemd-notify.patch"
     apply_one "${APPLY_PATCH_DYNAMIC_TLS_RECORDS:-0}" "nginx-${NGINX}-dynamic-tls-records.patch"
     apply_one "${APPLY_PATCH_HTTP2_HPACK_ENC:-0}"     "nginx-${NGINX}-http2-hpack-enc.patch"
+    apply_one "${APPLY_PATCH_TENANT_ISOLATION:-0}"    "nginx-${NGINX}-tenant-isolation.patch"
 
     touch "${nginx_src}/.patches_applied"
 }
@@ -243,11 +244,17 @@ function clean_install() {
         cd /opt/mod/; git clone --recurse-submodules https://github.com/wargio/naxsi.git naxsi
     fi
 
-    # NGX_MOD_ZSTD — Zstandard compression module from tokers. Pinned via
-    # NGX_MOD_ZSTD; tarball pattern (dir name embeds version → cache invalidates
-    # automatically when the pin moves).
+    # NGX_MOD_ZSTD — Zstandard compression module from eilandert (maintained
+    # fork of tokers/zstd-nginx-module, which has been abandoned since 0.1.1 in
+    # 2023-10-23). Pinned via NGX_MOD_ZSTD; tarball pattern (dir name embeds
+    # version → cache invalidates automatically when the pin moves).
+    #
+    # The fork ships the flush-loop CPU-spin fix we previously carried as
+    # build/patches/zstd-nginx-module-0.1.1-flush-cpu-spin.patch — see PR #23,
+    # PR #49, and the "content-less flush completed" branch in
+    # filter/ngx_http_zstd_filter_module.c. No local patching needed.
     if [ ! -d /opt/mod/zstd-nginx-module-${NGX_MOD_ZSTD} ]; then
-        cd /opt/mod/; wget https://github.com/tokers/zstd-nginx-module/archive/refs/tags/${NGX_MOD_ZSTD}.tar.gz
+        cd /opt/mod/; wget https://github.com/eilandert/zstd-nginx-module/archive/refs/tags/${NGX_MOD_ZSTD}.tar.gz
         cd /opt/mod/; tar xf ${NGX_MOD_ZSTD}.tar.gz; rm -Rf ${NGX_MOD_ZSTD}.tar.gz
     fi
 
@@ -256,6 +263,12 @@ function clean_install() {
 }
 
 test_nginx() {
+    # Tenant-isolation directive default: ON only when the patch is applied AND
+    # TENANT_ISOLATION_DEFAULT_ON=1 (the twiy-raweb posture). Injected into cc-opt.
+    local TI_CC_OPT=""
+    if [ "${APPLY_PATCH_TENANT_ISOLATION:-0}" = "1" ] && [ "${TENANT_ISOLATION_DEFAULT_ON:-0}" = "1" ]; then
+        TI_CC_OPT="-DNGX_TENANT_ISOLATION_DEFAULT_ON=1"
+    fi
     cd /opt/nginx-${NGINX} && LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-2.1/" CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --with-compat \
                                           --user=nginx                                                            \
                                           --group=nginx                                                           \
@@ -314,11 +327,17 @@ test_nginx() {
                                           --add-module=/opt/mod/ngx_brotli                                        \
                                           --add-module=/opt/mod/zstd-nginx-module-${NGX_MOD_ZSTD}                  \
                                           --add-module=/opt/mod/testcookie                                        \
-                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC -I/usr/local/aws-lc/include -I/usr/local/zlib-ng/include -DNGX_HAVE_SYSTEMD" \
+                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC -I/usr/local/aws-lc/include -I/usr/local/zlib-ng/include -DNGX_HAVE_SYSTEMD ${TI_CC_OPT}" \
                                           --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -L/opt/mod/pcre2-${SYSTEM_PCRE}/.libs -lpcre2-8 -L/usr/local/aws-lc/lib -lssl -lcrypto -Wl,-rpath,/usr/local/aws-lc/lib -L/usr/local/zlib-ng/lib -lz -Wl,-rpath,/usr/local/zlib-ng/lib -lsystemd"
                                           make clean
 }
 function build() {
+    # Tenant-isolation directive default: ON only when the patch is applied AND
+    # TENANT_ISOLATION_DEFAULT_ON=1 (the twiy-raweb posture). Injected into cc-opt.
+    local TI_CC_OPT=""
+    if [ "${APPLY_PATCH_TENANT_ISOLATION:-0}" = "1" ] && [ "${TENANT_ISOLATION_DEFAULT_ON:-0}" = "1" ]; then
+        TI_CC_OPT="-DNGX_TENANT_ISOLATION_DEFAULT_ON=1"
+    fi
     cd /opt/nginx-${NGINX} && LUAJIT_LIB="/usr/local/LuaJIT/lib" LUAJIT_INC="/usr/local/LuaJIT/include/luajit-2.1/" CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --with-compat \
                                           --user=nginx                                                            \
                                           --group=nginx                                                           \
@@ -377,7 +396,7 @@ function build() {
                                           --add-module=/opt/mod/ngx_brotli                                        \
                                           --add-module=/opt/mod/zstd-nginx-module-${NGX_MOD_ZSTD}                  \
                                           --add-module=/opt/mod/testcookie                                        \
-                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC -I/usr/local/aws-lc/include -I/usr/local/zlib-ng/include -DNGX_HAVE_SYSTEMD" \
+                                          --with-cc-opt="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC -I/usr/local/aws-lc/include -I/usr/local/zlib-ng/include -DNGX_HAVE_SYSTEMD ${TI_CC_OPT}" \
                                           --with-ld-opt="-Wl,-rpath,/usr/local/LuaJIT/lib -Wl,-rpath,/usr/local/lib -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie -L/opt/mod/pcre2-${SYSTEM_PCRE}/.libs -lpcre2-8 -L/usr/local/aws-lc/lib -lssl -lcrypto -Wl,-rpath,/usr/local/aws-lc/lib -L/usr/local/zlib-ng/lib -lz -Wl,-rpath,/usr/local/zlib-ng/lib -lsystemd"
     # NOTE: kept as separate statements (not `make && make install && make clean`)
     # so `set -e` actually fires on a make failure. The && chain hides left-side

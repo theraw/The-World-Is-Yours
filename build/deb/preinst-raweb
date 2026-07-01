@@ -1,0 +1,10 @@
+#!/bin/sh
+# preinst — twiy-raweb package ONLY.
+#
+# STRICT RULE: this package MUST NOT touch /nginx in any way. There is nothing
+# to back up or migrate because nothing under /nginx is ever read, written, or
+# restored by twiy-raweb. Intentionally a no-op.
+
+set -e
+
+exit 0

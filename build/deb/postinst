@@ -1,17 +1,38 @@
 #!/bin/sh
-# postinst — shared by the twiy and twiy-raweb packages.
+# postinst — twiy package ONLY (twiy-raweb uses postinst-raweb).
 #
 # Config files live under /nginx but are NOT tracked by dpkg. The package
 # ships an empty /nginx skeleton (so dpkg keeps the dirs across upgrades) plus
-# a pristine copy of every config under /usr/share/twiy/defaults/nginx. We
-# place configs from that stash here and NEVER overwrite a file that already
-# exists — our copy is dropped beside it as <file>.new instead (e.g.
-# nginx.conf.new). An upgrade therefore never changes an admin-edited config.
+# a pristine copy of every config under /usr/share/twiy/defaults/nginx.
+#
+# Config policy for twiy:
+#   - target present (identical OR admin-edited) -> NEVER replace; leave as-is.
+#   - target absent                             -> ASK the admin (per file,
+#                                                  Y/N) and only create it on Y.
+# We never drop <file>.new and we never overwrite an existing config, so an
+# upgrade can never change an admin-edited config.
 #
 # /hostdata is left entirely to the admin: we only make sure the dir exists,
 # and we never touch or remove its contents.
 
 set -e
+
+# Ask the admin a yes/no question on the controlling terminal. Defaults to
+# "no" (return 1) whenever we cannot prompt — noninteractive frontend or no
+# usable terminal — so a config is never created without explicit consent.
+prompt_yes_no() {
+    msg="$1"
+    if [ "${DEBIAN_FRONTEND:-}" = noninteractive ] || [ ! -r /dev/tty ]; then
+        echo "twiy: $msg -> skipped (noninteractive)"
+        return 1
+    fi
+    printf 'twiy: %s [y/N] ' "$msg" > /dev/tty
+    read ans < /dev/tty || ans=""
+    case "$ans" in
+        [Yy]|[Yy][Ee][Ss]) return 0 ;;
+        *) return 1 ;;
+    esac
+}
 
 useradd -r -s /bin/false nginx 2>/dev/null || true
 
@@ -20,16 +41,17 @@ mkdir -p /nginx /hostdata
 
 # Migration: older releases shipped /nginx/* as dpkg-tracked files, so the
 # upgrade unpack deletes them before this script runs. preinst stashed a copy
-# first — restore it now, without clobbering anything already present.
+# first — restore the admin's own files now, without clobbering anything
+# already present (cp -n). This only puts back what dpkg removed; it never
+# introduces new packaged defaults, so no prompt is needed here.
 if [ -d /var/backups/twiy-nginx ]; then
     cp -an /var/backups/twiy-nginx/. /nginx/ 2>/dev/null || true
     rm -rf /var/backups/twiy-nginx
 fi
 
 # Seed packaged defaults:
-#   - target absent          -> install it
-#   - target present, differs -> keep theirs, drop ours as <file>.new
-#   - target present, same    -> do nothing
+#   - target present  -> do nothing (never replace, no .new).
+#   - target absent   -> ask the admin; create it only if they answer yes.
 seed_tree() {
     stash="$1"
     target="$2"
@@ -37,11 +59,15 @@ seed_tree() {
     find "$stash" -type f | while IFS= read -r src; do
         rel=${src#$stash/}
         dst="$target/$rel"
-        install -d "$(dirname "$dst")"
         if [ -e "$dst" ]; then
-            cmp -s "$src" "$dst" || cp -p "$src" "$dst.new"
-        else
+            continue
+        fi
+        if prompt_yes_no "config '$dst' does not exist. Create it from the packaged default?"; then
+            install -d "$(dirname "$dst")"
             cp -p "$src" "$dst"
+            echo "twiy: created $dst"
+        else
+            echo "twiy: skipped $dst"
         fi
     done
 }

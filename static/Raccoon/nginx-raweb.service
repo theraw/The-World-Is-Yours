@@ -38,10 +38,6 @@ BindReadOnlyPaths=/etc
 BindPaths=/run
 BindPaths=/var/log/nginx
 BindPaths=/nginx
-BindPaths=/var/cache/nginx
-BindPaths=/srv
-BindPaths=/hostdata
-BindPaths=/raweb
 
 NoNewPrivileges=true
 ProtectKernelTunables=true
@@ -55,7 +51,7 @@ PrivateTmp=true
 RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
 RestrictNamespaces=true
 RestrictRealtime=true
-RestrictSUIDSGID=true
+# RestrictSUIDSGID=true   <- deliberately OFF (see NOTE): it breaks openat2(2)
 LockPersonality=true
 SystemCallArchitectures=native
 SystemCallFilter=@system-service
@@ -64,6 +60,14 @@ SystemCallErrorNumber=EPERM
 # NOTE deliberately OFF:
 #   MemoryDenyWriteExecute=true       breaks LuaJIT (JIT writable+executable pages)
 #   SystemCallFilter=~@resources      breaks nginx workers' prlimit64()
+#   RestrictSUIDSGID=true             its seccomp filter makes openat2(2) return
+#                                     ENOSYS (cannot be re-allowed via
+#                                     SystemCallFilter), which disables the
+#                                     tenant_isolation race-free openat2 path and
+#                                     forces the realpath() fallback. Workers are
+#                                     unprivileged + NoNewPrivileges=true, so a
+#                                     worker-created setuid/setgid file is owned by
+#                                     nginx (not root) and grants no escalation.
 # ProtectSystem and ProtectHome are redundant under TemporaryFileSystem=/.
 
 [Install]

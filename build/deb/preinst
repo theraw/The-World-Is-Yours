@@ -1,5 +1,5 @@
 #!/bin/sh
-# preinst — shared by the twiy and twiy-raweb packages.
+# preinst — twiy package ONLY (twiy-raweb uses preinst-raweb, a no-op).
 #
 # Older releases shipped /nginx as dpkg-tracked files. When upgrading from one
 # of those, dpkg deletes the old /nginx/* files during unpack (they are no
