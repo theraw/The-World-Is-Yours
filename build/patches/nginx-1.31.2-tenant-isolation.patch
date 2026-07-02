@@ -1,5 +1,5 @@
---- a/src/http/modules/ngx_http_static_module.c	2026-06-17 14:40:35.000000000 +0000
-+++ b/src/http/modules/ngx_http_static_module.c	2026-06-26 00:59:37.635956019 +0000
+--- a/src/http/modules/ngx_http_static_module.c
++++ b/src/http/modules/ngx_http_static_module.c
 @@ -14,6 +14,97 @@
  static ngx_int_t ngx_http_static_init(ngx_conf_t *cf);
  
@@ -139,7 +139,7 @@
      ngx_memzero(&of, sizeof(ngx_open_file_info_t));
  
      of.read_ahead = clcf->read_ahead;
-@@ -278,6 +384,209 @@
+@@ -278,6 +384,242 @@
  }
  
  
@@ -212,8 +212,21 @@
 +    if (slcf->tenant_isolation_root.len) {
 +        croot = slcf->tenant_isolation_root;
 +
++        /*
++         * Require a path-separator boundary immediately after the prefix, so a
++         * docroot that merely shares a string prefix with the confinement root
++         * (root "/home/u1" vs docroot "/home/u10/...") is not mistaken for being
++         * inside it -- otherwise `rel` would be computed against the wrong root
++         * and the check would silently no-op (fail open). If the configured root
++         * itself ends in '/', that boundary is already implied. The length guard
++         * is evaluated first so the path->data[croot.len] read stays in bounds
++         * (path->data is NUL-terminated at path->len).
++         */
 +        if (path->len < croot.len
-+            || ngx_strncmp(path->data, croot.data, croot.len) != 0)
++            || ngx_strncmp(path->data, croot.data, croot.len) != 0
++            || (croot.data[croot.len - 1] != '/'
++                && path->data[croot.len] != '/'
++                && path->data[croot.len] != '\0'))
 +        {
 +            ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
 +                          "tenant_isolation: \"%V\" is outside root \"%V\"",
@@ -283,6 +296,17 @@
 +        /* genuinely-missing target: let nginx produce its normal 404 */
 +        return NGX_OK;
 +
++    case NGX_EACCES:
++    case EMFILE:
++    case ENFILE:
++    case ENOMEM:
++    case ESTALE:
++        /* Not an escape verdict: a permission, fd/memory-exhaustion or stale-NFS
++         * condition that stopped resolution before it could conclude. Let nginx's
++         * own open run so it surfaces the correct 403/500/503 rather than masking
++         * it (or a transient hiccup) as a tenant_isolation 403. */
++        return NGX_OK;
++
 +    case EXDEV:   /* RESOLVE_BENEATH: resolution would escape the root */
 +    case NGX_ELOOP:   /* magic-link / symlink loop refused */
 +    case EAGAIN:  /* lost a resolution race: fail closed */
@@ -293,9 +317,12 @@
 +    case NGX_ENOSYS:
 +    case EOPNOTSUPP:
 +    case EPERM:
-+        /* openat2 unavailable (old kernel, or a seccomp filter that
-+         * ENOSYS/EPERMs it -- e.g. a hardened systemd unit). Latch and use the
-+         * realpath containment check from now on rather than failing open. */
++    case EINVAL:
++        /* openat2 unavailable or rejecting our resolve flags (old kernel, a
++         * seccomp filter that ENOSYS/EPERMs it -- e.g. a hardened systemd unit --
++         * or a kernel that predates RESOLVE_BENEATH). Latch and use the realpath
++         * containment check from now on rather than failing open or 403-ing every
++         * request. */
 +        if (!openat2_unavailable) {
 +            openat2_unavailable = 1;
 +            ngx_log_error(NGX_LOG_WARN, r->connection->log, err,
@@ -307,8 +334,14 @@
 +        return ngx_http_static_tenant_check_realpath(r, root_buf, path);
 +
 +    default:
-+        /* unexpected: let nginx's own open path decide */
-+        return NGX_OK;
++        /* Unexpected errno from openat2. Fail CLOSED: an escape we have no named
++         * case for must not be served. Benign resource/permission errnos that
++         * genuinely mean "not an escape" are enumerated above, so reaching here
++         * is anomalous -- deny and log rather than fall through to nginx. */
++        ngx_log_error(NGX_LOG_ERR, r->connection->log, err,
++                      "tenant_isolation: openat2 failed with an unexpected error "
++                      "for \"%V\", denying", path);
++        return NGX_HTTP_FORBIDDEN;
 +    }
 +}
 +

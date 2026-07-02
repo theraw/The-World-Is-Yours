@@ -8,6 +8,7 @@
 - [x] ModSecurity v3 (libmodsecurity)
 - [x] Naxsi
 - [x] Lua (LuaJIT 2.1)
+- [x] Tenant Isolation.
 - [x] Cookie-based challenge
 - [x] [Versions List](https://git.julio.al/theraw/The-World-Is-Yours/src/branch/master/version)
 
@@ -71,6 +72,36 @@ where `<distro>` is `trixie` or `raccoon`.
 LUA RESTY CORE SCRIPTS = /usr/nginx_lua
 ```
 
+## Tenant Isolation
+
+Confines each site's **static** file serving to its own `root` directory. A symlink, `..`,
+magic-link or cross-tenant path that escapes the site tree (e.g. a symlink to `/etc/passwd`)
+is refused with **403**, kernel-enforced via `openat2(RESOLVE_BENEATH)`.
+**On by default, no vhost config needed.** In-tree symlinks still work.
+
+**Where the config lives (nothing to add on a fresh install)**
+- `tenant_isolation` is compiled **default-on**, so it applies to every site with no directive.
+- The `disable_symlinks if_not_owner from=$document_root;` backstop ships in the `http { }`
+  block of `/nginx/nginx.conf`, so **every** vhost inherits it. Do not add it per-site.
+- Your site configs live in `/nginx/live/*` and inherit both layers automatically.
+- Upgrading an old install that kept its own `/nginx/nginx.conf`? Add that one
+  `disable_symlinks` line to its `http { }` block once (or re-run `postfix` to refresh the config).
+
+**Covered**
+- Static files served by nginx (the normal file path).
+- Backstopped at the real serving `open()` by `disable_symlinks if_not_owner`, which also
+  covers `gzip_static`, `autoindex`, `dav`, `mp4`/`flv`.
+
+**Not covered**
+- Dynamic content (PHP-FPM / NGINX Unit) is isolated separately per tenant (user / cgroup / namespace).
+- Not fully race-free: a narrow probe->open timing window remains (closing it fully would
+  break `open_file_cache`), so it is *mitigated* by the `disable_symlinks` backstop, not eliminated.
+
+**Optional per-vhost tuning**
+- `tenant_isolation off;` turns it off for a `server`/`location`.
+- `tenant_isolation_root /home/<user>;` widens the confinement root to the tenant home
+  (allows above-docroot in-tree symlinks, e.g. Laravel's `storage`).
+
 ## How to install lua scripts 
 ```
 . /root/The-World-Is-Yours/version
@@ -85,7 +116,7 @@ nginx -s reload
 
 | Area | Twiy | Vanilla nginx | Why |
 |---|---|---|---|
-| TLS handshake throughput | **+5–15%** | baseline | AWS-LC's tuned AES/ChaCha asm vs OpenSSL |
+| TLS handshake throughput | **+5-15%** | baseline | AWS-LC's tuned AES/ChaCha asm vs OpenSSL |
 | WAF, Lua, HTTP/3 | included | not included | needs custom build |
 
 # Support options.
