@@ -55,15 +55,7 @@ export NGX_MOD_LUA_LOCK="0.09"
 export NGX_MOD_LUA_SRCACHE="0.33"
 
 # https://github.com/eilandert/zstd-nginx-module/tags
-# Zstandard compression module. Chrome 123+ and Firefox 126+ send
-# `Accept-Encoding: zstd`; older clients fall back to brotli/gzip.
-# Switched from tokers/zstd-nginx-module (unmaintained since 0.1.1, 2023-10-23)
-# to eilandert/zstd-nginx-module, an actively maintained fork that has already
-# absorbed the flush-loop CPU-spin fix we previously carried as a local patch
-# (PR #23 + PR #49 + follow-up work — see filter/ngx_http_zstd_filter_module.c
-# in the fork for the "content-less flush completed" branch that supersedes
-# our patch).
-export NGX_MOD_ZSTD="0.90.6"
+export NGX_MOD_ZSTD="v1.1"
 
 # https://github.com/zlib-ng/zlib-ng/releases
 # Drop-in libz replacement with SIMD-accelerated DEFLATE. Built in --zlib-compat

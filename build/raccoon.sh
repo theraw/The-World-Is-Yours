@@ -244,18 +244,19 @@ function clean_install() {
         cd /opt/mod/; git clone --recurse-submodules https://github.com/wargio/naxsi.git naxsi
     fi
 
-    # NGX_MOD_ZSTD — Zstandard compression module from eilandert (maintained
-    # fork of tokers/zstd-nginx-module, which has been abandoned since 0.1.1 in
-    # 2023-10-23). Pinned via NGX_MOD_ZSTD; tarball pattern (dir name embeds
-    # version → cache invalidates automatically when the pin moves).
-    #
-    # The fork ships the flush-loop CPU-spin fix we previously carried as
-    # build/patches/zstd-nginx-module-0.1.1-flush-cpu-spin.patch — see PR #23,
-    # PR #49, and the "content-less flush completed" branch in
-    # filter/ngx_http_zstd_filter_module.c. No local patching needed.
-    if [ ! -d /opt/mod/zstd-nginx-module-${NGX_MOD_ZSTD} ]; then
-        cd /opt/mod/; wget https://github.com/eilandert/zstd-nginx-module/archive/refs/tags/${NGX_MOD_ZSTD}.tar.gz
-        cd /opt/mod/; tar xf ${NGX_MOD_ZSTD}.tar.gz; rm -Rf ${NGX_MOD_ZSTD}.tar.gz
+    # zstd module from https://github.com/theraw/zstd-nginx-module (NGX_MOD_ZSTD =
+    # git tag). Extract with --strip-components=1 into a fixed local dir name so the
+    # --add-module path never depends on the archive's top folder; guard on config
+    # so a partial extract re-fetches.
+    if [ ! -f /opt/mod/zstd-nginx-module-${NGX_MOD_ZSTD}/config ]; then
+        cd /opt/mod/
+        rm -rf zstd-nginx-module-${NGX_MOD_ZSTD}
+        wget -O zstd-nginx-module-${NGX_MOD_ZSTD}.tar.gz \
+            https://github.com/theraw/zstd-nginx-module/archive/refs/tags/${NGX_MOD_ZSTD}.tar.gz
+        mkdir -p zstd-nginx-module-${NGX_MOD_ZSTD}
+        tar xf zstd-nginx-module-${NGX_MOD_ZSTD}.tar.gz \
+            -C zstd-nginx-module-${NGX_MOD_ZSTD} --strip-components=1
+        rm -Rf zstd-nginx-module-${NGX_MOD_ZSTD}.tar.gz
     fi
 
     # END OF NGINX MODULES

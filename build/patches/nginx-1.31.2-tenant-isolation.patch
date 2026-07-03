@@ -139,7 +139,7 @@
      ngx_memzero(&of, sizeof(ngx_open_file_info_t));
  
      of.read_ahead = clcf->read_ahead;
-@@ -278,6 +384,242 @@
+@@ -278,6 +384,231 @@
  }
  
  
@@ -213,14 +213,9 @@
 +        croot = slcf->tenant_isolation_root;
 +
 +        /*
-+         * Require a path-separator boundary immediately after the prefix, so a
-+         * docroot that merely shares a string prefix with the confinement root
-+         * (root "/home/u1" vs docroot "/home/u10/...") is not mistaken for being
-+         * inside it -- otherwise `rel` would be computed against the wrong root
-+         * and the check would silently no-op (fail open). If the configured root
-+         * itself ends in '/', that boundary is already implied. The length guard
-+         * is evaluated first so the path->data[croot.len] read stays in bounds
-+         * (path->data is NUL-terminated at path->len).
++         * Require '/' (or end) right after the prefix so root "/home/u1" is not
++         * treated as a parent of "/home/u10/..." (would fail open). Length checked
++         * first to keep the read in bounds; a root ending in '/' implies it.
 +         */
 +        if (path->len < croot.len
 +            || ngx_strncmp(path->data, croot.data, croot.len) != 0
@@ -301,10 +296,8 @@
 +    case ENFILE:
 +    case ENOMEM:
 +    case ESTALE:
-+        /* Not an escape verdict: a permission, fd/memory-exhaustion or stale-NFS
-+         * condition that stopped resolution before it could conclude. Let nginx's
-+         * own open run so it surfaces the correct 403/500/503 rather than masking
-+         * it (or a transient hiccup) as a tenant_isolation 403. */
++        /* Not an escape: perm / fd exhaustion / stale NFS. Let nginx's own open
++         * surface the real 403/500/503 instead of masking it as a 403. */
 +        return NGX_OK;
 +
 +    case EXDEV:   /* RESOLVE_BENEATH: resolution would escape the root */
@@ -318,11 +311,9 @@
 +    case EOPNOTSUPP:
 +    case EPERM:
 +    case EINVAL:
-+        /* openat2 unavailable or rejecting our resolve flags (old kernel, a
-+         * seccomp filter that ENOSYS/EPERMs it -- e.g. a hardened systemd unit --
-+         * or a kernel that predates RESOLVE_BENEATH). Latch and use the realpath
-+         * containment check from now on rather than failing open or 403-ing every
-+         * request. */
++        /* openat2 unavailable or rejecting our flags (old kernel / seccomp, e.g.
++         * RestrictSUIDSGID). Latch to the realpath fallback instead of failing
++         * open or 403-ing every request. */
 +        if (!openat2_unavailable) {
 +            openat2_unavailable = 1;
 +            ngx_log_error(NGX_LOG_WARN, r->connection->log, err,
@@ -334,10 +325,8 @@
 +        return ngx_http_static_tenant_check_realpath(r, root_buf, path);
 +
 +    default:
-+        /* Unexpected errno from openat2. Fail CLOSED: an escape we have no named
-+         * case for must not be served. Benign resource/permission errnos that
-+         * genuinely mean "not an escape" are enumerated above, so reaching here
-+         * is anomalous -- deny and log rather than fall through to nginx. */
++        /* Unexpected errno: fail closed. Benign non-escape errnos are handled
++         * above, so treat anything here as a possible escape. */
 +        ngx_log_error(NGX_LOG_ERR, r->connection->log, err,
 +                      "tenant_isolation: openat2 failed with an unexpected error "
 +                      "for \"%V\", denying", path);
