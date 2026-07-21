@@ -3,7 +3,7 @@
 ![Simple](https://c.tenor.com/uYqsM9uIyuYAAAAC/simple-easy.gif)
 
 - [x] Debian 13 (trixie) and Ubuntu 26.04 LTS (raccoon) supported
-- [x] nginx 1.31.2
+- [x] nginx 1.31.3
 - [x] HTTP/3 (QUIC) via AWS-LC
 - [x] ModSecurity v3 (libmodsecurity)
 - [x] Naxsi
